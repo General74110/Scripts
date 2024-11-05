@@ -31,7 +31,7 @@ let status;
 
 status = (status = ($.getval("xmlystatus") || "1")) > 1 ? `${status}` : "";
 
-const logs = 1; // 调试日志级别
+const logs = 0; // 调试日志级别
 const notify = $.isNode() ? require('./sendNotify') : '';  // 这里引用通知工具
 let t = ""; // 通知内容
 let AllCookie = '';
