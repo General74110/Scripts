@@ -1,4 +1,4 @@
-模板来源：Tom佬
+//模板来源：Tom佬
 
 
 const $ = new Env('教程');

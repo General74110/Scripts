@@ -1,4 +1,4 @@
-模版来源：Tom佬
+// 模版来源：Tom佬
 
 const $ = new Env('教程');
 let status;
