@@ -1,9 +1,9 @@
-<img src="https://raw.githubusercontent.com/General74110/Scripts/master/img/profile.png" alt="logo" width="160" height="160" align="right">
+<img src="https://raw.githubusercontent.com/General74110/Scripts/master/img/profile.png" alt="logo" width="160" height="160" align="right">  
 
 <h1 align="center">
-  存放自己需要用到的脚本
-  <br>
   
+  <br>
+  General℡
 </h1>
 
 ## 支持环境
@@ -12,12 +12,8 @@
 ![Surge](https://raw.githubusercontent.com/Irrucky/Tool/main/Surge/icon/surge_2.png)
 
 
-
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![GitHub stars](https://img.shields.io/github/stars/General74110/Scripts)
-![GitHub forks](https://img.shields.io/github/forks/General74110/Scripts)
 # 简介
-
+存放自己需要用到的脚本
 
 # 免责声明
 
@@ -34,5 +30,9 @@
 您必须在下载后的24小时内从计算机或手机中完全删除以上内容.
 
 任何以任何方式查看此项目的人或直接或间接使用该项目的任何脚本的使用者都应仔细阅读此声明。我保留随时更改或补充此免责声明的权利。一旦使用并复制了任何本仓库相关脚本或其他内容，则视为您已接受此免责声明.
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![GitHub stars](https://img.shields.io/github/stars/General74110/Scripts)
+![GitHub forks](https://img.shields.io/github/forks/General74110/Scripts)  
 
 ![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=w37fhy&show_icons=true&theme=merko)
