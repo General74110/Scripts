@@ -6,14 +6,14 @@
   General℡
 </h1>
 
-## 支持环境
+# 支持环境
 ![Loon](https://raw.githubusercontent.com/General74110/Scripts/master/img/Loon.png)
 ![Quantumult X](https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Quantumult_X.png)
 ![Surge](https://raw.githubusercontent.com/Irrucky/Tool/main/Surge/icon/surge_2.png)
 
 
 # 简介
-存放自己需要用到的脚本
+### 存放自己需要用到的脚本！！！
 
 # 免责声明
 
@@ -31,7 +31,6 @@
 
 任何以任何方式查看此项目的人或直接或间接使用该项目的任何脚本的使用者都应仔细阅读此声明。我保留随时更改或补充此免责声明的权利。一旦使用并复制了任何本仓库相关脚本或其他内容，则视为您已接受此免责声明.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![GitHub stars](https://img.shields.io/github/stars/General74110/Scripts)
 ![GitHub forks](https://img.shields.io/github/forks/General74110/Scripts)  
 
