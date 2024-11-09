@@ -57,7 +57,7 @@
 - 📺 **B站每日任务** ：[查看链接](https://raw.githubusercontent.com/ClydeTime/BiliBili/main/modules/BiliBiliDailyBonus.sgmodule)
 - 💼 **野比佬脚本合集** ：[查看链接](https://github.com/NobyDa/Script/tree/master/Surge/Module)
 - 🔓 **会员解锁脚本合集** ：[查看链接](https://github.com/deezertidal/Surge_Module)
-
+- 🐦 **迅雷会员解锁** ：[查看链接](https://github.com/General74110/Scripts/tree/master/Surge%20for%20Mac/Module/Spec)
 
 ## 🧑‍💻 Genius Bar
 | 作者         |  描述          |
