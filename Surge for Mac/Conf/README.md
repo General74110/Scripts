@@ -1,12 +1,11 @@
 <div align="center">
- <img src="https://raw.githubusercontent.com/cc63/Surge/main/Conf/Conf.PNG" width="200">
- <img src="https://raw.githubusercontent.com/cc63/Surge/main/Conf/ConfX.PNG" width="200">
+ <img src="https://raw.githubusercontent.com/General74110/Scripts/master/Surge%20for%20Mac/Conf/ConfX.png" width="200">
 </div>
 
 ## 📦 配置文件
 
 ```
-https://raw.githubusercontent.com/cc63/Surge/main/Conf/Mine.conf
+https://raw.githubusercontent.com/General74110/Scripts/master/Surge%20for%20Mac/Conf/Mine.conf
 ```
 
 ## 🧩 配置建议
@@ -52,7 +51,7 @@ http://wifi.vivo.com.cn/generate_204
 🚀 **代理延迟测试** 
 
 ```
-http://1.1.1.1
+http://www.apple.com/library/test/success.html
 ```
 
 ```
@@ -73,4 +72,8 @@ https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb
 
 ```
 https://github.com/xream/geoip/releases/latest/download/ipinfo.country.mmdb
+```
+
+```
+https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb
 ```

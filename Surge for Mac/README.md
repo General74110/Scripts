@@ -73,6 +73,6 @@
 | [@RuCu6](https://github.com/RuCu6/QuanX)  | 广告拦截 |
 | [@ClydeTime](https://github.com/ClydeTime)  | 任务脚本  |
 
-## ✈️ AFF 自用机场
+## 仓库来源
 
-- **MESL** ：[点击了解](https://in.mesl.cloud/#/register?code=ew06hQ6A)
+- **cc63** ：[点击了解](https://github.com/cc63/Surge)
