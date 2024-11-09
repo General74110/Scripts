@@ -1,0 +1,155 @@
+{
+  "id": "General℡",
+  "name": "General℡ 脚本订阅",
+  "author": "@General74110",
+  "icon": "https://raw.githubusercontent.com/General74110/Scripts/master/img/profile.png",
+  "repo": "https://github.com/General74110/Scripts",
+  "apps": [
+    {
+      "id": "Kuwomusic",
+      "name": "酷我音乐(时长)",
+      "keys": [
+        "Clear",
+        "loginUid"
+      ],
+      "desc": "",
+      "settings": [
+        {
+          "id": "Clear",
+          "name": "清除Cookies",
+          "val": "0",
+          "type": "number",
+          "placeholder": "0为关闭,1为开启",
+          "desc": "清除酷我音乐(时长)Cookies"
+        },
+        {
+          "id": "loginUid",
+          "name": "登陆UID",
+          "val": "",
+          "type": "text",
+          "placeholder": "loginUid",
+          "desc": "抓取的loginUid，多个Uid用 & 或 , 分隔"
+        }
+      ],
+      "author": "@General℡",
+      "repo": "https://github.com/General74110/Scripts/master/Quantumult%20X/Script/Task",
+      "icons": [
+        "https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png",
+        "https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png"
+      ],
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js"
+    },
+    {
+      "id": "QQreader",
+      "name": "QQ阅读",
+      "keys": [
+        "ywguid",
+        "ywkey",
+        "ywtoken",
+        "csigs"
+      ],
+      "author": "@General℡",
+      "repo": "/master/Quantumult%20X/Script/Task",
+      "icons": [
+        "https://raw.githubusercontent.com/General74110/Scripts/master/img/qqreader.png",
+        "https://raw.githubusercontent.com/General74110/Scripts/master/img/qqreader.png"
+      ],
+      "settings": [
+        {
+          "id": "ywguid",
+          "name": "ywguid",
+          "val": "",
+          "type": "text",
+          "placeholder": "",
+          "desc": ""
+        },
+        {
+          "id": "ywkey",
+          "name": "ywkey",
+          "val": "",
+          "type": "text",
+          "placeholder": "",
+          "desc": ""
+        },
+        {
+          "id": "ywtoken",
+          "name": "ywtoken",
+          "val": "",
+          "type": "text",
+          "placeholder": "",
+          "desc": ""
+        },
+        {
+          "id": "csigs",
+          "name": "csigs",
+          "val": "",
+          "type": "text",
+          "placeholder": "",
+          "desc": ""
+        }
+      ],
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js"
+    },
+    {
+      "id": "xmly",
+      "name": "喜马拉雅",
+      "keys": [
+        "xmlytoken"
+      ],
+      "desc": "",
+      "settings": [
+        {
+          "id": "xmlytoken",
+          "name": "喜马拉雅Token",
+          "val": "",
+          "type": "text",
+          "placeholder": "输入多个账号Token，用#隔开",
+          "desc": "抓取的1&_token，多个Token用#隔开"
+        }
+      ],
+      "author": "@General℡",
+      "repo": "/master/Quantumult%20X/Script/Task",
+      "icons": [
+        "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png",
+        "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png"
+      ],
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js"
+    },
+    {
+      "id": "kuwo",
+      "name": "酷我音乐(积分)",
+      "keys": [
+        "Clear",
+        "ID"
+
+      ],
+      "desc": "支持多账号，请用 &或, 分隔多个 UID和SID 组",
+      "settings": [
+        {
+          "id": "Clear",
+          "name": "清除Cookies",
+          "val": "0",
+          "type": "number",
+          "placeholder": "0为关闭,1为开启",
+          "desc": "清除酷我音乐(积分)Cookies"
+        },
+        {
+          "id": "ID",
+          "name": "loginUid@loginSid",
+          "val": "",
+          "type": "text",
+          "placeholder": "loginUid@loginSid&loginUid@loginSid",
+          "desc": "多个 ID组，(用 & 或 , ) 分隔"
+        }
+
+      ],
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo.js",
+      "author": "@General℡",
+      "repo": "/master/Quantumult%20X/Script/Task",
+      "icons": [
+        "https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png",
+        "https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png"
+      ]
+    }
+  ]
+}
