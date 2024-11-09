@@ -1,0 +1,68 @@
+#!name = Get Cookies
+#!desc = 酷我音乐、QQ阅读、喜马拉雅、书旗小说。用于获取相关Cookie，可单独开启，成功后关闭脚本以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!openUrl = 
+#!author = General℡[https://github.com/General74110/Scripts]
+#!tag = 获取Cookies
+#!system = 
+#!system_version = 
+#!loon_version = 3.2.2(778)
+#!homepage = 
+#!icon = https://raw.githubusercontent.com/black2c7/TheMagic-Icons/main/Icons/Shouhou.png
+#!date = 2024-11-10 20:00
+
+# 2024-10-25
+# https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js
+
+# 2024-10-25
+# https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js
+
+# 2024-10-25
+# https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Shuqi.js
+
+# 2024-10-25
+# https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js
+
+# 2024-10-25
+# https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js
+
+[Argument]
+# 酷我音乐(时长)
+CookieScript-Kuwomusic = switch, true, false, tag = 酷我音乐(时长)获取Cookies, desc = 是否启用酷我音乐(时长)脚本获取Cookies
+
+# 酷我音乐(积分)
+CookieScript-kuwo = switch, true, false, tag = 酷我音乐(积分)获取Cookie, desc = 是否启用酷我音乐(积分)脚本获取Cookie
+
+# QQ阅读
+CookieScript-QQreader = switch, true, false, tag = QQ阅读获取Cookie, desc = 是否启用QQ阅读脚本获取Cookie
+
+# 书旗小说
+CookieScript-Shuqi = switch, true, false, tag = 书旗小说获取Cookie, desc = 是否启用书旗小说脚本获取Cookie
+
+
+# 喜马拉雅
+CookieScript-xmly = switch, true, false, tag = 喜马拉雅获取Cookie, desc = 是否启用喜马拉雅脚本获取Cookie
+
+
+
+[Script]
+# 酷我音乐(时长) - *.kuwo.cn
+http-request ^https:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\? script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, requires-body = true, timeout = 60, enable = {CookieScript-Kuwomusic}, tag=酷我音乐(时长)获取Cookies, img-url=https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png
+
+
+# QQ阅读 - *.reader.qq.com
+http-request ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\? script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js, timeout = 60, enable = {CookieScript-QQreader}, tag=QQ阅读获取Cookie, img-url=https://raw.githubusercontent.com/General74110/Scripts/master/img/qqreader.png
+
+
+# 书旗小说 - *.shuqireader.com
+http-request ^https?:\/\/ocean\.shuqireader\.com\/api\/ad\/prize\/video\/reward script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Shuqi.js, timeout = 60, enable = {CookieScript-Shuqi}, tag=书旗小说(听书时长), img-url=https://raw.githubusercontent.com/erdongchanyo/icon/main/taskicon/Shuqixiaoshuo.png
+
+
+# 酷我音乐(积分) - *.kuwo.cn
+http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, timeout = 60, enable = {CookieScript-kuwo}, tag=酷我音乐(积分)获取Cookie, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+
+
+# 喜马拉雅 - *.ximalaya.com
+http-request ^https:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/getUserPageShow script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js, timeout = 60, enable = {CookieScript-xmly}, tag=喜马拉雅获取Cookie, img-url=https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png
+
+[MitM]
+hostname = *.reader.qq.com, *.shuqireader.com, *.kuwo.cn, *.ximalaya.com
