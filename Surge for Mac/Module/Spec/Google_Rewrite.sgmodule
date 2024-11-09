@@ -1,0 +1,8 @@
+#!name=Google重定向
+#!desc=CN谷歌重定向
+[URL Rewrite]
+^https?:\/\/www\.g(oogle)?\.cn https://www.google.com 307
+
+
+[MITM]
+hostname = %APPEND% www.g.cn, www.google.cn

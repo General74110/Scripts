@@ -1,0 +1,11 @@
+# NAME: Speedtest
+# AUTHOR: cc63
+# UPDATED: 2024-05-23
+# TIP：本规则应指向DIRECT与FINAL
+###### 测直连：GEPIP,CN,DIRECT
+###### 测代理：FINAL,PROXY
+
+DOMAIN-KEYWORD,speedtest
+DOMAIN-SUFFIX,fast.com
+DOMAIN-SUFFIX,speed.cloudflare.com
+USER-AGENT,SpeedTest*
