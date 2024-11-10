@@ -142,7 +142,7 @@ async function sendAndStopScript() {
       let lastExpiryTime = '';
       let successMessage = '';
 
-      const loopCount = Math.floor(Math.random() * 50) + 50; // 设置广告观看次数
+      const loopCount = Math.floor(Math.random() * 21) + 80; // 设置广告观看次数80到100之间
       for (let c = 0; c < loopCount; c++) {
         $.index = c + 1;
         const taskResult = await Task(currentLoginUid);
