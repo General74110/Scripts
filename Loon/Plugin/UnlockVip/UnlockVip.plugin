@@ -1,5 +1,5 @@
 #!name= UnlockVip
-#!desc= 收集的一部分自用的Vip解锁(微信小程序-车管家)
+#!desc= 收集的一部分自用的Vip解锁(微信小程序-车管家&贴心说明)
 #!author= @ General℡
 #!homepage = https://github.com/General74110/Loon
 #!icon= https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Vimeo.png
@@ -8,7 +8,9 @@
 # > 微信小程序-车机互联
 http-response ^https:\/\/tsp-operation\.txzing\.com\/api(\/p/operation/common/allowFreeVip|\/p/operation/vipCoupon/popUpCouponInfo|\/p/operation/activity/situation|\/w/wx/module/findCar/findCarVipInfo/isVip|\/w/wx/module/trace/userVip|\/w/wx/module/traceMp/traceUserVipOpenId/vipInfo|\/w\/wx\/module\/smallProgram\/userInfo|\/wx\/module\/smallProgram\/userInfo\/banner) script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/cgj.js, requires-body=true, timeout=60, tag=车管家
 
+# > 颜色app【贴心说明】
+http-response ^https:\/\/api\.9169kkxstzsjkdd222\.app\/bibidd\/Mediaonenine\/panduan_huiyuan script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/9169.js, requires-body=true, timeout=60, tag=9169
 
 
 [MITM]
-hostname = *.txzing.com
+hostname = *.txzing.com, api.9169kkxstzsjkdd222.app
