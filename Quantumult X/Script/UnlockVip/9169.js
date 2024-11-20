@@ -4,7 +4,6 @@
 【作者】
 #> General℡
 【下载地址】
-#> https://apps.apple.com/us/app/%E8%B4%B4%E5%BF%83%E8%AF%B4%E6%98%8E/id6736427101?l=zh-Hans-CN
 #> www.9169.app
 【脚本功能】
 #> 解锁会员和金币播放
