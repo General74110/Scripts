@@ -116,6 +116,39 @@
       "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js"
     },
     {
+      "id": "Follow",
+      "name": "Follow",
+      "keys": [
+        "csrfToken",
+        "cookie"
+      ],
+      "author": "@General℡",
+      "repo": "/master/Quantumult%20X/Script/Task",
+      "icons": [
+        "https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png",
+        "https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png"
+      ],
+      "settings": [
+        {
+          "id": "csrfToken",
+          "name": "csrfToken",
+          "val": "",
+          "type": "text",
+          "placeholder": "",
+          "desc": "authjs.csrf-token后面的字符串，不包含authjs.csrf-token"
+        },
+        {
+          "id": "cookie",
+          "name": "cookie",
+          "val": "",
+          "type": "text",
+          "placeholder": "",
+          "desc": "cookie的值：authjs.session-token=xxx-xxx-xxxx-xxxx-xxxx，包含authjs.session-token"
+        }
+      ],
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Follow.js"
+    },
+    {
       "id": "kuwo",
       "name": "酷我音乐(积分)",
       "keys": [
@@ -141,7 +174,6 @@
           "placeholder": "loginUid@loginSid&loginUid@loginSid",
           "desc": "多个 ID组，(用 & 或 , ) 分隔"
         }
-
       ],
       "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo.js",
       "author": "@General℡",
