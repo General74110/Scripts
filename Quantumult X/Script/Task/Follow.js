@@ -3,8 +3,10 @@ $.desc = []
 
 const csrfToken = $.getdata('follow_csrfToken') || ($.isNode() ? process.env.csrfToken : '');
 const cookie = $.getdata('follow_cookie') || ($.isNode() ? process.env.cookie : '');
-const logs = 1;
-
+const logs = 0;
+if (logs == 1) {
+  console.log(`调出环境变量:${csrfToken},${cookie}`)
+}
 // 检查是否在 Node.js 环境中
 const isNode = typeof process !== "undefined" && process.env;
 

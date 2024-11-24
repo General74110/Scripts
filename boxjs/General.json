@@ -130,16 +130,16 @@
       ],
       "settings": [
         {
-          "id": "csrfToken",
-          "name": "csrfToken",
+          "id": "follow_csrfToken",
+          "name": "follow_csrfToken",
           "val": "",
           "type": "text",
           "placeholder": "",
           "desc": "authjs.csrf-token后面的字符串，不包含authjs.csrf-token"
         },
         {
-          "id": "cookie",
-          "name": "cookie",
+          "id": "follow_cookie",
+          "name": "follow_cookie",
           "val": "",
           "type": "text",
           "placeholder": "",
