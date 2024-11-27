@@ -91,49 +91,54 @@ csigsArr.push($.getdata('csigs') || (isNode ? process.env.csigs : ''));
     for (let i = 0; i < ywguidArr.length; i++) {
       if (ywguidArr[i] && ywkeyArr[i] && ywtokenArr[i]) {
         $.index = i + 1;
-        console.log(`\n\n开始【QQ阅读任务】`);
+        console.log (`\n\n开始【QQ阅读任务】`);
 
-        await NickName(globalCookie);
-       if ($.checkin && $.checkin.isLogin === false) {
-          const title = "酷我音乐";
-          const content = "⚠️ Cookie 已失效，请更新";
-      
-          if ($.isNode()) {
-            await notify.sendNotify(title, content); // Node.js 环境下使用 sendNotify
-          } else if ($.isLoon() || $.isQuanX() || $.isSurge()) 
-            {
-            $.msg(title, "", content); // 其他环境下使用 $.msg
+        // 1. 检测昵称，判断 Cookie 是否有效
+        await NickName (globalCookie);
+        const content = "⚠️ Cookie 已失效，请更新\n";
+
+        if ($.nickName && $.nickName.msg === "登录鉴权失败") {
+
+          if ($.isNode ()) {
+            await notify.sendNotify (zh_name, content); // Node.js 环境下使用 sendNotify
+          } else if ($.isLoon () || $.isQuanX () || $.isSurge ()) {
+            $.msg (zh_name, "", content); // 其他环境下使用 $.msg
           } else {
-            console.log(title, content)
+            console.log (zh_name, content);
           }
-      
-          $.done(); // 终止脚本
+          $.done (); // 确保终止脚本运行
           return;
         }
-      
-        await $.wait(1000);  // 延迟 1 秒
-        await CheckinSign(globalCookie);
-        await $.wait(1000);  // 延迟 1 秒
-        await BoxVideo(globalCookie); // 宝箱视频
-        await $.wait(1000);  // 延迟 1 秒
-        await QuerVideo(globalCookie); // 等级内广告视频
 
-        const currentDay = new Date().getDay();
-        const currentDate = new Date().getDate();
+          // 2. 执行签到任务
+          await $.wait (1000);  // 延迟 1 秒
+          await CheckinSign (globalCookie);
 
-        // 仅在周日运行周抽奖
-        if (currentDay === 0) {
-          await GetAwardWeek(globalCookie); // 周抽奖
+          // 3. 执行宝箱视频任务
+          await $.wait (1000);  // 延迟 1 秒
+          await BoxVideo (globalCookie);
+
+          // 4. 执行等级广告视频任务
+          await $.wait (1000);  // 延迟 1 秒
+          await QuerVideo (globalCookie);
+
+          // 5. 周抽奖和月抽奖逻辑
+          const currentDay = new Date ().getDay ();
+          const currentDate = new Date ().getDate ();
+
+          if (currentDay === 0) {
+            await GetAwardWeek (globalCookie); // 周抽奖
+          }
+
+          if (currentDate === 15) {
+            await GetAwardMonth (globalCookie); // 月抽奖
+          }
+
+          // 6. 发送任务总结通知
+          await $.wait (1000);  // 延迟 1 秒
+          await Msg ();
         }
 
-        // 仅在每月15号运行月抽奖
-        if (currentDate === 15) {
-          await GetAwardMonth(globalCookie); // 月抽奖
-        }
-
-        await $.wait(1000);  // 延迟 1 秒
-        await Msg(); // 通知
-      }
     }
   }
 })()
@@ -251,16 +256,16 @@ async function NickName(Cookie) {
       }
       if (logs == 1) {
         console.log(`响应状态码: ${resp.status}`);  // 打印状态码
-        console.log(`原始响应体: ${data}`);  // 打印原始响应体
+        console.log(`【昵称】原始响应体: ${data}`);  // 打印原始响应体
       }
       try {
         data = JSON.parse(data);
         if (logs == 1)
-          console.log(`⚠️获取昵称数据: ${data.data.nickName}`);
+          console.log(`⚠️获取【昵称】数据: ${data.data.nickName}`);
         $.nickName = data;
       } catch (e) {
-        console.log(`解析 JSON 出错: ${e}`);
-        console.log(`原始响应体: ${data}`);  // 打印原始响应体
+        console.log(`解析【昵称】 JSON 出错: ${e}`);
+        console.log(`【昵称】原始响应体: ${data}`);  // 打印原始响应体
       } finally {
         resolve();
       }
@@ -287,17 +292,17 @@ async function CheckinSign(Cookie) {
     $.get(Url, async (err, resp, data) => {
       if (logs == 1) {
         console.log(`响应状态码: ${resp.status}`); // 打印状态码
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`【签到】原始响应体: ${data}`); // 打印原始响应体
       }
       try {
         data = JSON.parse(data);
         if (logs == 1) {
-          console.log(`⚠️签到结果数据: ${data.msg}`);
+          console.log(`⚠️【签到】结果数据: ${data.msg}`);
         }
         $.checkin = data;
       } catch (e) {
-        console.log(`解析 JSON 出错: ${e}`);
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`解析【签到】 JSON 出错: ${e}`);
+        console.log(`【签到】原始响应体: ${data}`); // 打印原始响应体
       } finally {
         resolve();
       }
@@ -323,15 +328,15 @@ async function GetAwardWeek(Cookie) {
     $.get(Url, async (err, resp, data) => {
       if (logs == 1) {
         console.log(`响应状态码: ${resp.status}`); // 打印状态码
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`【周抽奖】原始响应体: ${data}`); // 打印原始响应体
       }
       try {
         data = JSON.parse(data);
-        if (logs == 1) console.log(`⚠️周抽奖结果数据: ${data.msg}`);
+        if (logs == 1) console.log(`⚠️【周抽奖】结果数据: ${data.msg}`);
         $.awardWeek = data;
       } catch (e) {
-        console.log(`解析 JSON 出错: ${e}`);
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`解析【周抽奖】 JSON 出错: ${e}`);
+        console.log(`【周抽奖】原始响应体: ${data}`); // 打印原始响应体
       } finally {
         resolve();
       }
@@ -357,15 +362,15 @@ async function GetAwardMonth(Cookie) {
     $.get(Url, async (err, resp, data) => {
       if (logs == 1) {
         console.log(`响应状态码: ${resp.status}`); // 打印状态码
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`【月抽奖】原始响应体: ${data}`); // 打印原始响应体
       }
       try {
         data = JSON.parse(data);
         if (logs == 1) console.log(`⚠️月抽奖结果数据: ${data}`);
         $.awardMonth = data;
       } catch (e) {
-        console.log(`解析 JSON 出错: ${e}`);
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`解析【月抽奖】 JSON 出错: ${e}`);
+        console.log(`【月抽奖】原始响应体: ${data}`); // 打印原始响应体
       } finally {
         resolve();
       }
@@ -429,11 +434,11 @@ async function runBoxVideo(Cookie, i) {
     $.get(Url, async (err, resp, data) => {
       if (logs == 1) {
         console.log(`响应状态码: ${resp.status}`); // 打印状态码
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`【宝箱】原始响应体: ${data}`); // 打印原始响应体
       }
       try {
         data = JSON.parse(data);  // 解析 JSON 数据
-        if (logs == 1) console.log(`⚠️宝箱视频任务执行结果 (第 ${i} 次): ${data.msg}`);
+        if (logs == 1) console.log(`⚠️【宝箱视频】任务执行结果 (第 ${i} 次): ${data.msg}`);
         if (data.code === 0) {
           $.boxVideo = data;  // 只有在成功时才保存
         } else {
@@ -442,8 +447,8 @@ async function runBoxVideo(Cookie, i) {
 
         resolve(data); // 返回数据结果，用于停止循环
       } catch (e) {
-        console.log(`解析 JSON 出错: ${e}`);
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`解析【宝箱】 JSON 出错: ${e}`);
+        console.log(`【宝箱】原始响应体: ${data}`); // 打印原始响应体
       } finally {
         resolve();
       }
@@ -469,15 +474,15 @@ async function QuerVideo(Cookie) {
     $.get(Url, async (err, resp, data) => {
       if (logs == 1) {
         console.log(`响应状态码: ${resp.status}`); // 打印状态码
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`【等级广告】原始响应体: ${data}`); // 打印原始响应体
       }
       try {
         data = JSON.parse(data);
-        if (logs == 1) console.log(`⚠️等级广告视频: ${data.isValid}`);
+        if (logs == 1) console.log(`⚠️【等级广告】视频: ${data.isValid}`);
         $.querVideo = data;
       } catch (e) {
-        console.log(`解析 JSON 出错: ${e}`);
-        console.log(`原始响应体: ${data}`); // 打印原始响应体
+        console.log(`解析【等级广告】 JSON 出错: ${e}`);
+        console.log(`【等级广告】原始响应体: ${data}`); // 打印原始响应体
       } finally {
         resolve();
       }
@@ -488,7 +493,6 @@ async function QuerVideo(Cookie) {
 
 //通知
 async function Msg() {
-
 
   if ($.nickName?.code === 0)
     t += `【账户昵称】${$.nickName.data.nickName}\n`;
