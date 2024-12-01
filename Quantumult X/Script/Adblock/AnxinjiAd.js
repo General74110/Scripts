@@ -10,7 +10,7 @@ APP: 安心记加班
 ⚠️脚本仅作为学习，请勿拿去牟利⚠️
 
 [rewrite_local]
-^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|market\/home_config|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2)\? url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js
+^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|market\/home_config|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2)\?/ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js
 
 
 [MITM]
@@ -55,7 +55,7 @@ console.log(obj);
 
 console.log(obj);
     }
-} else if (/^https:\/\/jjbapi\.julanling\.com\/market\/home_config(\?.*)?$/.test(requestUrl)) {
+} else if (/^https:\/\/jjbapi\.julanling\.com\/market\/home_config$/.test(requestUrl)) {
     if (typeof obj === "object" && obj !== null && obj.results) {
         if (obj.results.novice_activity) {
             delete obj.results.novice_activity; // 删除新手教程
