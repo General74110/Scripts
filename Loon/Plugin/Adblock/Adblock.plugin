@@ -1,5 +1,5 @@
 #!name= Adblock(自己写的去广告)
-#!desc= 安心记加班开屏
+#!desc= 爱思助手开屏广告+安心记加班开屏+app净化
 #!author= General℡
 #!homepage = https://github.com/General74110/Scripts
 #!icon = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Advertising.png
@@ -17,7 +17,7 @@ URL-REGEX,http:\/\/d\.image\.i4\.cn\/adInfo\/image\/original\/(.+),REJECT
 [Script]
 
 # 安心记加班去除开屏
-http-response ^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3)\? script-path= https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js, requires-body=true, timeout=60, tag=安心记加班, img-url=https://raw.githubusercontent.com/black2c7/TheMagic-Icons/main/Icons/Alink.png
+http-response ^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|market\/home_config|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2)\? script-path= https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js, requires-body=true, timeout=60, tag=安心记加班, img-url=https://raw.githubusercontent.com/black2c7/TheMagic-Icons/main/Icons/Alink.png
 
 [MITM]
-hostname = jjbapi.julanling.com, list-app-m.i4.cn,d.image.i4.cn
+hostname = *.julanling.com, list-app-m.i4.cn,d.image.i4.cn

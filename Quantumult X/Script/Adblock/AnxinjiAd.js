@@ -5,16 +5,16 @@ APP: 安心记加班
 1️⃣去除开屏广告
 
 
-更新时间: 2024.05.12
+更新时间: 2024.12.1
 
 ⚠️脚本仅作为学习，请勿拿去牟利⚠️
 
+[rewrite_local]
+^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|market\/home_config|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2)\? url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js
 
-^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3)\? url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js
 
-
-
-hostname = jjbapi.julanling.com
+[MITM]
+hostname = *.julanling.com
 
 */
 
@@ -29,6 +29,8 @@ if (/^https?:\/\/jjbapi\.julanling\.com\/advertConfig\/queryCutOverScreenConfig\
     
      if (obj.hasOwnProperty("results"))  {
         delete obj.results.onePicConfigResp;//删掉onePicConfigResp
+         delete obj.results.cutOverScreenConfigRespList;
+
 
 console.log(obj);
 
@@ -51,7 +53,34 @@ console.log(obj);
     
         
 
-console.log(obj)
+console.log(obj);
+    }
+} else if (/^https:\/\/jjbapi\.julanling\.com\/market\/home_config\?/.test(requestUrl)) {
+    if (obj.hasOwnProperty("results")) {
+        delete obj.results.novice_activity;//首页新手教程
+        delete obj.results.middle_multiple_activities;//首页广告贴片
+
+        console.log (obj);
+    }
+} else if (/^https:\/\/jjbapi\.julanling\.com\/switch_my\/vip_banner_info\?/.test(requestUrl)) {
+    if (obj.hasOwnProperty("results")) {
+        delete  obj.results;//“我的”页面会员开通开关
+
+        console.log(obj);
+    }
+} else if (/^https:\/\/jjbapi\.julanling\.com\/invite_share_v2\/switch_my\?/.test(requestUrl)) {
+    if (obj.hasOwnProperty("results")) {
+        delete obj.results;//“我的”页面精简(拍工资条,推荐工友使用,新手教程)
+
+        console.log(obj);
+    }
+} else if (/^https:\/\/jjbapi\.julanling\.com\/switch\/init_config_v2\?/.test(requestUrl)) {
+    if (typeof obj === "object" && obj !== null && obj.results && obj.results.switch_list) {
+        delete obj.results.switch_list;//引流广告
+        delete obj.results.zgz_wage;//引流广告
+
+        console.log(obj);
+
     }
 }
 
