@@ -55,7 +55,7 @@ console.log(obj);
 
 console.log(obj);
     }
-} else if (/^https:\/\/jjbapi\.julanling\.com\/market\/home_config\?/.test(requestUrl)) {
+} else if (/^https:\/\/jjbapi\.julanling\.com\/market\/home_config(\?.*)?$/.test(requestUrl)) {
     if (typeof obj === "object" && obj !== null && obj.results) {
         if (obj.results.novice_activity) {
             delete obj.results.novice_activity; // 删除新手教程
