@@ -56,9 +56,13 @@ console.log(obj);
 console.log(obj);
     }
 } else if (/^https:\/\/jjbapi\.julanling\.com\/market\/home_config\?/.test(requestUrl)) {
-    if (obj.hasOwnProperty("results")) {
-        delete obj.results.novice_activity;//首页新手教程
-        delete obj.results.middle_multiple_activities;//首页广告贴片
+    if (typeof obj === "object" && obj !== null && obj.results) {
+        if (obj.results.novice_activity) {
+            delete obj.results.novice_activity; // 删除新手教程
+        }
+        if (obj.results.middle_multiple_activities) {
+            delete obj.results.middle_multiple_activities; // 删除广告贴片
+        }
 
         console.log (obj);
     }
