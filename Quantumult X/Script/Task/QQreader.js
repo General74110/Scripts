@@ -134,6 +134,13 @@ csigsArr.push($.getdata('csigs') || (isNode ? process.env.csigs : ''));
             await GetAwardMonth (globalCookie); // 月抽奖
           }
 
+          if (currentDate === 1) {
+            await Reward (globalCookie); //等级福利
+            await RewardVip (globalCookie); //等级福利
+          }
+
+
+
           // 6. 发送任务总结通知
           await $.wait (1000);  // 延迟 1 秒
           await Msg ();
@@ -158,7 +165,7 @@ function buildCookie(ywguid, ywkey, ywtoken, csigs) {
   let qrsn = udid2();
 
   // 构建 Cookie
- 
+
   let Cookie = `IFDA=${IFDA}; c_version=qqreader_8.1.62.0607_iphone;  csigs=${csigs};  loginType=1; platform=ioswp; qrsn=${qrsn}; qrsn_new=${qrsn};  qrtm=${ts()}; ttime=${trs()}; ywguid=${ywguid}; ywkey=${ywkey}; ywtoken=${ywtoken}`;
 
 
@@ -243,7 +250,7 @@ async function NickName(Cookie) {
     let Url = {
       url: "https://commontgw.reader.qq.com/account/h5/level/mine",
     headers : {
-     
+
         "cookie": Cookie  // 确保Cookie变量内容符合请求头标准
     }
     };
@@ -310,6 +317,69 @@ async function CheckinSign(Cookie) {
   });
 }
 
+//等级内的赠币
+async function Reward(Cookie) {
+    return new Promise((resolve) => {
+        let Url = {
+        url: "https://commontgw.reader.qq.com/account/h5/level/receiveReward?equityId=1",
+        headers: {
+
+            'Accept': 'application/json, text/plain, */*',
+            'cookie': Cookie,
+}
+};
+        $.get(Url, async (err, resp, data) => {
+            if (logs == 1) {
+                console.log(`响应状态码: ${resp.status}`); // 打印状态码
+                console.log(`【赠币】原始响应体: ${data}`); // 打印原始响应体
+            }
+            try {
+                data = JSON.parse(data);
+                if (logs == 1) {
+                    console.log(`⚠️【赠币】结果数据: ${data.msg}`);
+                }
+                $.reward = data;
+            } catch (e) {
+                console.log(`解析【赠币】 JSON 出错: ${e}`);
+                console.log(`【赠币】原始响应体: ${data}`); // 打印原始响应体
+            } finally {
+                resolve();
+            }
+        });
+    });
+}
+
+//每月一号领会员
+async function RewardVip(Cookie) {
+    return new Promise((resolve) => {
+      let Url = {
+        url: "https://commontgw.reader.qq.com/account/h5/level/receiveReward?equityId=13",
+        headers: {
+
+          'Accept': 'application/json, text/plain, */*',
+          'cookie': Cookie,
+        }
+      };
+      $.get(Url, async (err, resp, data) => {
+        if (logs == 1) {
+          console.log (`响应状态码: ${resp.status}`); // 打印状态码
+          console.log (`【领会员】原始响应体: ${data}`); // 打印原始响应体
+        }
+        try {
+          data = JSON.parse (data);
+          if (logs == 1) {
+            console.log (`⚠️【领会员】结果数据: ${data.msg}`);
+          }
+          $.rewardvip = data;
+        } catch (e) {
+          console.log (`解析【领会员】 JSON 出错: ${e}`);
+          console.log (`【领会员】原始响应体: ${data}`); // 打印原始响应体
+        } finally {
+          resolve ();
+        }
+      });
+    });
+}
 
 // 周抽奖
 async function GetAwardWeek(Cookie) {
@@ -508,8 +578,18 @@ async function Msg() {
     t += `【宝箱视频】获得 ${boxVideoTotalCoins} 💰赠币\n`;  // 输出总赠币
   } else if ($.boxVideo?.code === -1)
     {
-      t += `【宝箱视频】${$.boxVideo.msg}\n`; 
+      t += `【宝箱视频】${$.boxVideo.msg}\n`;
   }
+
+  if ($.reward?.code === 0)
+      t += `${$.reward.msg} !【等级福利】获得相应等级福利\n`;
+    else if ($.reward?.code === -2)
+        t += `【等级福利】${$.reward.msg}\n`;
+
+    if ($.rewardvip?.code === 0)
+        t += `${$.rewardvip.msg} !【等级福利】获得相应等级福利\n`;
+    else if ($.rewardvip?.code === -2)
+        t += `【等级福利】${$.rewardvip.msg}\n`;
 
   if ($.querVideo?.code == 0)
     t += `【等级内广告视频】获得 ${$.querVideo.revardMsg}\n`;
