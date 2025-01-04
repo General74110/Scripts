@@ -582,12 +582,12 @@ async function Msg() {
   }
 
   if ($.reward?.code === 0)
-      t += `${$.reward.msg} !【等级福利】获得相应等级福利\n`;
+      t += `【等级福利】获得相应等级福利 ${$.reward.msg} !\n`;
     else if ($.reward?.code === -2)
         t += `【等级福利】${$.reward.msg}\n`;
 
     if ($.rewardvip?.code === 0)
-        t += `${$.rewardvip.msg} !【等级福利】获得相应等级福利\n`;
+        t += `【等级福利】获得相应等级福利 ${$.rewardvip.msg} !\n`;
     else if ($.rewardvip?.code === -2)
         t += `【等级福利】${$.rewardvip.msg}\n`;
 
