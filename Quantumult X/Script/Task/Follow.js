@@ -16,8 +16,8 @@ if (isNode) {
 const $ = new Env('follow 每日签到');
 $.desc = [];
 
-const csrfToken = $.getdata('follow_csrfToken') || (isNode ? process.env.csrfToken : '');
-const cookie = $.getdata('follow_cookie') || (isNode ? process.env.cookie : '');
+const csrfToken = $.getdata('follow_csrfToken') || (isNode ? process.env.follow_csrfToken : '');
+const cookie = $.getdata('follow_cookie') || (isNode ? process.env.follow_cookie : '');
 const logs = 0;
 
 if (logs == 1) {

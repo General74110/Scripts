@@ -19,27 +19,27 @@ const headers = $request.headers;
 const cookie = headers["Cookie"] || headers["cookie"];
 
 // 正则表达式提取
-const csrfRegex = /authjs\.csrf-token=([\w%]+)/;
-const sessionRegex = /__Secure-better-authjs\.session-token=([\w-]+)/;
+const betterAuthRegex = /__Secure-better-auth\.session_token=([\w%]+)/;
+const sessionRegex = /authjs\.session-token=([\w-]+)/;
 
-const csrfMatch = cookie.match(csrfRegex);
+const betterAuthMatch = cookie.match(betterAuthRegex);
 const sessionMatch = cookie.match(sessionRegex);
 
 let notice = "";
 
-if (csrfMatch && csrfMatch[1]) {
-    // 提取 csrfToken 并存储为 follow_csrfToken
-    const csrfToken = csrfMatch[1];
-    $.setdata(csrfToken, "follow_csrfToken");
-    notice += "🎉 CSRF Token 已成功保存\n";
+if (betterAuthMatch && betterAuthMatch[1]) {
+    // 提取 __Secure-better-auth.session_token 并存储为 follow_betterAuthToken
+    const betterAuthToken = betterAuthMatch[1];
+    $.setdata(betterAuthToken, "follow_betterAuthToken");
+    notice += "🎉 Better Auth Token 已成功保存\n";
 } else {
-    notice += "🔴 无法提取 CSRF Token\n";
+    notice += "🔴 无法提取 Better Auth Token\n";
 }
 
 if (sessionMatch && sessionMatch[1]) {
-    // 提取 session-token 并存储为 follow_cookie 格式
-    const sessionToken = `authjs.session-token=${sessionMatch[1]}`;
-    $.setdata(sessionToken, "follow_cookie");
+    // 提取 authjs.session-token 并存储为 follow_sessionToken 格式
+    const sessionToken = sessionMatch[1];
+    $.setdata(sessionToken, "follow_sessionToken");
     notice += "🎉 Session Token 已成功保存\n";
 } else {
     notice += "🔴 无法提取 Session Token\n";
