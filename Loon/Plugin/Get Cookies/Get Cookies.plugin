@@ -1,11 +1,11 @@
 #!name = Get Cookies
-#!desc = 酷我音乐、QQ阅读、喜马拉雅、书旗小说。用于获取相关Cookie，可单独开启，成功后关闭脚本以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!desc = 酷我音乐、QQ阅读、喜马拉雅、书旗小说、Follow。用于获取相关Cookie，可单独开启，成功后关闭脚本以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
 #!openUrl = 
 #!author = General℡[https://github.com/General74110/Scripts]
 #!tag = 获取Cookies
 #!system = 
 #!system_version = 
-#!loon_version = 3.2.2(778)
+#!loon_version = 3.2.5(805)
 #!homepage = 
 #!icon = https://raw.githubusercontent.com/black2c7/TheMagic-Icons/main/Icons/Shouhou.png
 #!date = 2024-11-10 20:00
@@ -25,6 +25,9 @@
 # 2024-10-25
 # https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js
 
+# 2025-1-5
+# https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/follow_cookie.js
+
 [Argument]
 # 酷我音乐(时长)
 CookieScript-Kuwomusic = switch, true, false, tag = 酷我音乐(时长)获取Cookies, desc = 是否启用酷我音乐(时长)脚本获取Cookies
@@ -41,6 +44,9 @@ CookieScript-Shuqi = switch, true, false, tag = 书旗小说获取Cookie, desc =
 
 # 喜马拉雅
 CookieScript-xmly = switch, true, false, tag = 喜马拉雅获取Cookie, desc = 是否启用喜马拉雅脚本获取Cookie
+
+# Follow
+CookieScript-follow = switch, true, false, tag = Follow获取Cookie, desc = 是否启用Follow脚本获取Cookie
 
 
 
@@ -64,5 +70,8 @@ http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration
 # 喜马拉雅 - *.ximalaya.com
 http-request ^https:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/getUserPageShow script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js, timeout = 60, enable = {CookieScript-xmly}, tag=喜马拉雅获取Cookie, img-url=https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png
 
+
+# Follow - app.follow.is
+http-request ^https?:\/\/app\.follow\.is\/feeds\/all\?/ script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/follow_cookie.js, requires-body=false, timeout=60, enabled=false, tag=Follow获取Cookies, img-url=https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png
 [MitM]
-hostname = *.reader.qq.com, *.shuqireader.com, *.kuwo.cn, *.ximalaya.com
+hostname = *.reader.qq.com, *.shuqireader.com, *.kuwo.cn, *.ximalaya.com, app.follow.is
