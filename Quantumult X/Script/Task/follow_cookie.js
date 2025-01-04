@@ -1,7 +1,7 @@
 /*
 脚本功能: 获取follow 的follow_csrfToken和follow_cookie
 Cookies格式:
-follow_csrfToken：“cookie: authjs.csrf-cookie”：后面的内容
+follow_csrfToken：“cookie: __Secure-better-auth.session-token”：后面的内容
 follow_cookie：“cookle: authjs.session-
 token=xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx"从authjs.session-
 token=xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx开始的内容
