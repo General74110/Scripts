@@ -15,50 +15,50 @@ hostname = api.follow.is
 
 
 */
+
 const $ = new Env("Follow");
 
-// 限定脚本只对 api.follow.is 生效
-if (!$request.url.includes("better-auth/get-session")) {
+// 检查 URL 是否包含目标标识，确保仅在相关请求中运行
+if (!$request.url.includes("api.follow.is")) {
     $.done();
 }
 
-// 提取请求头
+// 获取请求头中的 Cookie
 const headers = $request.headers;
 const cookie = headers["Cookie"] || headers["cookie"];
 
-// 正则表达式提取
-const betterAuthRegex = /__Secure-better-auth\.session_token=([\w%]+)/;
-const sessionRegex = /authjs\.session-token=([\w-]+)/;
+// 提取所需的键值对
+const csrfRegex = /__Secure-better-auth\.session_token=[^;]+/;
+const sessionRegex = /authjs\.session-token=[^;]+/;
 
-const betterAuthMatch = cookie ? cookie.match(betterAuthRegex) : null;
+const csrfMatch = cookie ? cookie.match(csrfRegex) : null;
 const sessionMatch = cookie ? cookie.match(sessionRegex) : null;
 
 let notice = "";
 
-// 提取 Better Auth Token
-if (betterAuthMatch && betterAuthMatch[1]) {
-    const betterAuthToken = betterAuthMatch[1];
-    $.setdata(betterAuthToken, "follow_betterAuthToken");
-    notice += "🎉 Better Auth Token 已成功保存\n";
+// 提取并存储 follow_csrfToken
+if (csrfMatch && csrfMatch[0]) {
+    const csrfToken = csrfMatch[0].split("=")[1]; // 获取键值对中的值
+    $.setdata(csrfToken, "follow_csrfToken"); // 存储到环境变量
+    notice += "🎉 CSRF Token 已成功保存\n";
 } else {
-    notice += "🔴 无法提取 Better Auth Token\n";
+    notice += "🔴 无法提取 CSRF Token\n";
 }
 
-// 提取 Session Token
-if (sessionMatch && sessionMatch[1]) {
-    const sessionToken = sessionMatch[1];
-    $.setdata(sessionToken, "follow_sessionToken");
-    notice += "🎉 Session Token 已成功保存\n";
+// 提取并存储 follow_cookie
+if (sessionMatch && sessionMatch[0]) {
+    const sessionToken = sessionMatch[0]; // 包含完整键值对
+    $.setdata(sessionToken, "follow_cookie"); // 存储到环境变量
+    notice += "🎉 Cookie 已成功保存\n";
 } else {
-    notice += "🔴 无法提取 Session Token\n";
+    notice += "🔴 无法提取 Cookie\n";
 }
 
-// 输出调试信息
-$.log(`URL: ${$request.url}`);
+// 输出日志
 $.log(`Headers: ${JSON.stringify(headers)}`);
 $.log(`Cookie: ${cookie}`);
 
-// 发送通知
+// 通知用户结果
 $.msg($.name, notice);
 $.done();
 
