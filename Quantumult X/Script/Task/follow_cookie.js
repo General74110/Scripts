@@ -19,7 +19,7 @@ hostname = api.follow.is
 const $ = new Env("Follow");
 
 // 检查 URL 是否包含目标路径，确保仅在相关请求中运行
-if (!$request.url.includes("/better-auth/get-providers")) {
+if (!$request.url.includes("/better-auth/get-session")) {
     $.done();
 }
 
