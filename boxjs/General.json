@@ -119,8 +119,8 @@
       "id": "Follow",
       "name": "Follow",
       "keys": [
-        "csrfToken",
-        "cookie"
+        "follow_betterAuthToken",
+        "follow_sessionToken"
       ],
       "author": "@General℡",
       "repo": "/master/Quantumult%20X/Script/Task",
@@ -130,16 +130,16 @@
       ],
       "settings": [
         {
-          "id": "follow_csrfToken",
-          "name": "follow_csrfToken",
+          "id": "follow_betterAuthToken",
+          "name": "follow_betterAuthToken",
           "val": "",
           "type": "text",
           "placeholder": "",
           "desc": "authjs.csrf-token后面的字符串，不包含authjs.csrf-token"
         },
         {
-          "id": "follow_cookie",
-          "name": "follow_cookie",
+          "id": "follow_sessionToken",
+          "name": "follow_sessionToken",
           "val": "",
           "type": "text",
           "placeholder": "",
