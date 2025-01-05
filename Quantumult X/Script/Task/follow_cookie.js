@@ -16,6 +16,13 @@ hostname = api.follow.is
 
 */
 const $ = new Env("Follow");
+
+// 限定脚本只对 api.follow.is 生效
+if (!$request.url.includes("api.follow.is")) {
+    $.done();
+}
+
+// 提取请求头
 const headers = $request.headers;
 const cookie = headers["Cookie"] || headers["cookie"];
 
@@ -23,13 +30,13 @@ const cookie = headers["Cookie"] || headers["cookie"];
 const betterAuthRegex = /__Secure-better-auth\.session_token=([\w%]+)/;
 const sessionRegex = /authjs\.session-token=([\w-]+)/;
 
-const betterAuthMatch = cookie.match(betterAuthRegex);
-const sessionMatch = cookie.match(sessionRegex);
+const betterAuthMatch = cookie ? cookie.match(betterAuthRegex) : null;
+const sessionMatch = cookie ? cookie.match(sessionRegex) : null;
 
 let notice = "";
 
+// 提取 Better Auth Token
 if (betterAuthMatch && betterAuthMatch[1]) {
-    // 提取 __Secure-better-auth.session_token 并存储为 follow_betterAuthToken
     const betterAuthToken = betterAuthMatch[1];
     $.setdata(betterAuthToken, "follow_betterAuthToken");
     notice += "🎉 Better Auth Token 已成功保存\n";
@@ -37,8 +44,8 @@ if (betterAuthMatch && betterAuthMatch[1]) {
     notice += "🔴 无法提取 Better Auth Token\n";
 }
 
+// 提取 Session Token
 if (sessionMatch && sessionMatch[1]) {
-    // 提取 authjs.session-token 并存储为 follow_sessionToken 格式
     const sessionToken = sessionMatch[1];
     $.setdata(sessionToken, "follow_sessionToken");
     notice += "🎉 Session Token 已成功保存\n";
@@ -46,7 +53,12 @@ if (sessionMatch && sessionMatch[1]) {
     notice += "🔴 无法提取 Session Token\n";
 }
 
-$.log(notice);
+// 输出调试信息
+$.log(`URL: ${$request.url}`);
+$.log(`Headers: ${JSON.stringify(headers)}`);
+$.log(`Cookie: ${cookie}`);
+
+// 发送通知
 $.msg($.name, notice);
 $.done();
 
