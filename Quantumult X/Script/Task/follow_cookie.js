@@ -18,7 +18,7 @@ hostname = api.follow.is
 const $ = new Env("Follow");
 
 // 限定脚本只对 api.follow.is 生效
-if (!$request.url.includes("api.follow.is")) {
+if (!$request.url.includes("app.follow.is")) {
     $.done();
 }
 
