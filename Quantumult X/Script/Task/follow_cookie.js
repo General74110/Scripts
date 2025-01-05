@@ -36,33 +36,39 @@ const sessionMatch = cookie ? cookie.match(sessionRegex) : null;
 
 let notice = "";
 
+let success = true; // 用于标记提取是否成功
+
 // 提取并存储 follow_csrfToken
 if (csrfMatch && csrfMatch[1]) {
     const csrfToken = csrfMatch[1]; // 获取键值对中的值
     $.setdata(csrfToken, "follow_csrfToken"); // 存储到环境变量
-    notice += "🎉 CSRF Token 已成功保存\n";
 } else {
-    notice += "🔴 无法提取 CSRF Token\n";
+    success = false; // 标记提取失败
 }
 
 // 提取并存储 follow_cookie
 if (sessionMatch && sessionMatch[0]) {
     const sessionToken = sessionMatch[0]; // 包含完整键值对
     $.setdata(sessionToken, "follow_cookie"); // 存储到环境变量
-    notice += "🎉 Cookie 已成功保存\n";
 } else {
-    notice += "🔴 无法提取 Cookie\n";
+    success = false; // 标记提取失败
+}
+
+// 根据提取结果发送通知
+if (success) {
+    notice += "🎉 CSRF Token 和 Cookie 已成功保存\n";
+} else {
+    notice += "🔴 无法提取 CSRF Token 或 Cookie\n";
 }
 
 // 输出调试信息
-$.log("提取的 Headers:", JSON.stringify(headers, null, 2));
-$.log("提取的 Cookie:", cookie);
-$.log("提取的 CSRF Token:", csrfMatch ? csrfMatch[1] : "未找到");
-$.log("提取的 Session Token:", sessionMatch ? sessionMatch[0] : "未找到");
+$.log(`提取的 CSRF Token: ${csrfMatch ? csrfMatch[1] : "未找到"}`);
+$.log(`提取的 Session Token: ${sessionMatch ? sessionMatch[0] : "未找到"}`);
 
 // 通知用户结果
 $.msg($.name, notice);
 $.done();
+
 
 
 function Env(t, s) {
