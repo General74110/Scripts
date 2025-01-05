@@ -7,7 +7,7 @@ token=xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx"从authjs.session-
 token=xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx开始的内容
 
 [Script]
-http-request ^https?:\/\/api\.follow\.is\/better-auth\/get-session\?/ script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/follow_cookie.js, requires-body=false, timeout=60, enabled=false, tag=Follow获取Cookies, img-url=https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png
+http-request ^https:\/\/api\.follow\.is\/better-auth\/get-session\?.* script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/follow_cookie.js, requires-body=false, timeout=60, enabled=false, tag=Follow获取Cookies, img-url=https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png
 
 [MITM]
 hostname = api.follow.is
