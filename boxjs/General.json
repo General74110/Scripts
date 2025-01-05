@@ -116,39 +116,6 @@
       "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js"
     },
     {
-  "id": "Follow",
-  "name": "Follow",
-  "keys": [
-    "follow_csrfToken",
-    "follow_cookie"
-  ],
-  "author": "@General℡",
-  "repo": "/master/Quantumult%20X/Script/Task",
-  "icons": [
-    "https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png",
-    "https://raw.githubusercontent.com/General74110/Scripts/master/img/Follow.png"
-  ],
-  "settings": [
-    {
-      "id": "follow_csrfToken",
-      "name": "follow_csrfToken",
-      "val": "",
-      "type": "text",
-      "placeholder": "请填写 __Secure-better-auth.session_token 值",
-      "desc": "从 Cookie 中提取的 __Secure-better-auth.session_token 的值，不包含键名"
-    },
-    {
-      "id": "follow_cookie",
-      "name": "follow_cookie",
-      "val": "",
-      "type": "text",
-      "placeholder": "请填写 authjs.session-token 值",
-      "desc": "从 Cookie 中提取的完整 authjs.session-token，包含键名"
-    }
-  ],
-  "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Follow.js"
-},
-    {
       "id": "kuwo",
       "name": "酷我音乐(积分)",
       "keys": [
