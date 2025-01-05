@@ -18,8 +18,8 @@ hostname = api.follow.is
 
 const $ = new Env("Follow");
 
-// 检查 URL 是否包含目标标识，确保仅在相关请求中运行
-if (!$request.url.includes("api.follow.is")) {
+// 检查 URL 是否包含目标路径，确保仅在相关请求中运行
+if (!$request.url.includes("/better-auth/get-providers")) {
     $.done();
 }
 
@@ -28,8 +28,8 @@ const headers = $request.headers;
 const cookie = headers["Cookie"] || headers["cookie"];
 
 // 提取所需的键值对
-const csrfRegex = /__Secure-better-auth\.session_token=[^;]+/;
-const sessionRegex = /authjs\.session-token=[^;]+/;
+const csrfRegex = /__Secure-better-auth\.session_token=([^;]+)/;
+const sessionRegex = /authjs\.session-token=([^;]+)/;
 
 const csrfMatch = cookie ? cookie.match(csrfRegex) : null;
 const sessionMatch = cookie ? cookie.match(sessionRegex) : null;
@@ -37,8 +37,8 @@ const sessionMatch = cookie ? cookie.match(sessionRegex) : null;
 let notice = "";
 
 // 提取并存储 follow_csrfToken
-if (csrfMatch && csrfMatch[0]) {
-    const csrfToken = csrfMatch[0].split("=")[1]; // 获取键值对中的值
+if (csrfMatch && csrfMatch[1]) {
+    const csrfToken = csrfMatch[1]; // 获取键值对中的值
     $.setdata(csrfToken, "follow_csrfToken"); // 存储到环境变量
     notice += "🎉 CSRF Token 已成功保存\n";
 } else {
@@ -54,9 +54,11 @@ if (sessionMatch && sessionMatch[0]) {
     notice += "🔴 无法提取 Cookie\n";
 }
 
-// 输出日志
-$.log(`Headers: ${JSON.stringify(headers)}`);
-$.log(`Cookie: ${cookie}`);
+// 输出调试信息
+$.log("提取的 Headers:", JSON.stringify(headers, null, 2));
+$.log("提取的 Cookie:", cookie);
+$.log("提取的 CSRF Token:", csrfMatch ? csrfMatch[1] : "未找到");
+$.log("提取的 Session Token:", sessionMatch ? sessionMatch[0] : "未找到");
 
 // 通知用户结果
 $.msg($.name, notice);
