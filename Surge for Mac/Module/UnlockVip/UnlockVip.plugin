@@ -4,6 +4,11 @@
 #!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Vimeo.png
 #!homepage=https://github.com/General74110/Loon
 
+[URL Rewrite]
+# > 迅雷去广告
+^http://adapi\.izuiyou\.com - reject
+^https?://api-shoulei-ssl\.xunlei\.com/flowhub/v1/slots:batchGet - reject
+
 [Script]
 # > 微信小程序-车机互联
 车管家 = type=http-response, pattern=^https:\/\/tsp-operation\.txzing\.com\/api(\/p/operation/common/allowFreeVip|\/p/operation/vipCoupon/popUpCouponInfo|\/p/operation/activity/situation|\/w/wx/module/findCar/findCarVipInfo/isVip|\/w/wx/module/trace/userVip|\/w/wx/module/traceMp/traceUserVipOpenId/vipInfo|\/w\/wx\/module\/smallProgram\/userInfo|\/wx\/module\/smallProgram\/userInfo\/banner), script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/cgj.js, requires-body=true, timeout=60
@@ -11,7 +16,10 @@
 # > 颜色app【9169】
 9169 = type=http-response, pattern=^https:\/\/api\.9169kkxstzsjkdd222\.app\/bibidd\/Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount), script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/9169.js, requires-body=true, timeout=60
 
-# > 迅雷
-xunlei = type=http-response, pattern=https://xluser-ssl.xunlei.com/xluser.core.login/v3/getuserinfo, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/xunlei.js, requires-body=true, max-size=-1, timeout=60
+# > 迅雷解锁VIP.Unlock 倍速播放、去广告
+# 迅雷 = type=http-response, pattern=https://xluser-ssl.xunlei.com/xluser.core.login/v3/getuserinfo, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/xunlei.js, requires-body=true, max-size=-1, timeout=60
+迅雷 = type=http-response, pattern=^https?:\/\/.+.xunlei.com\/(drive\/v1\/files|xluser.core.login\/v3\/getuserinfo), script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/xl.js, requires-body=true, max-size=-1, timeout=60
+
+
 [MITM]
 hostname = %APPEND% *.txzing.com, api.9169kkxstzsjkdd222.app, xluser-ssl.xunlei.com
