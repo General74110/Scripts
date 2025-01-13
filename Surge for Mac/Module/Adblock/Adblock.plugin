@@ -12,10 +12,10 @@ URL-REGEX,"http:\/\/d\.image\.i4\.cn\/adInfo\/image\/original\/(.+)",REJECT
 
 [Map Local]
 ^https:\/\/jjbapi\.julanling\.com\/market\/home_config data-type=text data=" " status-code=200
-
+^https:\/\/ocean\.shuqireader\.com\/api\/ad\/adserver\/v1\/api\/getAdInfo\? data-type=text data=" " status-code=200
 [Script]
 # 安心记加班去除开屏
 安心记加班 = type=http-response, pattern=^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2)\?, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Adblock/AnxinjiAd.js, requires-body=true, timeout=60
 
 [MITM]
-hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn
+hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com
