@@ -20,10 +20,10 @@ HOST-KEYWORD, app, 自动选择
 
 [rewrite_local]
 
-^https:\/\/api\.9169kkxstzsjkdd222\.app\/bibidd\/Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount) url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/9169.js, requires-body=true, timeout=60, tag=9169
+^https:\/\/api\.9169av1\.app\/bibidd\/Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount) url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/9169.js, requires-body=true, timeout=60, tag=9169
 
 [MITM]
-hostname = api.9169kkxstzsjkdd222.app
+hostname = api.9169av1.app
 */
 
 var body = $response.body;
