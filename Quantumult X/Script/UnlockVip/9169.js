@@ -18,7 +18,7 @@
 
 [rewrite_local]
 
-^https:\/\/api\.9169av1\.app\/bibidd\/Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount) url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/9169.js, requires-body=true, timeout=60, tag=9169
+^https:\/\/api\.9169av1\.app\/bibidd\/(Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount)|Advert\/get_index_Advert) url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/UnlockVip/9169.js, requires-body=true, timeout=60, tag=9169
 
 [MITM]
 hostname = api.9169av1.app
@@ -33,6 +33,8 @@ const jb = '/Mediaonenine/jinbi_zhuanqu_list';
 const js = '/Mediaonenine/dingtunjieshe_list_show';
 const us = '/Mediaonenine/user_gold_coins_amount';
 const gg = '/Mediaonenine/watch_goldvideo_yn';
+const ad = 'bibidd/Advert/get_index_Advert';
+
 
 if (url.indexOf(vip) != -1) {
     obj["status"] = 1;
@@ -123,6 +125,20 @@ if (url.indexOf(gg) != -1) {
     obj.message = 'ok';
 
     body = JSON.stringify(obj);
+
+}
+
+// 判断是否为匹配项
+if (url.indexOf(ad) != -1) {
+    //判断是否存在数据
+
+    if (obj.hasOwnProperty("data"))  {
+        delete obj.data;
+
+
+        console.log(obj);
+
+    }
 
 }
 
