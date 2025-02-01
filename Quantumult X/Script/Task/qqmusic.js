@@ -32,6 +32,12 @@ APP：QQ音乐
 cron "3 6 * * * script-path=https://raw.githubusercontent.com/General74110/Config/master/Script/Task/qqmusic.js, timeout=3600, tag=酷我音乐(时长), img-url=https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/Bebo.png
 
 
+
+续时长看广告
+ https://tmead.y.qq.com/actnodesvr/act/main?actid=aY6bdVaSm&_b=qmusic&g_tk=634497320&_=1737633947728
+
+
+
 [MITM]
 hostname =
 
@@ -50,5 +56,7 @@ if (isNode) {
     const dotenv = require('dotenv');
     dotenv.config();
 }
+
+
 
 
