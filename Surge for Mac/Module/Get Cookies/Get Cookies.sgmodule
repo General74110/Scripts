@@ -1,0 +1,29 @@
+#!name=Get Cookies
+#!desc=酷我音乐、QQ阅读、喜马拉雅、书旗小说、GLaDOS。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!author=General℡[https://github.com/General74110/Scripts]
+#!category= General℡
+#!homepage=https://github.com/General74110/Scripts
+#!tag=获取Cookie
+#!date=2024-11-10 20:00
+
+[Script]
+# 酷我音乐(时长) - *.kuwo.cn
+酷我音乐(时长)获取Cookies = type=http-request, pattern=^https?:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\?, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, requires-body=true, timeout=60
+
+# 酷我音乐(积分) - *.kuwo.cn
+酷我音乐(积分)获取Cookie = type=http-request, pattern=^https?:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, timeout=60
+
+# QQ阅读 - *.reader.qq.com
+QQ阅读获取Cookie = type=http-request, pattern=^https?:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\?, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js, timeout=60
+
+# 书旗小说 - *.shuqireader.com
+书旗小说(听书时长)获取Cookie = type=http-request, pattern=^https?:\/\/ocean\.shuqireader\.com\/api\/ad\/prize\/video\/reward, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Shuqi.js, timeout=60
+
+# 喜马拉雅 - *.ximalaya.com
+喜马拉雅获取Cookie = type=http-request, pattern=^https?:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/getUserPageShow, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js, timeout=60
+
+# GLaDOS - glados.rocks
+GLaDOS获取Cookie = type=http-request, pattern=^https?:\/\/glados\.rocks\/api\/user\/checkin, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/GLaDOS.js, timeout=60
+
+[MITM]
+hostname = %APPEND% *.reader.qq.com, *.shuqireader.com, *.kuwo.cn, *.ximalaya.com, glados.rocks
