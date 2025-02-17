@@ -1,16 +1,19 @@
-
 const $ = new Env("GOGOGOGO");
 let url = $request.url, headers = $request.headers;
 // yuheng基础上更改保留auth_key
 url = url.replace(/\/\/(?!long)[^\.]+\./, '//long.').replace(/\.m3u8/, '.m3u8');
 // X-Playback-Session-Id头部
-if (headers.hasOwnProperty("X-Playback-Session-Id")) {
+if (headers.hasOwnProperty("x-playback-session-id")) {
     try {
         const notify = $.getdata("m3u8");
+        const notifyCount = parseInt($.getdata("notifyCount")) || 0;  // 获取当前通知次数，默认为 0
         //console.log("Saved notify:", notify);
         if (!notify || notify != url) {
             $.setdata(url, "m3u8");
-            $.msg("视频链接捕获成功", "点击此通知在线观看", "视频还没开始播放之前会通知1-4次", url);
+            if (notifyCount < 1) {  // 如果通知次数小于
+                $.setdata(notifyCount + 1, "notifyCount");  // 增加通知次数
+                $.msg("视频链接捕获成功", "点击此通知在线观看", "视频还没开始播放之前就会通知", url);
+            }
         }
     } catch (e) {
         console.error("An error occurred:", e);
