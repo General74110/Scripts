@@ -51,7 +51,6 @@ let kuwoNameArr = [];
 if (accountArr.length === 0 || !accounts || !accounts.includes('@')) {
         $.msg($.name, '', '⚠️ 未检测到有效Cookie 请更新！');
   $.done();
-  return;
 }
 
 const kw_headers = {
