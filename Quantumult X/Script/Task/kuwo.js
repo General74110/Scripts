@@ -622,7 +622,7 @@ async function Convert(ID) {
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
             desc = obj.data.description;
-            if (desc == "成功") desc = `🎉会员兑换任务: ${desc}`;
+            if (desc == "成功") desc = `🎉会员兑换: ${desc}`;
             else if (desc == "您的余额不足，继续做任务赚金币吧") desc = `🔴会员兑换任务: ${desc}`;
             else if (desc == "用户未登录") desc = `🔴会员兑换任务: ${desc}`;
             else desc = `⚠️会员兑换任务: ${desc}`;
