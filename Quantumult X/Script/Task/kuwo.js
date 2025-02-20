@@ -12,6 +12,7 @@
   ✅定时宝箱
   ✅补领宝箱
   ✅资产查询
+  ✅兑换30天会员
 🎯重写脚本:
   [Script]
 http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature\?)/ script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
@@ -39,6 +40,15 @@ const logs = 0; // 日志设置：0关闭日志，1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
 let notifyMsg = []; // 声明 notifyMsg 数组，用于存储任务信息
 
+// 检查是否在 Node.js 环境中
+const isNode = typeof process !== "undefined" && process.env;
+
+if (isNode) {
+    // Node.js 环境下加载 .env 文件中的环境变量
+    const dotenv = require('dotenv');
+    dotenv.config();
+}
+
 // 获取环境变量ID，适配不同环境
 let accounts = $.getdata('ID') || ($.isNode() ? process.env.ID : ''); // 在不同环境下处理
 if (logs) console.log(`读取到的 ID: ${accounts}`);
@@ -51,7 +61,7 @@ let kuwoNameArr = [];
 if (accountArr.length === 0 || !accounts || !accounts.includes('@')) {
         $.msg($.name, '', '⚠️ 未检测到有效Cookie 请更新！');
   $.done();
-  return;
+
 }
 
 const kw_headers = {
@@ -120,6 +130,14 @@ async function executeTasks(ID, displayName) {
   
  
   await novel(ID);
+    //兑换会员
+    const currentDay = new Date ().getDay ();
+    const currentDate = new Date ().getDate ();
+
+    if (currentDate === 28) {
+        await Convert (ID); // 每月28号进行30天会员兑换
+    }
+
   await mobile(ID);
   await collect(ID);
   await box(ID);  // 不再传递 `time` 参数
@@ -158,7 +176,7 @@ let [loginUid] = ID.split('@');
 
     $.get(url, (err, resp, data) => {
         if (logs == 1) {
-            console.log('查询昵称响应体：',data);
+            console.log('查询昵称任务调试响应体：',data);
             }
       try {
         if (err) {
@@ -189,7 +207,7 @@ async function getAsset(ID) {
     return $.http.get(options).then((resp) => {
         $.log("🟡正在查询资产...");
         if (logs == 1) {
-        console.log('查询资产响应体：',resp.body);
+        console.log('查询资产任务调试响应体：',resp.body);
         }
         var score;
         var obj = JSON.parse(resp.body);
@@ -221,6 +239,9 @@ async function novel(ID) {
 
   return $.http.get(options).then((resp) => {
       $.log("🟡正在执行每日小说任务...");
+      if (logs == 1) {
+          console.log('每日小说任务调试响应体：',resp.body);
+      }
       var desc;
       try {
           var obj = JSON.parse(resp.body);
@@ -253,7 +274,9 @@ async function mobile(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行每日听歌任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('每日听歌任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -280,7 +303,9 @@ async function collect(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行每日收藏任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('每日收藏任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -307,7 +332,9 @@ async function video(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行创意视频任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('创意视频任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -334,7 +361,9 @@ async function sign(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行每日签到任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('每日签到任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -361,7 +390,9 @@ async function new_sign(ID) {
     };
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行每日签到任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('每日签到new任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -386,7 +417,9 @@ async function loterry_free(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行免费抽奖任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('免费抽奖任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -412,7 +445,9 @@ async function loterry_video(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行视频抽奖任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('视频抽奖任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -440,7 +475,9 @@ async function surprise(ID) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行惊喜任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('惊喜任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -509,7 +546,9 @@ async function box_new(ID, time) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行定时宝箱任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('定时宝箱任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -538,7 +577,9 @@ async function box_old(ID, time) {
 
     return $.http.get(options).then((resp) => {
         $.log("🟡正在执行补领宝箱任务...");
-        // $.log(resp.body);
+        if (logs == 1) {
+            console.log('补领宝箱任务调试响应体：',resp.body);
+        }
         var desc;
         var obj = JSON.parse(resp.body);
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
@@ -555,6 +596,39 @@ async function box_old(ID, time) {
         notifyMsg.push(desc);
     });
 }
+
+
+async function Convert(ID) {
+    const [loginUid, loginSid] = ID.split('@');
+    var rand = Math.random() < 0.3 ? 68 : Math.random() < 0.6 ? 69 : 70;
+
+    let options = {
+        url: `https://integralapi.kuwo.cn/api/v1/online/sign/getExchangeAward?loginUid=${loginUid}&loginSid=${loginSid}&platform=ios&source=kwplayer_ip_11.1.0.0_TJ.ipa&version=11.1.0.0&quotaId=13&exchangeType=vip`,
+        headers: kw_headers,
+    };
+
+    return $.http.get(options).then((resp) => {
+        $.log("🟡正在执行会员兑换任务...");
+        if (logs == 1) {
+        console.log('会员兑换任务调试响应体：',resp.body);
+    }
+        var desc;
+        var obj = JSON.parse(resp.body);
+        if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
+            desc = obj.data.description;
+            if (desc == "成功") desc = `🎉会员兑换任务: ${desc}`;
+            else if (desc == "您的余额不足，继续做任务赚金币吧") desc = `🔴会员兑换任务: ${desc}`;
+            else if (desc == "用户未登录") desc = `🔴会员兑换任务: ${desc}`;
+            else desc = `⚠️会员兑换任务: ${desc}`;
+        } else {
+            desc = `❌会员兑换任务: 错误!`;
+            $.log(resp.body);
+        }
+        $.log(desc);
+        notifyMsg.push(desc);
+    });
+}
+
 
 
 function Env(t, s) {
