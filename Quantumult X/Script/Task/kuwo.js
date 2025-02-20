@@ -1,4 +1,10 @@
-/* 
+/*
+ 🔴🔴🔴🔴写在开头🔴🔴🔴🔴
+🟢🟢🟢🟢脚本原作者🎉🎉🎉大圣🎉🎉🎉🟢🟢🟢🟢
+🟡🟡🟡🟡  https://github.com/MCdasheng/QuantumultX/tree/main/Scripts/myScripts  🟡🟡🟡🟡
+👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇👆👇
+🔵🔵🔵🔵由我🔘🔘🔘General℡🔘🔘🔘更改🔵🔵🔵🔵
+ 🟡🟡🟡🟡  https://github.com/General74110/Scripts/Quantumult X/Task  🟡🟡🟡🟡
 🎵酷我音乐 v1.6.1
 🥳脚本功能:  
   ✅每日小说
@@ -12,7 +18,7 @@
   ✅定时宝箱
   ✅补领宝箱
   ✅资产查询
-  ✅兑换30天会员
+  ✅兑换会员
 🎯重写脚本:
   [Script]
 http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature\?)/ script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
@@ -26,9 +32,9 @@ hostname = *.kuwo.cn
 
  
 📦BoxJs地址:
-  https://raw.githubusercontent.com/General74110/Quantumult-X/master/Boxjs/General74110.json(General℡版)改变了获取Cookies的途径，添加了多账号，增加多次运行防遗漏
+ https://raw.githubusercontent.com/General74110/Scripts/master/boxjs/General.json(General℡版)改变了获取Cookies的途径，添加了多账号，增加多次运行防遗漏，增加每月28号兑换30天的会员
 
-  https://raw.githubusercontent.com/MCdasheng/QuantumultX/main/mcdasheng.boxjs.json（原作者版）
+  https://raw.githubusercontent.com/MCdasheng/QuantumultX/main/mcdasheng.boxjs.json（原作者大圣版）
 
 
 */
