@@ -19,13 +19,14 @@
   ✅补领宝箱
   ✅资产查询
   ✅兑换会员
+  ✅整点打卡
 🎯重写脚本:
   [Script]
 http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature\?)/ script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 [MITM]
 hostname = *.kuwo.cn
 ⏰定时任务:
-  cron "0 9,11,13,15,17,19,21 * * *" script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo.js, timeout=3000, tag=酷我音乐(积分), img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+  cron "0 * * * *" script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo.js, timeout=3000, tag=酷我音乐(积分), img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 🔍手动抓包: 
   开启抓包,进入网页登陆后的界面
   搜索url记录关键词"configuration\/signature"请求头中的Cookies里的 userid和 websid 分别填入BoxJs（userid=loginUid，websid=loginSid）
