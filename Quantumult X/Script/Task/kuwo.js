@@ -147,7 +147,8 @@ async function executeTasks(ID, displayName) {
     }
 
   await mobile(ID);
-    await Listen(ID);
+   await Listen(ID);
+   // await Index(ID);
   await collect(ID);
   await box(ID);  // 不再传递 `time` 参数
   await loterry_free(ID);
@@ -306,7 +307,7 @@ async function mobile(ID) {
 //每日听歌时段领积分
 async function Listen(ID) {
     const [loginUid, loginSid] = ID.split('@');
-    const listenTimes = [1, 5, 10, 20, 30, 60];
+    const listenTimes = [1, 5, 10, 20, 30, 60, 90, 120, 180];
     let success = false;
     for (let i = 0; i < listenTimes.length; i++) {
         const listenTime = listenTimes[i];
@@ -725,7 +726,7 @@ async function Clockin(ID) {
 //调试
 async function Index(ID) {
     const [loginUid, loginSid] = ID.split('@');
-    const listenTimes = [1, 5, 10, 20, 30, 60];
+    const listenTimes = [1, 5, 10, 20, 30, 60, 90, 120, 180, 240, 300, 360, 420];
     let success = false;
     for (let i = 0; i < listenTimes.length; i++) {
         const listenTime = listenTimes[i];
