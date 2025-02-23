@@ -136,20 +136,23 @@ async function executeTasks(ID, displayName) {
   
  
   await novel(ID);
+    //查询积分
+    await getAsset(ID, displayName);
     //兑换会员
-    const currentDay = new Date ().getDay ();
-    const currentDate = new Date ().getDate ();
+    const Property = $.asset.data.remainScore
 
-    if (currentDate === 28) {
-        await Convert (ID); // 每月28号进行30天会员兑换
+    if (Property >= 150000) {
+        await Convert (ID); // 每15万积分兑换会员
     }
 
   await mobile(ID);
+    await Listen(ID);
   await collect(ID);
   await box(ID);  // 不再传递 `time` 参数
   await loterry_free(ID);
   await new_sign(ID);
   await sign(ID);
+await Clockin(ID);
 
   for (let i = 0; i < 20; i++) {
     await video(ID);
@@ -299,6 +302,57 @@ async function mobile(ID) {
         notifyMsg.push(desc);
     });
 }
+//每日听歌时段领积分
+async function Listen(ID) {
+    const [loginUid, loginSid] = ID.split('@');
+    const listenTimes = [1, 5, 10, 20, 30, 60];
+    let success = false;
+    for (let i = 0; i < listenTimes.length; i++) {
+        const listenTime = listenTimes[i];
+        $.log(`🟡正在尝试使用 ${listenTime} 分钟的 listenTime`);
+        let options = {
+            url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=listen&goldNum=88&listenTime=${listenTime}`,
+            headers: kw_headers,
+        };
+
+        await $.http.get(options).then((resp) => {
+            if (logs == 1) {
+                console.log(`每日听歌任务调试响应体：`, resp.body);
+            }
+
+            var desc;
+            var obj = JSON.parse(resp.body);
+
+            if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
+                desc = obj.data.description;
+                if (desc == "成功") {
+                    desc = `🎉每日听歌成功: ${desc}（使用 ${listenTime} 分钟）`;
+                    success = true; // 标记为成功
+                } else if (desc == "今天已完成任务") {
+                    desc = `🟢每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
+                } else if (desc == "用户未登录") {
+                    desc = `🔴每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
+                } else {
+                    desc = `⚠️每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
+                }
+            } else {
+                desc = `❌每日听歌: 错误!`;
+                $.log(resp.body);
+            }
+
+            $.log(desc);
+            notifyMsg.push(desc);
+
+            if (success) {
+                return;
+            }
+        }).catch((err) => {
+            $.logErr(`尝试 ${listenTime} 分钟时出错: ${err}`);
+        });
+    }
+
+}
+
 
 async function collect(ID) {
   const [loginUid, loginSid] = ID.split('@');
@@ -575,7 +629,7 @@ async function box_new(ID, time) {
 async function box_old(ID, time) {
   const [loginUid, loginSid] = ID.split('@');
     var rand = Math.random() < 0.3 ? 28 : Math.random() < 0.6 ? 29 : 30;
-//console.log(`调试：${loginUid}....${loginSid}`)
+
     let options = {
         url: `https://integralapi.kuwo.cn/api/v1/online/sign/new/boxRenew?loginUid=${loginUid}&loginSid=${loginSid}&action=old&time=${time}&goldNum=${rand}`,
         headers: kw_headers,
@@ -623,11 +677,11 @@ async function Convert(ID) {
         if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
             desc = obj.data.description;
             if (desc == "成功") desc = `🎉会员兑换: ${desc}`;
-            else if (desc == "您的余额不足，继续做任务赚金币吧") desc = `🔴会员兑换任务: ${desc}`;
-            else if (desc == "用户未登录") desc = `🔴会员兑换任务: ${desc}`;
-            else desc = `⚠️会员兑换任务: ${desc}`;
+            else if (desc == "您的余额不足，继续做任务赚金币吧") desc = `🔴会员兑换: ${desc}`;
+            else if (desc == "用户未登录") desc = `🔴会员兑换: ${desc}`;
+            else desc = `⚠️会员兑换: ${desc}`;
         } else {
-            desc = `❌会员兑换任务: 错误!`;
+            desc = `❌会员兑换: 错误!`;
             $.log(resp.body);
         }
         $.log(desc);
@@ -635,6 +689,89 @@ async function Convert(ID) {
     });
 }
 
+//每小时打卡
+async function Clockin(ID) {
+    const [loginUid, loginSid] = ID.split('@');
+
+    let options = {
+        url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=clock&goldNum=59`,
+        headers: kw_headers,
+    };
+
+    return $.http.get(options).then((resp) => {
+        $.log("🟡正在执行整点打卡任务...");
+        if (logs == 1) {
+            console.log('整点打卡任务调试响应体：',resp.body);
+        }
+        var desc;
+        var obj = JSON.parse(resp.body);
+        if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
+            desc = obj.data.description;
+            if (desc == "成功") desc = `🎉整点打卡: ${desc}`;
+            else if (desc == "今天已完成任务") desc = `🟢整点打卡: ${desc}`;
+            else if (desc == "用户未登录") desc = `🔴整点打卡: ${desc}`;
+            else desc = `⚠️整点打卡任务: ${desc}`;
+        } else {
+            desc = `❌整点打卡任务: 错误!`;
+            $.log(resp.body);
+        }
+        $.log(desc);
+        notifyMsg.push(desc);
+    });
+}
+
+/*
+//调试
+async function Index(ID) {
+    const [loginUid, loginSid] = ID.split('@');
+    const listenTimes = [1, 5, 10, 20, 30, 60];
+    let success = false;
+    for (let i = 0; i < listenTimes.length; i++) {
+        const listenTime = listenTimes[i];
+        $.log(`🟡正在尝试使用 ${listenTime} 分钟的 listenTime`);
+        let options = {
+            url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=listen&goldNum=88&listenTime=${listenTime}`,
+            headers: kw_headers,
+        };
+
+        await $.http.get(options).then((resp) => {
+            if (logs == 0) {
+                console.log(`每日听歌任务调试响应体：`, resp.body);
+            }
+
+            var desc;
+            var obj = JSON.parse(resp.body);
+
+            if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
+                desc = obj.data.description;
+                if (desc == "成功") {
+                    desc = `🎉每日听歌成功: ${desc}（使用 ${listenTime} 分钟）`;
+                    success = true; // 标记为成功
+                } else if (desc == "今天已完成任务") {
+                    desc = `🟢每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
+                } else if (desc == "用户未登录") {
+                    desc = `🔴每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
+                } else {
+                    desc = `⚠️每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
+                }
+            } else {
+                desc = `❌每日听歌: 错误!`;
+                $.log(resp.body);
+            }
+
+            $.log(desc);
+            notifyMsg.push(desc);
+
+            if (success) {
+                return;
+            }
+        }).catch((err) => {
+            $.logErr(`尝试 ${listenTime} 分钟时出错: ${err}`);
+        });
+    }
+
+}
+*/
 
 
 function Env(t, s) {
