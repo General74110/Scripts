@@ -99,8 +99,8 @@ const kw_headers = {
     const nickname = await getNickname(ID);
     const displayName = nickname || `用户${i + 1}`;
     notifyMsg = [`【এ${displayName}এ】`]; // 清空并初始化每个账号的通知内容
-    await getAsset(ID, displayName);
-    
+    //await getAsset(ID, displayName);
+
     if (nickname == null) {
         const title = "酷我音乐(积分)";
         const content = "⚠️ Cookie 已失效，请更新";
@@ -136,7 +136,7 @@ async function executeTasks(ID, displayName) {
   $.log(`\n开始执行任务 - 账户：${displayName}`);
   
  
-  await novel(ID);
+
     //查询积分
     await getAsset(ID, displayName);
     //兑换会员
@@ -146,6 +146,7 @@ async function executeTasks(ID, displayName) {
         await Convert (ID); // 每15万积分兑换会员
     }
 
+    await novel(ID);
   await mobile(ID);
    await Listen(ID);
    // await Index(ID);
@@ -307,7 +308,7 @@ async function mobile(ID) {
 //每日听歌时段领积分
 async function Listen(ID) {
     const [loginUid, loginSid] = ID.split('@');
-    const listenTimes = [1, 5, 10, 20, 30, 60, 90, 120, 180];
+    const listenTimes = [1, 5, 10, 20, 30, 60, 120, 180];
     let success = false;
     for (let i = 0; i < listenTimes.length; i++) {
         const listenTime = listenTimes[i];
@@ -531,7 +532,7 @@ async function surprise(ID) {
     var rand = Math.random() < 0.3 ? 68 : Math.random() < 0.6 ? 69 : 70;
 
     let options = {
-        url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=surprise&goldNum=${rand}&surpriseType=`,
+        url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=surprise&goldNum=${rand}&surpriseType=1`,
         headers: kw_headers,
     };
 
