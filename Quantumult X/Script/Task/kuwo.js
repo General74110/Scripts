@@ -147,6 +147,7 @@ async function executeTasks(ID, displayName) {
     }
 
     await novel(ID);
+    await Clockin(ID);
   await mobile(ID);
    await Listen(ID);
    // await Index(ID);
@@ -155,7 +156,7 @@ async function executeTasks(ID, displayName) {
   await loterry_free(ID);
   await new_sign(ID);
   await sign(ID);
-await Clockin(ID);
+
 
   for (let i = 0; i < 20; i++) {
     await video(ID);
