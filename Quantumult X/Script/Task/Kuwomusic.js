@@ -20,11 +20,11 @@ APP：酷我音乐
         请勿贩卖！⚠️⚠️⚠️
 
 [Script]
-http-request ^https:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\? script-path=https://raw.githubusercontent.com/General74110/Config/master/Script/Task/Kuwomusic.js, requires-body=true, timeout=10, enabled=true, tag=酷我音乐(时长)获取Cookie, img-url=https://raw.githubusercontent.com/LovedGM/Quantumult-X-TuBiao/main/zishi-cs/zs23.png
+http-request ^https:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\? script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, requires-body=true, timeout=10, enabled=true, tag=酷我音乐(时长)获取Cookie, img-url=https://raw.githubusercontent.com/LovedGM/Quantumult-X-TuBiao/main/zishi-cs/zs23.png
 
 
 [Task]
-cron "3 6 * * * script-path=https://raw.githubusercontent.com/General74110/Config/master/Script/Task/Kuwomusic.js, timeout=3600, tag=酷我音乐(时长), img-url=https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/Bebo.png
+cron "3 6 * * * script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, timeout=3600, tag=酷我音乐(时长), img-url=https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/Bebo.png
 
 
 [MITM]
@@ -56,12 +56,12 @@ if (logs == 1) {
   console.log(`读取到的 loginUid: ${loginUid}`);
 }
 
-// 将多个 loginUid 用 & 或 , 分隔并存储为数组
-loginUidArr.push(...loginUid.split(/[&,]/));
+// 将多个 loginUid 用 & 分隔并存储为数组
+loginUidArr.push(...loginUid.split(/[&]/));
 
 // 定义环境变量格式检查函数
 async function validateEnvVars() {
-  const loginUidPattern = /^\d+([&,]\d+)*$/; // 只允许数字和逗号的组合
+  const loginUidPattern = /^\d+([&]\d+)*$/; // 只允许数字和逗号的组合
 
   if (!loginUid || !loginUidPattern.test(loginUid)) {
     message = "❗️环境变量格式错误：请确保 loginUid 是有效的用户 ID 列表，用逗号分隔";
