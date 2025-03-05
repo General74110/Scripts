@@ -56,12 +56,12 @@ if (logs == 1) {
   console.log(`读取到的 loginUid: ${loginUid}`);
 }
 
-// 将多个 loginUid 用 & 或 , 分隔并存储为数组
-loginUidArr.push(...loginUid.split(/[&,]/));
+// 将多个 loginUid 用 & 分隔并存储为数组
+loginUidArr.push(...loginUid.split(/[&]/));
 
 // 定义环境变量格式检查函数
 async function validateEnvVars() {
-  const loginUidPattern = /^\d+([&,]\d+)*$/; // 只允许数字和逗号的组合
+  const loginUidPattern = /^\d+([&]\d+)*$/; // 只允许数字和逗号的组合
 
   if (!loginUid || !loginUidPattern.test(loginUid)) {
     message = "❗️环境变量格式错误：请确保 loginUid 是有效的用户 ID 列表，用逗号分隔";
