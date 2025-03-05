@@ -20,6 +20,8 @@ APP：酷我音乐
         请勿贩卖！⚠️⚠️⚠️
 
 [Script]
+
+建议使用酷我音乐积分获取的loginUid
 http-request ^https:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\? script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, requires-body=true, timeout=10, enabled=true, tag=酷我音乐(时长)获取Cookie, img-url=https://raw.githubusercontent.com/LovedGM/Quantumult-X-TuBiao/main/zishi-cs/zs23.png
 
 
@@ -64,7 +66,7 @@ async function validateEnvVars() {
   const loginUidPattern = /^\d+([&]\d+)*$/; // 只允许数字和逗号的组合
 
   if (!loginUid || !loginUidPattern.test(loginUid)) {
-    message = "❗️环境变量格式错误：请确保 loginUid 是有效的用户 ID 列表，用逗号分隔";
+    message = "❗️环境变量格式错误：请确保 loginUid 是有效的用户 ID 列表，用&分隔";
     await sendAndStopScript(); // 确保等待通知发送完成
     return false;
   }
@@ -187,7 +189,7 @@ async function sendAndStopScript() {
   }
 
 // 获取Cookie
-async function GetCookie() {
+function GetCookie() {
   if ($request.url.indexOf('sign/v1/music/userBase') > -1) {
     const url = $request.url;
     const params = url.split('?')[1].split('&');
