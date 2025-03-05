@@ -20,11 +20,11 @@ APP：酷我音乐
         请勿贩卖！⚠️⚠️⚠️
 
 [Script]
-http-request ^https:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\? script-path=https://raw.githubusercontent.com/General74110/Config/master/Script/Task/Kuwomusic.js, requires-body=true, timeout=10, enabled=true, tag=酷我音乐(时长)获取Cookie, img-url=https://raw.githubusercontent.com/LovedGM/Quantumult-X-TuBiao/main/zishi-cs/zs23.png
+http-request ^https:\/\/integralapi\.kuwo\.cn\/api\/v1\/online\/sign\/v1\/music\/userBase\? script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, requires-body=true, timeout=10, enabled=true, tag=酷我音乐(时长)获取Cookie, img-url=https://raw.githubusercontent.com/LovedGM/Quantumult-X-TuBiao/main/zishi-cs/zs23.png
 
 
 [Task]
-cron "3 6 * * * script-path=https://raw.githubusercontent.com/General74110/Config/master/Script/Task/Kuwomusic.js, timeout=3600, tag=酷我音乐(时长), img-url=https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/Bebo.png
+cron "3 6 * * * script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js, timeout=3600, tag=酷我音乐(时长), img-url=https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/Bebo.png
 
 
 [MITM]
