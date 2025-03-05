@@ -22,11 +22,11 @@
   ✅整点打卡
 🎯重写脚本:
   [Script]
-http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature\?)/ script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature\?)/ script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 [MITM]
 hostname = *.kuwo.cn
 ⏰定时任务:
-  cron "0 * * * *" script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo.js, timeout=3000, tag=酷我音乐(积分), img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+  cron "0 * * * *" script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo.js, timeout=3000, tag=酷我音乐(积分), img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 🔍手动抓包: 
   开启抓包,进入网页登陆后的界面
   搜索url记录关键词"configuration\/signature"请求头中的Cookies里的 userid和 websid 分别填入BoxJs（userid=loginUid，websid=loginSid）
@@ -147,7 +147,16 @@ async function executeTasks(ID, displayName) {
     }
 
     await novel(ID);
-    await Clockin(ID);
+
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+// 只在 7:00 - 20:00 的整点运行
+    if (currentHour >= 7 && currentHour <= 20 && currentMinute === 0) {
+        console.log(`🟢 当前时间 ${currentHour}:00，符合条件，执行 Clockin 任务`);
+        await Clockin(ID);
+    }
   await mobile(ID);
    await Listen(ID);
    // await Index(ID);
