@@ -54,7 +54,7 @@ if (isNode) {
 }
 
 // **读取存储的 KUWO_COOKIE，可能包含多个账号**
-let storedIDs = $.getdata('KUWO_COOKIE') || (isNode ? process.env.KUWO_COOKIE : '');
+let storedIDs = $.getdata('Kuwo_cookies') || (isNode ? process.env.KUWO_COOKIE : '');
 if (logs == 1) {
   console.log(`读取到的数据: ${storedIDs}`);
 }

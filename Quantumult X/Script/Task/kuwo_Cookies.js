@@ -1,11 +1,11 @@
 /* 
 脚本功能: 获取酷我音乐 loginUid loginSid
+此Cookie同时兼容酷我音乐(时长)和酷我音乐(积分)
 获取Cookies方式: 
-    在网页酷我音乐上登陆，登陆成功后自动获取Cookies！
+    需要在网页酷我音乐上登陆，登陆成功后自动获取Cookies！
     更新登录信息后禁用脚本!
 [Script]
- https://www.kuwo.cn/openapi/v1/www/search/searchKey?
-http-request ^https?:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐【(时长)(积分)】获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+http-request ^https?:\/\/appi\.kuwo\.cn\/(api\/automobile\/kuwo\/v1\/configuration\/signature|openapi\/v1\/www\/search\/searchKey) script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐【(时长)(积分)】获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 [MITM]
 hostname = *.kuwo.cn
 
@@ -44,7 +44,7 @@ if (matchUid && matchUid[1]) {
     }
 
     // 存储 Cookie
-    $.setdata(existingPairs.join('&'), "KUWO_COOKIE");
+    $.setdata(existingPairs.join('&'), "Kuwo_cookies");
 
     notice += "🎉 酷我音乐 Cookie 获取成功！\n";
 } else {

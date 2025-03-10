@@ -22,7 +22,7 @@
   ✅整点打卡
 🎯重写脚本:
   [Script]
-http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature\?)/ script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+http-request ^https?:\/\/appi\.kuwo\.cn\/(api\/automobile\/kuwo\/v1\/configuration\/signature|openapi\/v1\/www\/search\/searchKey)\? script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐(积分)获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 [MITM]
 hostname = *.kuwo.cn
 ⏰定时任务:
@@ -57,7 +57,7 @@ if (isNode) {
 }
 
 // 获取环境变量ID，适配不同环境
-let accounts = $.getdata('KUWO_COOKIE') || ($.isNode() ? process.env.KUWO_COOKIE : ''); // 在不同环境下处理
+let accounts = $.getdata('Kuwo_cookies') || ($.isNode() ? process.env.KUWO_COOKIE : ''); // 在不同环境下处理
 if (logs) console.log(`读取到的 ID: ${accounts}`);
 
 // 解析ID为账号数组
