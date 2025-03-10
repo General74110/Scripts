@@ -46,7 +46,7 @@ let tz = $.getval('tz') || '1'; // 通知设置：0关闭通知，1开启通知
 const logs = 0; // 日志设置：0关闭日志，1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
 let notifyMsg = []; // 声明 notifyMsg 数组，用于存储任务信息
-
+const Clear = $.getval("Clear") || 0;
 // 检查是否在 Node.js 环境中
 const isNode = typeof process !== "undefined" && process.env;
 
@@ -84,8 +84,6 @@ const kw_headers = {
 
 !(async () => {
   $.log(`检测到 ${accountArr.length} 个有效账户`);
- 
-  
 
   for (let i = 0; i < accountArr.length; i++) {
     const ID = accountArr[i];
@@ -95,6 +93,14 @@ const kw_headers = {
       $.log(`账户信息格式错误：${ID}，跳过此账户`);
       continue;
     }
+    if (Clear == 1) {
+        await clearEnvVars()
+        $.msg('所有Cookie已清除！！！')
+
+        $.done(); // 终止脚本
+    }
+
+
 
     const nickname = await getNickname(ID);
     const displayName = nickname || `用户${i + 1}`;
