@@ -24,7 +24,7 @@ const regexSid = /websid=([\w-]+)/;
 const matchUid = cookie.match(regexUid);
 const matchSid = cookie.match(regexSid);
 
-let existingPairs = $.getdata("Kuwo_cookies") ? $.getdata("KUWO_COOKIE").split('&') : []; // 以 `&` 作为多个账号的分隔符
+let existingPairs = $.getdata("Kuwo_cookies") ? $.getdata("Kuwo_cookies").split('&') : []; // 以 `&` 作为多个账号的分隔符
 
 let notice = "";
 
