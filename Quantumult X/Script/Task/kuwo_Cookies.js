@@ -4,48 +4,50 @@
     在网页酷我音乐上登陆，登陆成功后自动获取Cookies！
     更新登录信息后禁用脚本!
 [Script]
-http-request https://appi.kuwo.cn/api/automobile/kuwo/v1/configuration/signature script-path=https://raw.githubusercontent.com/General74110/Config/refs/heads/master/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+http-request ^https?:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐【(时长)(积分)】获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 [MITM]
 hostname = *.kuwo.cn
 
 */
 
 const $ = new Env("酷我音乐");
+
+// 处理 HTTP 请求
 const headers = $request.headers;
 const cookie = headers["Cookie"] || headers["cookie"];
 
-// 从请求头中的 Cookie 提取 `userid` 和 `websid`
+// 提取 `loginUid`（用于时长） 和 `loginSid`（用于积分）
 const regexUid = /userid=(\d+)/;
 const regexSid = /websid=([\w-]+)/;
 
 const matchUid = cookie.match(regexUid);
 const matchSid = cookie.match(regexSid);
 
-const existingPairs = $.getdata("ID") ? $.getdata("ID").split(',') : []; // 这里可以使用','作为初始分隔符
+let existingPairs = $.getdata("KUWO_COOKIE") ? $.getdata("KUWO_COOKIE").split('&') : []; // 以 `&` 作为多个账号的分隔符
 
 let notice = "";
 
-if (matchUid && matchUid[1] && matchSid && matchSid[1]) {
+if (matchUid && matchUid[1]) {
     const newLoginUid = matchUid[1];
-    const newLoginSid = matchSid[1];
+    const newLoginSid = matchSid ? matchSid[1] : ""; // 积分才需要 loginSid
 
-    // 将新组合格式为 "loginUid@loginSid"
+    // 格式化存储：`loginUid@loginSid`
     const newPair = `${newLoginUid}@${newLoginSid}`;
 
-    // 检查组合是否已经存在，如果存在则更新
+    // 查找是否已存在相同 `loginUid`，如果存在则更新
     let pairIndex = existingPairs.findIndex(pair => pair.startsWith(newLoginUid + "@"));
     if (pairIndex !== -1) {
-        existingPairs[pairIndex] = newPair; // 更新已存在的组合
+        existingPairs[pairIndex] = newPair; // 更新已存在的 `loginUid`
     } else {
-        existingPairs.push(newPair); // 添加新组合
+        existingPairs.push(newPair); // 添加新账号
     }
 
-    // 选择分隔符进行存储
-    let delimiter = '&'; // 可以改为 '&' 或 ','，根据需要选择
-    $.setval(existingPairs.join(delimiter), "ID"); // 存储成最终格式
-    notice += "🎉登录信息已更新,请禁用脚本!\n";
+    // 存储 Cookie
+    $.setdata(existingPairs.join('&'), "KUWO_COOKIE");
+
+    notice += "🎉 酷我音乐 Cookie 获取成功！\n";
 } else {
-    notice += "🔴登录信息更新失败!\n";
+    notice += "❌ 获取 Cookie 失败！\n";
 }
 
 $.log(notice);

@@ -6,13 +6,13 @@
   "repo": "https://github.com/General74110/Scripts",
   "apps": [
     {
-      "id": "Kuwomusic",
-      "name": "酷我音乐(时长)",
+      "id": "KuwoMusic",
+      "name": "酷我音乐（时长+积分）",
       "keys": [
         "Clear",
-        "loginUid"
+        "ID"
       ],
-      "desc": "",
+      "desc": "支持多账号，请用 & 或 , 分隔多个 UID 和 SID 组",
       "settings": [
         {
           "id": "Clear",
@@ -20,16 +20,18 @@
           "val": "0",
           "type": "number",
           "placeholder": "0为关闭,1为开启",
-          "desc": "清除酷我音乐(时长)Cookies"
+          "desc": "清除酷我音乐Cookies（时长+积分）"
         },
         {
-          "id": "loginUid",
-          "name": "登陆UID",
+          "id": "ID",
+          "name": "登录 UID (时长) / UID@SID (积分)",
           "val": "",
           "type": "text",
-          "placeholder": "loginUid",
-          "desc": "抓取的loginUid，多个Uid用 & 或 , 分隔"
+          "placeholder": "loginUid 或 loginUid@loginSid（多个用 & 或 , 分隔）",
+          "desc": "时长模式: 仅填 loginUid\n积分模式: 填 loginUid@loginSid\n多个账户请用 & 或 , 分隔"
         }
+      ]
+    }
       ],
       "author": "@General℡",
       "repo": "https://github.com/General74110/Scripts/master/Quantumult%20X/Script/Task",
@@ -114,33 +116,7 @@
         "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png"
       ],
       "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js"
-    },
-    {
-      "id": "kuwo",
-      "name": "酷我音乐(积分)",
-      "keys": [
-        "Clear",
-        "ID"
-
-      ],
-      "desc": "支持多账号，请用 &或, 分隔多个 UID和SID 组",
-      "settings": [
-        {
-          "id": "Clear",
-          "name": "清除Cookies",
-          "val": "0",
-          "type": "number",
-          "placeholder": "0为关闭,1为开启",
-          "desc": "清除酷我音乐(积分)Cookies"
-        },
-        {
-          "id": "ID",
-          "name": "loginUid@loginSid",
-          "val": "",
-          "type": "text",
-          "placeholder": "loginUid@loginSid&loginUid@loginSid",
-          "desc": "多个 ID组，(用 & 或 , ) 分隔"
-        }
+    }
       ],
       "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo.js",
       "author": "@General℡",

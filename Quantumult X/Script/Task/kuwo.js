@@ -57,16 +57,16 @@ if (isNode) {
 }
 
 // 获取环境变量ID，适配不同环境
-let accounts = $.getdata('ID') || ($.isNode() ? process.env.ID : ''); // 在不同环境下处理
+let accounts = $.getdata('KUWO_COOKIE') || ($.isNode() ? process.env.KUWO_COOKIE : ''); // 在不同环境下处理
 if (logs) console.log(`读取到的 ID: ${accounts}`);
 
 // 解析ID为账号数组
-let accountArr = accounts.split(/[,&]/).map(a => a.trim()); // 将多个账号信息用 , 或 & 隔开并拆分为数组
+let accountArr = accounts.split(/[&]/).map(a => a.trim()); // 将多个账号信息用 & 隔开并拆分为数组
 let kuwoNameArr = [];
 
 // 验证环境变量格式
 if (accountArr.length === 0 || !accounts || !accounts.includes('@')) {
-        $.msg($.name, '', '⚠️ 未检测到有效Cookie 请更新！');
+        $.msg($.name, '', '⚠️ 未检测到有效Cookie 请先获取！');
   $.done();
 
 }

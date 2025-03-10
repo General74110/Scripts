@@ -7,7 +7,8 @@ APP：酷我音乐
 
 更新：优化通知，更新多账号支持
 
-操作：点击 我的-用户昵称 获取Cookies！获取完后关掉重写，避免不必要的MITM
+操作：在网页酷我音乐上登陆，登陆成功后自动获取Cookies！
+ 更新登录信息后禁用脚本!
 
 
 注意⚠️：当前脚本只测试Loon，node.js 其他自测！
@@ -49,193 +50,90 @@ const isNode = typeof process !== "undefined" && process.env;
 if (isNode) {
   // Node.js 环境下加载 .env 文件中的环境变量
   const dotenv = require('dotenv');
-  dotenv.config(); 
+  dotenv.config();
 }
 
-// 读取 loginUid 变量，区分 Loon 和 Node.js 环境
-let loginUid = $.getdata('loginUid') || (isNode ? process.env.loginUid : '');
+// **读取存储的 KUWO_COOKIE，可能包含多个账号**
+let storedIDs = $.getdata('KUWO_COOKIE') || (isNode ? process.env.KUWO_COOKIE : '');
 if (logs == 1) {
-  console.log(`读取到的 loginUid: ${loginUid}`);
+  console.log(`读取到的数据: ${storedIDs}`);
 }
 
-// 将多个 loginUid 用 & 分隔并存储为数组
-loginUidArr.push(...loginUid.split(/[&]/));
-
-// 定义环境变量格式检查函数
-async function validateEnvVars() {
-  const loginUidPattern = /^\d+([&]\d+)*$/; // 只允许数字和逗号的组合
-
-  if (!loginUid || !loginUidPattern.test(loginUid)) {
-    message = "❗️环境变量格式错误：请确保 loginUid 是有效的用户 ID 列表，用&分隔";
-    await sendAndStopScript(); // 确保等待通知发送完成
-    return false;
-  }
-  return true;
+// **解析 ID，获取 loginUid**
+if (storedIDs) {
+  loginUidArr.push(...storedIDs.split('&').map(a => a.split('@')[0])); // 只取 `loginUid`
 }
 
-// 发送通知并终止脚本运行
-async function sendAndStopScript() {
-  if (tz == 1) {
-    if ($.isNode()) {
-      await notify.sendNotify($.name, message); // 等待通知完成
-    } else {
-      $.msg($.name, '', message);
-    }
-  } else {
-    console.log(message);
-  }
-  $.done();  // 结束脚本
+// **如果没有数据，则停止脚本**
+if (loginUidArr.length === 0) {
+  console.log('❌ 账号为空，请重新获取Cookies');
+  $.done();
 }
 
-// 主函数
+// **执行任务**
 !(async () => {
-  if (!(await validateEnvVars())) return;  // 如果环境变量无效，直接停止脚本
-  const Clear = $.getdata('Clear') || 0; // 获取 Clear 变量，默认值为 0
+  console.log(`检测到 ${loginUidArr.length} 个账号`);
 
-  if (Clear == 1) {
-    // 调用清除函数
-    clearEnvVars();
-    $.msg($.name, '', '已清除掉所有酷我音乐 Cookies');
-    return; // 终止脚本执行
-  }
+  for (let i = 0; i < loginUidArr.length; i++) {
+    const currentLoginUid = loginUidArr[i];
 
-  if (typeof $request !== 'undefined') {
-    // Loon 环境下抓取 Cookies
-    await GetCookie();
-  } else {
-    // Node.js 或 Loon 执行任务逻辑
-    if (loginUidArr.length === 0) {
-      console.log('未读取到有效的用户数据');
-      return;
+    // **获取昵称**
+    const nickname = await getNickname(currentLoginUid);
+    const displayName = nickname || `用户${i + 1}`;
+    console.log(`开始执行 【এ ${displayName} এ】的任务`);
+
+    if (!nickname) {
+      console.log(`⚠️ 账号 ${currentLoginUid} Cookie 失效`);
+      await sendNotification("酷我音乐(时长)", `⚠️ 【এ ${displayName} এ】Cookie 已失效，请更新`);
+      continue;
     }
 
-    // 处理每个用户的任务
-    for (let i = 0; i < loginUidArr.length; i++) {
-      const currentLoginUid = loginUidArr[i];
+    kuwoNameArr[i] = displayName;
 
-    // 获取昵称
-      const nickname = await getNickname(currentLoginUid);
-      const me = $.nickName.data.nickname;
-      console.log(`开始执行 【এ ${me} এ】的任务`);
-     
-      if ($.nickName && $.nickName.data.nickname == null) {
-        const title = "酷我音乐(时长)";
-        const content = "⚠️ Cookie 已失效，请更新";
-    
-        if ($.isNode()) {
-          await notify.sendNotify(title, content); // Node.js 环境下使用 sendNotify
-        } else if ($.isLoon() || $.isQuanX() || $.isSurge()) 
-          {
-          $.msg(title, "", content); // 其他环境下使用 $.msg
-        } else {
-          console.log(title, content)
-        }
-    
-        $.done(); // 终止脚本
-        return;
+    // **执行刷时长任务**
+    let totalMinutes = 0;
+    let lastExpiryTime = '';
+    let successMessage = '';
+
+    const loopCount = Math.floor(Math.random() * 21) + 80; // 80~100次
+    for (let c = 0; c < loopCount; c++) {
+      $.index = c + 1;
+      const taskResult = await Task(currentLoginUid);
+      if (taskResult.success) {
+        totalMinutes += taskResult.singleTime;
+        lastExpiryTime = taskResult.expiryTime;
+        successMessage = taskResult.message;
       }
-      if (nickname) {
-        kuwoNameArr[i] = nickname;
-      }
-     
-
-      // 执行视频广告任务
-      let totalMinutes = 0;
-      let lastExpiryTime = '';
-      let successMessage = '';
-
-      const loopCount = Math.floor(Math.random() * 21) + 80; // 设置广告观看次数80到100之间
-      for (let c = 0; c < loopCount; c++) {
-        $.index = c + 1;
-        const taskResult = await Task(currentLoginUid);
-        if (taskResult.success) {
-          totalMinutes += taskResult.singleTime;
-          lastExpiryTime = taskResult.expiryTime;
-          successMessage = taskResult.message;
-        }
-        await $.wait(2000);
-      }
-
-      const totalHours = (totalMinutes / 60).toFixed(2); // 将分钟转换为小时并保留两位小数
-      message = `【এ ${kuwoNameArr[i] || currentLoginUid} এ】\n` + 
-      `【状态】${successMessage}\n` + 
-      `【获得时长】${totalHours} 小时\n` + 
-      `【到期时间】${lastExpiryTime}\n`;
-      
-      await showmsg();
+      await $.wait(2000);
     }
+
+    const totalHours = (totalMinutes / 60).toFixed(2);
+    message = `【এ ${displayName} এ】\n` +
+        `【状态】${successMessage}\n` +
+        `【获得时长】${totalHours} 小时\n` +
+        `【到期时间】${lastExpiryTime}\n`;
+
+    await sendNotification("酷我音乐(时长)", message);
   }
 })()
-  .catch((e) => $.logErr(e))
-  .finally(() => $.done());
+    .catch((e) => $.logErr(e))
+    .finally(() => $.done());
 
-
-  function clearEnvVars() {
-    // 清除 kuowocount 和 loginUid 环境变量
-    const keys = ['kuwocount', 'loginUid'];
-  
-    for (const key of keys) {
-      const result = $.setdata('', key);  // 尝试清除变量
-      if (result) {
-        $.log(`✅ 成功清除环境变量: ${key}`);  // 成功日志
-      } else {
-        $.log(`⚠️ 清除失败: ${key}`);  // 失败日志
-      }
+/**
+ * 发送通知
+ */
+async function sendNotification(title, content) {
+  if (tz == 1) {
+    if ($.isNode()) {
+      await notify.sendNotify(title, content);
+    } else {
+      $.msg(title, '', content);
     }
-  
-    // 确保 kuwocount 也被重置为 '0'
-    $.setdata('0', 'kuwocount');
-    $.log('🎉 酷我音乐(时长)环境变量已清除');
-  }
-
-// 获取Cookie
-function GetCookie() {
-  if ($request.url.indexOf('sign/v1/music/userBase') > -1) {
-    const url = $request.url;
-    const params = url.split('?')[1].split('&');
-    let loginUid;
-
-    for (const param of params) {
-      const [key, value] = param.split('=');
-      if (key === 'loginUid') {
-        loginUid = value;
-      }
-    }
-
-    if (!loginUid) {
-      $.log(`未找到 loginUid，无法保存Cookie`);
-      return;
-    }
-
-    let found = false;
-let kuwocount = $.getval('kuwocount') || '1';
-for (let i = 1; i <= kuwocount; i++) {
-  const existingLoginUid = $.getdata(`loginuid${i}`);
-  if (existingLoginUid && existingLoginUid === loginUid) {
-    const nickname = await getNickname(loginUid);
-    $.setdata(nickname, `nickname${i}`); // 更新昵称
-    $.log(`【${nickname}】更新Cookie成功`);
-    $.msg($.name, '', `【এ ${nickname} এ】更新Cookies成功`);
-    found = true;
-    break;
-  }
-}
-
-    if (!found) {
-  const nickname = await getNickname(loginUid);
-  if (nickname) {
-    const newIndex = ++kuwocount;
-    $.setval(newIndex.toString(), 'kuwocount');
-    $.setdata(loginUid, `loginuid${newIndex}`);
-    $.setdata(nickname, `nickname${newIndex}`);
-    $.log(`获取【এ ${nickname} এ】的Cookie成功`);
-    $.msg($.name, '', `【এ ${nickname}এ 】获取Cookies成功`);
   } else {
-    $.log(`获取昵称失败，无法保存新的用户Cookie`);
+    console.log(content);
   }
 }
-  }
-}
+
 
 // 获取昵称
 async function getNickname(loginUid) {
