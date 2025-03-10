@@ -184,7 +184,7 @@ async function executeTasks(ID, displayName) {
 
 // 清除环境变量
 async function clearEnvVars() {
-  $.setdata('', 'ID');
+  $.setdata('', 'Kuwo_cookies');
 }
 
 // 获取昵称
