@@ -4,6 +4,7 @@
     在网页酷我音乐上登陆，登陆成功后自动获取Cookies！
     更新登录信息后禁用脚本!
 [Script]
+ https://www.kuwo.cn/openapi/v1/www/search/searchKey?
 http-request ^https?:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature script-path=https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, requires-body=true, timeout=60, enabled=false, tag=酷我音乐【(时长)(积分)】获取Cookies, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 [MITM]
 hostname = *.kuwo.cn
@@ -23,7 +24,7 @@ const regexSid = /websid=([\w-]+)/;
 const matchUid = cookie.match(regexUid);
 const matchSid = cookie.match(regexSid);
 
-let existingPairs = $.getdata("KUWO_COOKIE") ? $.getdata("KUWO_COOKIE").split('&') : []; // 以 `&` 作为多个账号的分隔符
+let existingPairs = $.getdata("Kuwo_cookies") ? $.getdata("KUWO_COOKIE").split('&') : []; // 以 `&` 作为多个账号的分隔符
 
 let notice = "";
 

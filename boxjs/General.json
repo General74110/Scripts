@@ -8,7 +8,7 @@
     {
       "id": "KuwoMusic",
       "name": "酷我音乐（时长+积分）",
-      "keys": ["Clear", "ID"],
+      "keys": ["Clear", "Kuwo_cookies"],
       "desc": "支持多账号，请用 & 或 , 分隔多个 UID 和 SID 组",
       "settings": [
         {
@@ -20,12 +20,12 @@
           "desc": "清除酷我音乐Cookies（时长+积分）"
         },
         {
-          "id": "ID",
+          "id": "Kuwo_cookies",
           "name": "登录 UID (时长) / UID@SID (积分)",
           "val": "",
           "type": "text",
           "placeholder": "loginUid 或 loginUid@loginSid（多个用 & 或 , 分隔）",
-          "desc": "时长模式: 仅填 loginUid\n积分模式: 填 loginUid@loginSid\n多个账户请用 & 或 , 分隔"
+          "desc": "时长模式: 仅填 loginUid\n积分模式: 填 loginUid@loginSid\n多个账户请用 & 分隔"
         }
       ],
       "scripts": [
