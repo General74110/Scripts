@@ -28,7 +28,16 @@
           "desc": "时长模式: 仅填 loginUid\n积分模式: 填 loginUid@loginSid\n多个账户请用 & 或 , 分隔"
         }
       ],
-      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js",
+      "scripts": [
+        {
+          "name": "酷我音乐（时长）",
+          "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js"
+        },
+        {
+          "name": "酷我音乐（积分）",
+          "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo.js"
+        }
+      ],
       "icons": [
         "https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png",
         "https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png"
