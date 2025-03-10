@@ -58,7 +58,7 @@ http-request ^https?:\/\/ocean\.shuqireader\.com\/api\/ad\/prize\/video\/reward 
 
 
 # 酷我音乐(积分|时长) - *.kuwo.cn
-http-request ^https:\/\/appi\.kuwo\.cn\/api\/automobile\/kuwo\/v1\/configuration\/signature script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, timeout = 60, enable = {CookieScript-kuwo}, tag=酷我音乐(积分|时长)获取Cookie, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
+http-request ^https?:\/\/appi\.kuwo\.cn\/(api\/automobile\/kuwo\/v1\/configuration\/signature|openapi\/v1\/www\/search\/searchKey) script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js, timeout = 60, enable = {CookieScript-kuwo}, tag=酷我音乐(积分|时长)获取Cookie, img-url=https://raw.githubusercontent.com/deezertidal/private/main/icons/kuwosvip.png
 
 
 # 喜马拉雅 - *.ximalaya.com
