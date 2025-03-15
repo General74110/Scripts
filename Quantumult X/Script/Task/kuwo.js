@@ -41,6 +41,7 @@ hostname = *.kuwo.cn
 
 */
 
+const {Cookie} = require("tough-cookie");
 const $ = new Env('酷我音乐');
 // 通知和日志设置
 let tz = $.getval('tz') || '1'; // 通知设置：0关闭通知，1开启通知
@@ -80,7 +81,7 @@ const kw_headers = {
   "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 KWMusic/10.5.3.0 DeviceModel/iPhone13,2 NetType/WIFI kuwopage",
   "Accept-Language": "zh-CN,zh-Hans;q=0.9",
   Referer: "https://h5app.kuwo.cn/",
-  "Accept-Encoding": "gzip, deflate, br",
+  "Accept-Encoding": "gzip, deflate, br"
 };
 
 !(async () => {
@@ -322,55 +323,110 @@ async function mobile(ID) {
         notifyMsg.push(desc);
     });
 }
-//每日听歌时段领积分
+
+
+// 📌 查询每日听歌任务状态，返回可领取的时间（包含秒 & 分钟）
+async function cxListen(ID) {
+    const [loginUid, loginSid] = ID.split('@');
+    let options = {
+        url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newUserSignList?loginUid=${loginUid}&loginSid=${loginSid}`,
+        headers: kw_headers,
+    };
+
+    return $.http.get(options).then((resp) => {
+        $.log("🟡 正在查询每日听歌时间...");
+        if (logs == 1) {
+            console.log('📑 每日听歌时间查询任务响应体：', resp.body);
+        }
+
+        let obj = JSON.parse(resp.body);
+        if (obj.code === 200 && obj.success) {
+            let listenTasks = obj.data.dataList.find(task => task.taskType === "listen");
+
+            if (!listenTasks || !listenTasks.listenList) {
+                $.log(`🔴 未找到听歌任务数据`);
+                return { seconds: [], minutes: [] };
+            }
+
+            // **分别存储 秒(s) 和 分钟(m) 任务**
+            let seconds = listenTasks.listenList
+                .filter(task => task.status === "0" && task.unit === "s")
+                .map(task => task.time); // 5秒任务
+
+            let minutes = listenTasks.listenList
+                .filter(task => task.status === "0" && task.unit === "m")
+                .map(task => task.time); // 分钟级任务
+
+            $.log(`🟢 可领取的秒级任务: ${seconds.join(', ')} 秒`);
+            $.log(`🟢 可领取的分钟任务: ${minutes.join(', ')} 分钟`);
+
+            return { seconds, minutes };
+        } else {
+            $.log(`🔴 查询失败：${obj.msg}`);
+            return { seconds: [], minutes: [] };
+        }
+    }).catch((err) => {
+        $.logErr(`🔴 查询每日听歌时间失败: ${err}`);
+        return { seconds: [], minutes: [] };
+    });
+}
+
+// 🎵 领取听歌积分（包含 5 秒 & 分钟级任务）
 async function Listen(ID) {
     const [loginUid, loginSid] = ID.split('@');
-    const listenTimes = [1, 5, 10, 20, 30, 60, 120, 180];
-    let success = false;
-    for (let i = 0; i < listenTimes.length; i++) {
-        const listenTime = listenTimes[i];
-        $.log(`🟡正在尝试使用 ${listenTime} 分钟的 listenTime`);
-        let options = {
-            url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=listen&goldNum=88&listenTime=${listenTime}`,
-            headers: kw_headers,
-        };
 
-        await $.http.get(options).then((resp) => {
-            if (logs == 1) {
-                console.log(`每日听歌任务调试响应体：`, resp.body);
-            }
+    let { seconds, minutes } = await cxListen(ID); // 查询可领取的时间
 
-            var desc;
-            var obj = JSON.parse(resp.body);
-
-            if (obj.code == 200 && obj.msg == "success" && obj.success == true) {
-                desc = obj.data.description;
-                if (desc == "成功") {
-                    desc = `🎉每日听歌成功: ${desc}（使用 ${listenTime} 分钟）`;
-                    success = true; // 标记为成功
-                } else if (desc == "今天已完成任务") {
-                    desc = `🟢每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
-                } else if (desc == "用户未登录") {
-                    desc = `🔴每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
-                } else {
-                    desc = `⚠️每日听歌: ${desc}（使用 ${listenTime} 分钟）`;
-                }
-            } else {
-                desc = `❌每日听歌: 错误!`;
-                $.log(resp.body);
-            }
-
-            $.log(desc);
-            notifyMsg.push(desc);
-
-            if (success) {
-                return;
-            }
-        }).catch((err) => {
-            $.logErr(`尝试 ${listenTime} 分钟时出错: ${err}`);
-        });
+    if (seconds.length === 0 && minutes.length === 0) {
+        $.log(`🟠 没有可领取的听歌时间，任务终止`);
+        return;
     }
 
+    // **优先领取 5 秒任务**
+    for (let listenTime of seconds) {
+        await performListenTask(loginUid, loginSid, listenTime, "秒");
+    }
+
+    // **然后领取分钟任务**
+    for (let listenTime of minutes) {
+        await performListenTask(loginUid, loginSid, listenTime, "分钟");
+    }
+}
+
+// 📌 执行听歌任务
+async function performListenTask(loginUid, loginSid, listenTime, unitType) {
+    $.log(`🟡 正在使用 ${listenTime} ${unitType} 进行听歌任务`);
+
+    let options = {
+        url: `https://integralapi.kuwo.cn/api/v1/online/sign/v1/earningSignIn/newDoListen?loginUid=${loginUid}&loginSid=${loginSid}&from=listen&goldNum=88&listenTime=${listenTime}`,
+        headers: kw_headers,
+    };
+
+    await $.http.get(options).then((resp) => {
+        if (logs == 1) {
+            console.log(`📑 每日听歌任务响应体：`, resp.body);
+        }
+
+        let obj = JSON.parse(resp.body);
+        let desc = '';
+
+        if (obj.code === 200 && obj.success) {
+            desc = obj.data.description || '成功';
+            desc = `🎉 每日听歌成功: ${desc}（使用 ${listenTime} ${unitType}）`;
+        } else if (obj.msg === "今天已完成任务") {
+            desc = `🟢 每日听歌: ${obj.msg}（使用 ${listenTime} ${unitType}）`;
+        } else if (obj.msg === "用户未登录") {
+            desc = `🔴 每日听歌: ${obj.msg}（使用 ${listenTime} ${unitType}）`;
+        } else {
+            desc = `⚠️ 每日听歌: ${obj.msg}（使用 ${listenTime} ${unitType}）`;
+        }
+
+        $.log(desc);
+        notifyMsg.push(desc);
+
+    }).catch((err) => {
+        $.logErr(`❌ 尝试 ${listenTime} ${unitType} 时出错: ${err}`);
+    });
 }
 
 

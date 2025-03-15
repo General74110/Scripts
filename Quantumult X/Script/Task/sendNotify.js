@@ -49,19 +49,26 @@ async function sendNotifyToWeCom(title, content) {
 
 // Bark 通知
 async function sendNotifyToBark(title, content) {
-    const barkToken = process.env.BARK_TOKEN;
+    let barkToken = process.env.BARK_TOKEN;
 
     if (!barkToken) {
         console.log('未配置 Bark 通知参数');
         return;
     }
 
-    const barkUrl = `${barkToken}/${encodeURIComponent(title)}/${encodeURIComponent(content)}`;
+    // ✅ 如果 barkToken 只有 Key，需要拼接默认服务器地址
+    if (!barkToken.startsWith('http')) {
+        barkToken = `https://api.day.app/${barkToken}`;
+    }
+
+    const barkUrl = `${barkToken}/${encodeURIComponent(title)}/${encodeURIComponent(content)}?isArchive=1`;
+
     try {
+        console.log(`Bark URL: ${barkUrl}`); // ✅ 打印 URL 确保正确
         await axios.get(barkUrl);
-        console.log('Bark 通知发送成功');
+        console.log('✅ Bark 通知发送成功');
     } catch (error) {
-        console.error('Bark 通知发送失败', error);
+        console.error('❌ Bark 通知发送失败', error);
     }
 }
 
