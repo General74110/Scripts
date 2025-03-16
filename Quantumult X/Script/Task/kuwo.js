@@ -41,7 +41,6 @@ hostname = *.kuwo.cn
 
 */
 
-const {Cookie} = require("tough-cookie");
 const $ = new Env('酷我音乐');
 // 通知和日志设置
 let tz = $.getval('tz') || '1'; // 通知设置：0关闭通知，1开启通知
