@@ -1,5 +1,5 @@
 #!name = Get Cookies
-#!desc = 酷我音乐、QQ阅读、喜马拉雅、书旗小说、Follow。用于获取相关Cookie，可单独开启，成功后关闭脚本以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!desc = 酷我音乐、QQ阅读、喜马拉雅、万达智慧商业、Follow。用于获取相关Cookie，可单独开启，成功后关闭脚本以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
 #!openUrl = 
 #!author = General℡[https://github.com/General74110/Scripts]
 #!tag = 获取Cookies
@@ -19,7 +19,7 @@
 # https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js
 
 # 2024-10-25
-# https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Shuqi.js
+# https://raw.githubusercontent.com/leiyiyan/resource/main/script/wdzhsy/wdzhsy.js
 
 # 2024-10-25
 # https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo_Cookies.js
@@ -37,9 +37,8 @@ CookieScript-kuwo = switch, true, false, tag = 酷我音乐积分|时长)获取C
 # QQ阅读
 CookieScript-QQreader = switch, true, false, tag = QQ阅读获取Cookie, desc = 是否启用QQ阅读脚本获取Cookie
 
-# 书旗小说
-CookieScript-Shuqi = switch, true, false, tag = 书旗小说获取Cookie, desc = 是否启用书旗小说脚本获取Cookie
-
+# 万达智慧商业
+CookieScript-Wanda = switch, true, false, tag = 万达智慧商业获取Cookie, desc = 是否启用万达智慧商业脚本获取Cookie
 
 # 喜马拉雅
 CookieScript-xmly = switch, true, false, tag = 喜马拉雅获取Cookie, desc = 是否启用喜马拉雅脚本获取Cookie
@@ -53,8 +52,9 @@ CookieScript-xmly = switch, true, false, tag = 喜马拉雅获取Cookie, desc = 
 http-request ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\? script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js, timeout = 60, enable = {CookieScript-QQreader}, tag=QQ阅读获取Cookie, img-url=https://raw.githubusercontent.com/General74110/Scripts/master/img/qqreader.png
 
 
-# 书旗小说 - *.shuqireader.com
-http-request ^https?:\/\/ocean\.shuqireader\.com\/api\/ad\/prize\/video\/reward script-path = https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Shuqi.js, timeout = 60, enable = {CookieScript-Shuqi}, tag=书旗小说(听书时长), img-url=https://raw.githubusercontent.com/erdongchanyo/icon/main/taskicon/Shuqixiaoshuo.png
+# 万达智慧商业 - *.wandawic.com
+http-response ^https?:\/\/www\.wandawic\.com\/api\/wic\-member\-application\/api\/user\/queryUser, timeout = 60, enable
+= {CookieScript-Wanda}, tag=万达智慧商业获取Cookie, img-url=https://raw.githubusercontent.com/leiyiyan/resource/main/icons/wdzhsy.png
 
 
 # 酷我音乐(积分|时长) - *.kuwo.cn
@@ -69,4 +69,4 @@ http-request ^https:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/
 
 
 [MitM]
-hostname = *.reader.qq.com, *.shuqireader.com, *.kuwo.cn, *.ximalaya.com
+hostname = *.reader.qq.com, *.wandawic.com, *.kuwo.cn, *.ximalaya.com

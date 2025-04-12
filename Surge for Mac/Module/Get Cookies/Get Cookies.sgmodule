@@ -1,5 +1,5 @@
 #!name=Get Cookies
-#!desc=酷我音乐、QQ阅读、喜马拉雅、书旗小说、GLaDOS。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!desc=酷我音乐、QQ阅读、喜马拉雅、万达智慧商业、GLaDOS。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
 #!author=General℡[https://github.com/General74110/Scripts]
 #!category= General℡
 #!homepage=https://github.com/General74110/Scripts
@@ -13,8 +13,10 @@
 # QQ阅读 - *.reader.qq.com
 QQ阅读获取Cookie = type=http-request, pattern=^https?:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\?, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js, timeout=60
 
-# 书旗小说 - *.shuqireader.com
-书旗小说(听书时长)获取Cookie = type=http-request, pattern=^https?:\/\/ocean\.shuqireader\.com\/api\/ad\/prize\/video\/reward, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Shuqi.js, timeout=60
+# 万达智慧商业 - *.wandawic.com
+万达智慧商业获取Cookie = type=http-response,pattern=^https?:\/\/www\.wandawic\
+.com\/api\/wic\-member\-application\/api\/user\/queryUser,requires-body=1,max-size=0,binary-body-mode=0,timeout=30,
+script-path=https://raw.githubusercontent.com/leiyiyan/resource/main/script/wdzhsy/wdzhsy.js,script-update-interval=0
 
 # 喜马拉雅 - *.ximalaya.com
 喜马拉雅获取Cookie = type=http-request, pattern=^https?:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/getUserPageShow, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js, timeout=60
@@ -23,4 +25,4 @@ QQ阅读获取Cookie = type=http-request, pattern=^https?:\/\/iostgw\.reader\.qq
 GLaDOS获取Cookie = type=http-request, pattern=^https?:\/\/glados\.rocks\/api\/user\/checkin, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/GLaDOS.js, timeout=60
 
 [MITM]
-hostname = %APPEND% *.reader.qq.com, *.shuqireader.com, *.kuwo.cn, *.ximalaya.com, glados.rocks
+hostname = %APPEND% *.reader.qq.com, *.wandawic.com, *.kuwo.cn, *.ximalaya.com, glados.rocks
