@@ -12,6 +12,7 @@ Boxjs定阅(https://raw.githubusercontent.com/General74110/Quantumult-X/master/B
 操作：
 Loon:点击 【我的】 获取Cookies！获取完后关掉重写，避免不必要的MITM
 青龙：抓取ywguid, ywkey,ywtoken,csigs填入环境变量
+QQYD_COOKIE={"ywkey":"your_ywkey","ywguid":"your_ywguid","ywtoken":"your_ywtoken","csigs":"your_csigs"}
  
 
 
@@ -33,33 +34,28 @@ hostname = *.reader.qq.com
 
 
 */
-const General = 'QQ阅读';
-const $ = new Env(General);
+const $ = new Env('QQ阅读');
 const zh_name = 'QQ阅读';
 const logs = 0;  // 设置0关闭日志, 1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
-// 检查是否在 Node.js 环境中
 const isNode = typeof process !== "undefined" && process.env;
 
 if (isNode) {
-  // Node.js 环境中使用 require 加载依赖
   const dotenv = require('dotenv');
   dotenv.config(); // 读取 .env 文件中的环境变量
 }
 
-let ywguidArr = [], ywkeyArr = [], ywtokenArr = [], csigsArr = [];
+let ywkeyArr = [], ywguidArr = [], ywtokenArr = [], csigsArr = [];
 let globalCookie = '';
-let boxVideoTotalCoins = 0;
-let t = "";
 
+// 解析环境变量中存储的 Cookie JSON
+const cookieData = JSON.parse(process.env.QQYD_COOKIE || '{}');
 
-// 读取环境变量
-ywkeyArr.push($.getdata('ywkey') || (isNode ? process.env.ywkey : ''));
-ywguidArr.push($.getdata('ywguid') || (isNode ? process.env.ywguid : ''));
-ywtokenArr.push($.getdata('ywtoken') || (isNode ? process.env.ywtoken : ''));
-csigsArr.push($.getdata('csigs') || (isNode ? process.env.csigs : ''));
-
-
+// 读取合并后的环境变量
+ywkeyArr.push(cookieData.ywkey || '');
+ywguidArr.push(cookieData.ywguid || '');
+ywtokenArr.push(cookieData.ywtoken || '');
+csigsArr.push(cookieData.csigs || '');
 
 !(async () => {
   if (typeof $request !== "undefined") {
@@ -76,11 +72,11 @@ csigsArr.push($.getdata('csigs') || (isNode ? process.env.csigs : ''));
     }
 
     console.log(
-      `\n\n=============================================== 脚本执行 - 北京时间(UTC+8)：${new Date(
-        new Date().getTime() +
-        new Date().getTimezoneOffset() * 60 * 1000 +
-        8 * 60 * 60 * 1000
-      ).toLocaleString()} ===============================================\n`);
+        `\n\n=============================================== 脚本执行 - 北京时间(UTC+8)：${new Date(
+            new Date().getTime() +
+            new Date().getTimezoneOffset() * 60 * 1000 +
+            8 * 60 * 60 * 1000
+        ).toLocaleString()} ===============================================\n`);
 
     // 构建全局 Cookie
     globalCookie = buildCookie(ywguidArr[0], ywkeyArr[0], ywtokenArr[0], csigsArr[0]);
@@ -110,50 +106,48 @@ csigsArr.push($.getdata('csigs') || (isNode ? process.env.csigs : ''));
           return;
         }
 
-          // 2. 执行签到任务
-          await $.wait (1000);  // 延迟 1 秒
-          await CheckinSign (globalCookie);
+        // 2. 执行签到任务
+        await $.wait (1000);  // 延迟 1 秒
+        await CheckinSign (globalCookie);
 
-          // 3. 执行宝箱视频任务
-          await $.wait (1000);  // 延迟 1 秒
-          await BoxVideo (globalCookie);
+        // 3. 执行宝箱视频任务
+        await $.wait (1000);  // 延迟 1 秒
+        await BoxVideo (globalCookie);
 
-          // 4. 执行等级广告视频任务
-          await $.wait (1000);  // 延迟 1 秒
-          await QuerVideo (globalCookie);
+        // 4. 执行等级广告视频任务
+        await $.wait (1000);  // 延迟 1 秒
+        await QuerVideo (globalCookie);
 
-          // 5. 周抽奖和月抽奖逻辑
-          const currentDay = new Date ().getDay ();
-          const currentDate = new Date ().getDate ();
+        // 5. 周抽奖和月抽奖逻辑
+        const currentDay = new Date ().getDay ();
+        const currentDate = new Date ().getDate ();
 
-          if (currentDay === 0) {
-            await GetAwardWeek (globalCookie); // 周抽奖
-          }
-
-          if (currentDate === 15) {
-            await GetAwardMonth (globalCookie); // 月抽奖
-          }
-
-          if (currentDate === 1) {
-            await Reward (globalCookie); //等级福利
-            await RewardVip (globalCookie); //等级福利
-          }
-
-
-
-          // 6. 发送任务总结通知
-          await $.wait (1000);  // 延迟 1 秒
-          await Msg ();
+        if (currentDay === 0) {
+          await GetAwardWeek (globalCookie); // 周抽奖
         }
+
+        if (currentDate === 15) {
+          await GetAwardMonth (globalCookie); // 月抽奖
+        }
+
+        if (currentDate === 1) {
+          await Reward (globalCookie); //等级福利
+          await RewardVip (globalCookie); //等级福利
+        }
+
+        // 6. 发送任务总结通知
+        await $.wait (1000);  // 延迟 1 秒
+        await Msg ();
+      }
 
     }
   }
 })()
-  .catch((e) => $.logErr(e))
-  .finally(() => $.done());
+    .catch((e) => $.logErr(e))
+    .finally(() => $.done());
 
+// 用来构建 Cookie 的函数
 function buildCookie(ywguid, ywkey, ywtoken, csigs) {
-
   function trs() {
     return Date.now().toString();
   }
@@ -165,9 +159,7 @@ function buildCookie(ywguid, ywkey, ywtoken, csigs) {
   let qrsn = udid2();
 
   // 构建 Cookie
-
   let Cookie = `IFDA=${IFDA}; c_version=qqreader_8.1.62.0607_iphone;  csigs=${csigs};  loginType=1; platform=ioswp; qrsn=${qrsn}; qrsn_new=${qrsn};  qrtm=${ts()}; ttime=${trs()}; ywguid=${ywguid}; ywkey=${ywkey}; ywtoken=${ywtoken}`;
-
 
   return Cookie;
 }
