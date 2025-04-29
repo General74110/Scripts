@@ -69,7 +69,7 @@ if (isNode) {
 }
 
 // 根据环境来获取 xmlytoken
-let xmlytoken = $.getdata('xmlytoken') || (isNode ? process.env.xmlytoken : '') || '';
+let xmlytoken = $.getdata('xmlytoken') || (isNode ? process.env.XMLY_TOKEN : '') || '';
 if (logs === 1) {
   console.log(`xmlytoken: ${xmlytoken}`); // 调试日志：检查 xmlytoken 值
 }

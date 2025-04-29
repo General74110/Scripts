@@ -75,7 +75,7 @@ async function sendNotifyToBark(title, content) {
 // 发送总通知函数，判断使用哪种通知方式
 async function sendNotify(title, content) {
     console.log(`开始发送通知：${title}`);
-    
+
     // 根据环境变量选择通知方式
     if (process.env.TG_BOT_TOKEN && process.env.TG_USER_ID) {
         await sendNotifyToTelegram(title, content);
