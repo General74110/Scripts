@@ -39,7 +39,7 @@ const zh_name = 'QQ阅读';
 const logs = 0;  // 设置0关闭日志, 1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
 const isNode = typeof process !== "undefined" && process.env;
-
+let t = ''
 if (isNode) {
   const dotenv = require('dotenv');
   dotenv.config(); // 读取 .env 文件中的环境变量
@@ -49,7 +49,12 @@ let ywkeyArr = [], ywguidArr = [], ywtokenArr = [], csigsArr = [];
 let globalCookie = '';
 
 // 解析环境变量中存储的 Cookie JSON
-const cookieData = JSON.parse(process.env.QQYD_COOKIE || '{}');
+let cookieData = {};
+try {
+  cookieData = JSON.parse(process.env.QQYD_COOKIE || '{}');
+} catch (e) {
+  console.error('Error parsing QQYD_COOKIE:', e);
+}
 
 // 读取合并后的环境变量
 ywkeyArr.push(cookieData.ywkey || '');
@@ -76,10 +81,14 @@ csigsArr.push(cookieData.csigs || '');
             new Date().getTime() +
             new Date().getTimezoneOffset() * 60 * 1000 +
             8 * 60 * 60 * 1000
-        ).toLocaleString()} ===============================================\n`);
+        ).toLocaleString()} ===============================================\n`
+    );
 
     // 构建全局 Cookie
-    globalCookie = buildCookie(ywguidArr[0], ywkeyArr[0], ywtokenArr[0], csigsArr[0]);
+    if (ywguidArr[0] && ywkeyArr[0] && ywtokenArr[0] && csigsArr[0]) {
+      globalCookie = buildCookie(ywguidArr[0], ywkeyArr[0], ywtokenArr[0], csigsArr[0]);
+    }
+
     if (logs == 1) {
       console.log(`生成全局 Cookie: ${globalCookie}`);
     }
@@ -87,59 +96,58 @@ csigsArr.push(cookieData.csigs || '');
     for (let i = 0; i < ywguidArr.length; i++) {
       if (ywguidArr[i] && ywkeyArr[i] && ywtokenArr[i]) {
         $.index = i + 1;
-        console.log (`\n\n开始【QQ阅读任务】`);
+        console.log(`\n\n开始【QQ阅读任务】`);
 
         // 1. 检测昵称，判断 Cookie 是否有效
-        await NickName (globalCookie);
+        await NickName(globalCookie);
         const content = "⚠️ Cookie 已失效，请更新\n";
 
         if ($.nickName && $.nickName.msg === "登录鉴权失败") {
 
-          if ($.isNode ()) {
-            await notify.sendNotify (zh_name, content); // Node.js 环境下使用 sendNotify
-          } else if ($.isLoon () || $.isQuanX () || $.isSurge ()) {
-            $.msg (zh_name, "", content); // 其他环境下使用 $.msg
+          if ($.isNode()) {
+            await notify.sendNotify(zh_name, content); // Node.js 环境下使用 sendNotify
+          } else if ($.isLoon() || $.isQuanX() || $.isSurge()) {
+            $.msg(zh_name, "", content); // 其他环境下使用 $.msg
           } else {
-            console.log (zh_name, content);
+            console.log(zh_name, content);
           }
-          $.done (); // 确保终止脚本运行
+          $.done(); // 确保终止脚本运行
           return;
         }
 
         // 2. 执行签到任务
-        await $.wait (1000);  // 延迟 1 秒
-        await CheckinSign (globalCookie);
+        await $.wait(1000);  // 延迟 1 秒
+        await CheckinSign(globalCookie);
 
         // 3. 执行宝箱视频任务
-        await $.wait (1000);  // 延迟 1 秒
-        await BoxVideo (globalCookie);
+        await $.wait(1000);  // 延迟 1 秒
+        await BoxVideo(globalCookie);
 
         // 4. 执行等级广告视频任务
-        await $.wait (1000);  // 延迟 1 秒
-        await QuerVideo (globalCookie);
+        await $.wait(1000);  // 延迟 1 秒
+        await QuerVideo(globalCookie);
 
         // 5. 周抽奖和月抽奖逻辑
-        const currentDay = new Date ().getDay ();
-        const currentDate = new Date ().getDate ();
+        const currentDay = new Date().getDay();
+        const currentDate = new Date().getDate();
 
         if (currentDay === 0) {
-          await GetAwardWeek (globalCookie); // 周抽奖
+          await GetAwardWeek(globalCookie); // 周抽奖
         }
 
         if (currentDate === 15) {
-          await GetAwardMonth (globalCookie); // 月抽奖
+          await GetAwardMonth(globalCookie); // 月抽奖
         }
 
         if (currentDate === 1) {
-          await Reward (globalCookie); //等级福利
-          await RewardVip (globalCookie); //等级福利
+          await Reward(globalCookie); //等级福利
+          await RewardVip(globalCookie); //等级福利
         }
 
         // 6. 发送任务总结通知
-        await $.wait (1000);  // 延迟 1 秒
-        await Msg ();
+        await $.wait(1000);  // 延迟 1 秒
+        await Msg();
       }
-
     }
   }
 })()
@@ -164,10 +172,7 @@ function buildCookie(ywguid, ywkey, ywtoken, csigs) {
   return Cookie;
 }
 
-
-/**
-* 随机 UUID 生成函数
-*/
+// 随机 UUID 生成函数
 // 随机udid 大写
 function udid() {
   var s = [];
@@ -259,8 +264,9 @@ async function NickName(Cookie) {
       }
       try {
         data = JSON.parse(data);
-        if (logs == 1)
+        if (logs == 1) {
           console.log(`⚠️获取【昵称】数据: ${data.data.nickName}`);
+        }
         $.nickName = data;
       } catch (e) {
         console.log(`解析【昵称】 JSON 出错: ${e}`);
@@ -447,7 +453,7 @@ async function sleep(ms) {
 }
 
 
-
+let boxVideoTotalCoins = 0;  // 确保全局变量 boxVideoTotalCoins 被初始化
 // 宝箱视频任务，循环运行 3 次，但当任务已经领取时，跳过后续操作
 async function BoxVideo(Cookie) {
   let totalCoins = 0;  // 用于累加每次宝箱视频获得的赠币
