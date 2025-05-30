@@ -315,6 +315,73 @@ async function CheckinSign(Cookie) {
   });
 }
 
+//获取抽奖任务详情
+async function List(Cookie) {
+  return new Promise((resolve) => {
+    let Url = {
+      url: "https://eventv3.reader.qq.com/activity/new_welfare/drawTaskListV2",
+      headers: {
+
+        'Accept': 'application/json, text/plain, */*',
+        'cookie': Cookie,
+      }
+    };
+    $.get(Url, async (err, resp, data) => {
+      if (logs == 1) {
+        console.log(`响应状态码: ${resp.status}`); // 打印状态码
+        console.log(`【抽奖任务】原始响应体: ${data}`); // 打印原始响应体
+      }
+      try {
+        data = JSON.parse(data);
+        if (logs == 1) {
+          console.log(`⚠️【抽奖任务】结果数据: ${data.msg}`);
+        }
+        $.list = data;
+      } catch (e) {
+        console.log(`解析【抽奖任务】 JSON 出错: ${e}`);
+        console.log(`【抽奖任务】原始响应体: ${data}`); // 打印原始响应体
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+
+
+//抽奖奖品列表
+async function Query(Cookie) {
+  return new Promise((resolve) => {
+    let Url = {
+      url: "https://eventv3.reader.qq.com/activity/new_welfare/queryAwardList",
+      headers: {
+
+        'Accept': 'application/json, text/plain, */*',
+        'cookie': Cookie,
+      }
+    };
+    $.get(Url, async (err, resp, data) => {
+      if (logs == 1) {
+        console.log(`响应状态码: ${resp.status}`); // 打印状态码
+        console.log(`【奖品列表】原始响应体: ${data}`); // 打印原始响应体
+      }
+      try {
+        data = JSON.parse(data);
+        if (logs == 1) {
+          console.log(`⚠️【奖品列表】结果数据: ${data.msg}`);
+        }
+        $.query = data;
+      } catch (e) {
+        console.log(`解析【奖品列表】 JSON 出错: ${e}`);
+        console.log(`【奖品列表】原始响应体: ${data}`); // 打印原始响应体
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+
+
+
 //等级内的赠币
 async function Reward(Cookie) {
   return new Promise((resolve) => {
@@ -374,6 +441,39 @@ async function RewardVip(Cookie) {
         console.log (`【领会员】原始响应体: ${data}`); // 打印原始响应体
       } finally {
         resolve ();
+      }
+    });
+  });
+}
+
+//每周5天听书30分钟
+async function GetAwardlistenTime(Cookie) {
+  return new Promise((resolve) => {
+
+    let Url = {
+      url: "https://eventv3.reader.qq.com/activity/new_welfare/getAward?entrance=listenTime",
+      headers: {
+
+        'Accept': 'application/json, text/plain, */*',
+        'cookie': Cookie,
+
+
+      }
+    };
+    $.get(Url, async (err, resp, data) => {
+      if (logs == 1) {
+        console.log(`响应状态码: ${resp.status}`); // 打印状态码
+        console.log(`【每周5天听书30分钟】原始响应体: ${data}`); // 打印原始响应体
+      }
+      try {
+        data = JSON.parse(data);
+        if (logs == 1) console.log(`⚠️【每周5天听书30分钟】结果数据: ${data.msg}`);
+        $.awardWeek = data;
+      } catch (e) {
+        console.log(`解析【每周5天听书30分钟】 JSON 出错: ${e}`);
+        console.log(`【每周5天听书30分钟】原始响应体: ${data}`); // 打印原始响应体
+      } finally {
+        resolve();
       }
     });
   });
