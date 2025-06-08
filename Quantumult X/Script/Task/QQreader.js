@@ -119,6 +119,15 @@ csigsArr.push(cookieData.csigs || '');
         await $.wait(1000);  // 延迟 1 秒
         await CheckinSign(globalCookie);
 
+        // 6. 每周阅读5天可抽奖一次
+        await $.wait(1000);  // 延迟 1 秒
+        await GetAwardlistenTime(globalCookie);
+
+        // 7. 每日听书30分钟
+        await $.wait(1000);  // 延迟 1 秒
+        await ReceiveListenTime(globalCookie);
+
+
         // 3. 执行宝箱视频任务
         await $.wait(1000);  // 延迟 1 秒
         await BoxVideo(globalCookie);
@@ -138,6 +147,7 @@ csigsArr.push(cookieData.csigs || '');
         if (currentDate === 15) {
           await GetAwardMonth(globalCookie); // 月抽奖
         }
+
 
         if (currentDate === 1) {
           await Reward(globalCookie); //等级福利
@@ -446,7 +456,40 @@ async function RewardVip(Cookie) {
   });
 }
 
-//每周5天听书30分钟
+//每日听书30分钟领赠币
+async function ReceiveListenTime(Cookie) {
+  return new Promise((resolve) => {
+
+    let Url = {
+      url: "https://eventv3.reader.qq.com/activity/new_welfare/receiveListenTime?type=70543157",
+      headers: {
+
+        'Accept': 'application/json, text/plain, */*',
+        'cookie': Cookie,
+
+
+      }
+    };
+    $.get(Url, async (err, resp, data) => {
+      if (logs == 1) {
+        console.log(`响应状态码: ${resp.status}`); // 打印状态码
+        console.log(`【每日听书30分钟】原始响应体: ${data}`); // 打印原始响应体
+      }
+      try {
+        data = JSON.parse(data);
+        if (logs == 1) console.log(`【每日听书30分钟】结果数据: ${data.msg}`);
+        $.awardDay = data;
+      } catch (e) {
+        console.log(`解析【每日听书30分钟】 JSON 出错: ${e}`);
+        console.log(`【每日听书30分钟】原始响应体: ${data}`); // 打印原始响应体
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+
+//每周5天听书30分钟+1次抽奖机会
 async function GetAwardlistenTime(Cookie) {
   return new Promise((resolve) => {
 
@@ -580,11 +623,6 @@ async function BoxVideo(Cookie) {
 }
 
 
-
-
-
-
-
 // 实际执行的宝箱视频任务
 async function runBoxVideo(Cookie, i) {
   return new Promise((resolve) => {
@@ -592,6 +630,8 @@ async function runBoxVideo(Cookie, i) {
       url: `https://eventv3.reader.qq.com/activity/new_welfare/receiveVideo?type=70526242`,
       headers: {
 
+        'User-Agent': 'QQReaderUI/51423 CFNetwork/3826.500.111.2.2 Darwin/24.4.0',
+        'ua': 'iPhone 14 Pro Max-iOS18.4.1',
         'Accept': 'application/json, text/plain, */*',
         'cookie': Cookie,
 
@@ -703,6 +743,16 @@ async function Msg() {
     t += `【月抽奖】获得 ${$.awardMonth.data.name}\n`;
   else if ($.awardMonth?.code === -3)
     t += `【月抽奖】${$.awardMonth.msg}\n`;
+
+  if ($.awardDay?.code === 0)
+    t += `【每日听书30分钟】获得 ${$.awardDay.data}\n`;
+  else if ($.awardDay?.code === -1)
+    t += `【每日听书30分钟】 ${$.awardDay.msg}\n`;
+
+  if ($.awardWeek?.code === 0)
+    t += `【每周5天听书30分钟】抽奖获得 ${$.awardWeek.data.name}\n`;
+  else if ($.awardWeek?.code === -3)
+    t += `每周5天听书30分钟】${$.awardWeek.msg}\n`;
 
   // 判断环境，发送通知
   if ($.isLoon() || $.isQuanX() || $.isSurge()) {
