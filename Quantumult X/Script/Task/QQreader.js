@@ -752,7 +752,7 @@ async function Msg() {
   if ($.awardWeek?.code === 0)
     t += `【每周5天听书30分钟】抽奖获得 ${$.awardWeek.data.name}\n`;
   else if ($.awardWeek?.code === -3)
-    t += `每周5天听书30分钟】${$.awardWeek.msg}\n`;
+    t += `【每周5天听书30分钟】${$.awardWeek.msg}\n`;
 
   // 判断环境，发送通知
   if ($.isLoon() || $.isQuanX() || $.isSurge()) {
