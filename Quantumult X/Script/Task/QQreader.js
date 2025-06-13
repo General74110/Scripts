@@ -154,8 +154,9 @@ csigsArr.push(cookieData.csigs || '');
 
 
         if (currentDate === 1) {
-          await Reward(globalCookie); //等级福利
-          await RewardVip(globalCookie); //等级福利
+          await Reward(globalCookie); //等级福利-赠币
+          await Rewardq(globalCookie);//等级福利-听书券
+          await RewardVip(globalCookie); //等级福利-体验会员
         }
 
         // 6. 发送任务总结通知
@@ -500,6 +501,38 @@ async function Reward(Cookie) {
   });
 }
 
+//等级内的听书券
+async function Rewardq(Cookie) {
+  return new Promise((resolve) => {
+    let Url = {
+      url: "https://commontgw.reader.qq.com/account/h5/level/receiveReward?equityId=4",
+      headers: {
+
+        'Accept': 'application/json, text/plain, */*',
+        'cookie': Cookie,
+      }
+    };
+    $.get(Url, async (err, resp, data) => {
+      if (logs == 1) {
+        console.log(`响应状态码: ${resp.status}`); // 打印状态码
+        console.log(`【听书券】原始响应体: ${data}`); // 打印原始响应体
+      }
+      try {
+        data = JSON.parse(data);
+        if (logs == 1) {
+          console.log(`⚠️【听书券】结果数据: ${data.msg}`);
+        }
+        $.rewardq = data;
+      } catch (e) {
+        console.log(`解析【听书券】 JSON 出错: ${e}`);
+        console.log(`【听书券】原始响应体: ${data}`); // 打印原始响应体
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+
 //每月一号领会员
 async function RewardVip(Cookie) {
   return new Promise((resolve) => {
@@ -811,14 +844,19 @@ async function Msg() {
   }
 
   if ($.reward?.code === 0)
-    t += `【等级福利】获得相应等级福利 ${$.reward.msg} !\n`;
+    t += `【等级福利-赠币】获得相应等级福利 ${$.reward.msg} !\n`;
   else if ($.reward?.code === -2)
-    t += `【等级福利】${$.reward.msg}\n`;
+    t += `【等级福利-赠币】${$.reward.msg}\n`;
+
+  if ($.rewardq?.code === 0)
+    t += `【等级福利-听书券】获得相应等级福利 ${$.reward.msg} !\n`;
+  else if ($.rewardq?.code === -2)
+    t += `【等级福利-听书券】${$.rewardq.msg}\n`;
 
   if ($.rewardvip?.code === 0)
-    t += `【等级福利】获得相应等级福利 ${$.rewardvip.msg} !\n`;
+    t += `【等级福利-体验会员】获得相应等级福利 ${$.rewardvip.msg} !\n`;
   else if ($.rewardvip?.code === -2)
-    t += `【等级福利】${$.rewardvip.msg}\n`;
+    t += `【等级福利-体验会员】${$.rewardvip.msg}\n`;
 
   if ($.querVideo?.code == 0)
     t += `【等级内广告视频】获得 ${$.querVideo.revardMsg}\n`;
