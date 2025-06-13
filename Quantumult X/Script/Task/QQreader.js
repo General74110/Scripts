@@ -119,6 +119,10 @@ csigsArr.push(cookieData.csigs || '');
         await $.wait(1000);  // 延迟 1 秒
         await CheckinSign(globalCookie);
 
+        //8. 阅读时间任务
+        await $.wait(1000);
+        await ReadTime(globalCookie);
+
         // 6. 每周阅读5天可抽奖一次
         await $.wait(1000);  // 延迟 1 秒
         await GetAwardlistenTime(globalCookie);
@@ -145,7 +149,7 @@ csigsArr.push(cookieData.csigs || '');
         }
 
         if (currentDate === 15) {
-          await GetAwardMonth(globalCookie); // 月抽奖
+          await GetAwardMonth(globalCookie); // 月抽奖 每月签到满10天可抽奖一次
         }
 
 
@@ -324,6 +328,78 @@ async function CheckinSign(Cookie) {
     });
   });
 }
+
+
+// 阅读奖励任务领取逻辑（含查询）
+async function ReadTime(Cookie) {
+  return new Promise(async (resolve) => {
+    // 获取当前阅读任务状态
+    const url = `https://eventv3.reader.qq.com/activity/new_welfare/taskInitV2`;
+    const headers = {
+      'Accept': 'application/json, text/plain, */*',
+      'cookie': Cookie
+    };
+
+    $.readTimeResult = [];
+
+    $.get({ url, headers }, async (err, resp, data) => {
+      try {
+        data = JSON.parse(data);
+        if (logs === 1) {
+          console.log(`【查询阅读剩余时间】响应: ${JSON.stringify(data)}`);
+        }
+
+        if (data.code === 0 && data.data?.taskVoList) {
+          const taskMap = {
+            "70526237": "每日阅读10分钟",
+            "70526238": "每日阅读30分钟",
+            "70526239": "每周阅读600分钟"
+          };
+
+          // 遍历任务列表
+          for (let task of data.data.taskVoList) {
+            const { id, needReadTime } = task;
+            const taskName = taskMap[id] || `未知任务(${id})`;
+
+            if (needReadTime === 0) {
+              // 满足阅读条件，调用领取接口
+              const claimUrl = `https://eventv3.reader.qq.com/activity/new_welfare/receiveReadTime?type=${id}`;
+              await new Promise((res) => {
+                $.get({ url: claimUrl, headers }, (err2, resp2, data2) => {
+                  try {
+                    const result = JSON.parse(data2);
+                    if (logs === 1)
+                      console.log(`【${taskName}】领取响应: ${JSON.stringify(result)}`);
+                    $.readTimeResult.push({ name: taskName, code: result.code, msg: result.msg });
+                  } catch (e) {
+                    $.readTimeResult.push({ name: taskName, code: -1, msg: "领取接口解析失败" });
+                  } finally {
+                    res();
+                  }
+                });
+              });
+            } else {
+              // 阅读时长不足
+              $.readTimeResult.push({
+                name: taskName,
+                code: -2,
+                msg: `还需阅读 ${needReadTime} 分钟`
+              });
+            }
+          }
+        } else {
+          $.readTimeResult.push({ name: "阅读任务查询", code: -1, msg: "查询失败或数据为空" });
+        }
+      } catch (e) {
+        console.log(`解析【查询阅读任务】 JSON 出错: ${e}`);
+        $.readTimeResult.push({ name: "阅读任务查询", code: -1, msg: "数据解析异常" });
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+
 
 //获取抽奖任务详情
 async function List(Cookie) {
@@ -555,7 +631,7 @@ async function GetAwardWeek(Cookie) {
   });
 }
 
-// 月抽奖
+// 月抽奖 签到满10天获得一次抽奖
 async function GetAwardMonth(Cookie) {
   return new Promise((resolve) => {
 
@@ -565,6 +641,8 @@ async function GetAwardMonth(Cookie) {
       headers: {
 
         'Accept': 'application/json, text/plain, */*',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like' +
+            ' Gecko) QQReader',
         'cookie': Cookie,
 
 
@@ -711,6 +789,19 @@ async function Msg() {
   if ($.checkin?.code === 0) {
     t += `【首页签到】签到成功✅\n`;
   }
+
+  if ($.readTimeResult?.length) {
+    for (let r of $.readTimeResult) {
+      if (r.code === 0) {
+        t += `【${r.name}】领取成功✅\n`;
+      } else if (r.code === -2) {
+        t += `【${r.name}】${r.msg} 🕒\n`;
+      } else {
+        t += `【${r.name}】${r.msg || "领取失败"}\n`;
+      }
+    }
+  }
+
 
   if (boxVideoTotalCoins > 0) {
     t += `【宝箱视频】获得 ${boxVideoTotalCoins} 💰赠币\n`;  // 输出总赠币
