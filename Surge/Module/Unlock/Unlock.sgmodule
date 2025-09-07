@@ -1,0 +1,14 @@
+#!name=APP解锁
+#!desc=解锁APP：【9169】
+#!author=General℡[https://github.com/General74110/Scripts]
+#!category= General℡
+#!homepage=https://github.com/General74110/Scripts
+#!tag=获取Cookie
+#!date=2025-9-7 20:00
+
+[Script]
+# 9169🔞
+9169 = type=http-response, pattern=^https:\/\/api\.9169av1\.app\/bibidd\/(Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount)|Advert\/get_index_Advert), script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/9169.js, requires-body=true, timeout=60
+
+[MITM]
+hostname = %APPEND% api.9169av1.app

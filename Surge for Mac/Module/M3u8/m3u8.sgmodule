@@ -1,9 +1,0 @@
-#!name=m3u8
-#!desc=佬baby说的通杀，把模块放入本地，随时随地修改域名链接和hostname
-
-[Script]
-# - 暗网禁区 - 10play.aoftrg.cn - 2025-2-17
-暗网禁区 = type=http-request,pattern=^https:\/\/10play\.aoftrg\.cn\/.+\.m3u8.*,requires-body=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/M3u8/m3u8.js
-[MITM]
-
-hostname = %APPEND% 10play.aoftrg.cn
