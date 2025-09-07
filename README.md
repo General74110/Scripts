@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/General74110/Scripts/master/img/profile.png" alt="logo" width="160" height="160" align="right">  
+<img src="https://raw.githubusercontent.com/General74110/Scripts/master/images/profile.png" alt="logo" width="160" 
+height="160" align="right">  
 
 <h1 align="center">
   
@@ -7,7 +8,7 @@
 </h1>
 
 # 支持环境
-![Loon](https://raw.githubusercontent.com/General74110/Scripts/master/img/Loon.png)
+![Loon](https://raw.githubusercontent.com/General74110/Scripts/master/images/Loon.png)
 ![Quantumult X](https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Quantumult_X.png)
 ![Surge](https://raw.githubusercontent.com/Irrucky/Tool/main/Surge/icon/surge_2.png)
 
