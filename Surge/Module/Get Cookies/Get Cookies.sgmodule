@@ -1,5 +1,5 @@
 #!name=Get Cookies
-#!desc=酷我音乐、QQ阅读、喜马拉雅、万达智慧商业、GLaDOS。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!desc=酷我音乐、QQ阅读、喜马拉雅、万达智慧商业。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
 #!author=General℡[https://github.com/General74110/Scripts]
 #!category= General℡
 #!homepage=https://github.com/General74110/Scripts
@@ -20,8 +20,6 @@ QQ阅读获取Cookie = type=http-request, pattern=^https?:\/\/iostgw\.reader\.qq
 # 喜马拉雅 - *.ximalaya.com
 喜马拉雅获取Cookie = type=http-request, pattern=^https?:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/getUserPageShow, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/xmly.js, timeout=60
 
-# GLaDOS - glados.rocks
-GLaDOS获取Cookie = type=http-request, pattern=^https?:\/\/glados\.rocks\/api\/user\/checkin, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/GLaDOS.js, timeout=60
 
 [MITM]
-hostname = %APPEND% *.reader.qq.com, *.wandawic.com, *.kuwo.cn, *.ximalaya.com, glados.rocks
+hostname = %APPEND% *.reader.qq.com, *.wandawic.com, *.kuwo.cn, *.ximalaya.com
