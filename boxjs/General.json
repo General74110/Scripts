@@ -2,7 +2,7 @@
   "id": "General℡",
   "name": "General℡ 脚本订阅",
   "author": "@General74110",
-  "icon": "https://raw.githubusercontent.com/General74110/Scripts/master/img/profile.png",
+  "icon": "https://raw.githubusercontent.com/General74110/Scripts/master/images/profile.png",
   "repo": "https://github.com/General74110/Scripts",
   "apps": [
     {
@@ -31,16 +31,16 @@
       "scripts": [
         {
           "name": "酷我音乐（时长）",
-          "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/Kuwomusic.js"
+          "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Kuwomusic.js"
         },
         {
           "name": "酷我音乐（积分）",
-          "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/kuwo.js"
+          "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/kuwo.js"
         }
       ],
       "icons": [
-        "https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png",
-        "https://raw.githubusercontent.com/General74110/Scripts/master/img/kuwo.png"
+        "https://raw.githubusercontent.com/General74110/Scripts/master/images/kuwo.png",
+        "https://raw.githubusercontent.com/General74110/Scripts/master/images/kuwo.png"
       ]
     },
     {
@@ -82,10 +82,10 @@
           "desc": ""
         }
       ],
-      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/QQreader.js",
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js",
       "icons": [
-        "https://raw.githubusercontent.com/General74110/Scripts/master/img/qqreader.png",
-        "https://raw.githubusercontent.com/General74110/Scripts/master/img/qqreader.png"
+        "https://raw.githubusercontent.com/General74110/Scripts/master/images/qqreader.png",
+        "https://raw.githubusercontent.com/General74110/Scripts/master/images/qqreader.png"
       ]
     },
     {
@@ -103,7 +103,7 @@
           "desc": "抓取的1&_token，多个Token用#隔开"
         }
       ],
-      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Quantumult%20X/Script/Task/xmly.js",
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/xmly.js",
       "icons": [
         "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png",
         "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png"
