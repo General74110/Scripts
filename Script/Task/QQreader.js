@@ -49,26 +49,22 @@ let globalCookie = '';
 
 // 解析环境变量中存储的 Cookie JSON
 let cookieData = {};
-try {
-  cookieData = JSON.parse(process.env.QQYD_COOKIE || $.getdata('QQYD_COOKIE') || '{}');
-} catch (e) {
-  console.error('Error parsing QQYD_COOKIE:', e);
-    let ckStr = '';
+let ckStr = '';
 
-    if (isNode) {
-        ckStr = process.env.QQYD_COOKIE || '';
-    } else {
-        ckStr = $.getdata('QQYD_COOKIE') || '';
+// 先判断运行环境
+if (isNode) {
+    ckStr = process.env.QQYD_COOKIE || '';
+} else {
+    ckStr = $.getdata('QQYD_COOKIE') || '';
 }
 
-    if (ckStr) {
-        try {
-            cookieData = JSON.parse(ckStr);
-        } catch (e) {
-            console.log('❌ 解析 QQYD_COOKIE 出错:', e);
-        }
+if (ckStr) {
+    try {
+        cookieData = JSON.parse(ckStr);
+    } catch (e) {
+        console.log('❌ 解析 QQYD_COOKIE 出错:', e);
     }
-
+}
 
     !(async () => {
   if (typeof $request !== "undefined") {
