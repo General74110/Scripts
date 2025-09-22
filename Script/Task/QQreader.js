@@ -99,6 +99,7 @@ try {
         return;
       }
 
+
       // 2. 执行签到任务
       await $.wait(1000);  // 延迟 1 秒
       await CheckinSign(globalCookie);
