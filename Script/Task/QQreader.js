@@ -36,7 +36,7 @@ hostname = *.reader.qq.com
 */
 const $ = new Env('QQ阅读');
 const zh_name = 'QQ阅读';
-const logs = 0;  // 设置0关闭日志, 1开启日志
+const logs = 1;  // 设置0关闭日志, 1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
 const isNode = typeof process !== "undefined" && process.env;
 let t = ''
@@ -53,9 +53,24 @@ try {
   cookieData = JSON.parse(process.env.QQYD_COOKIE || $.getdata('QQYD_COOKIE') || '{}');
 } catch (e) {
   console.error('Error parsing QQYD_COOKIE:', e);
+    let ckStr = '';
+
+    if (isNode) {
+        ckStr = process.env.QQYD_COOKIE || '';
+    } else {
+        ckStr = $.getdata('QQYD_COOKIE') || '';
 }
 
-!(async () => {
+    if (ckStr) {
+        try {
+            cookieData = JSON.parse(ckStr);
+        } catch (e) {
+            console.log('❌ 解析 QQYD_COOKIE 出错:', e);
+        }
+    }
+
+
+    !(async () => {
   if (typeof $request !== "undefined") {
     // 如果是请求环境，获取 Cookies
     GetCookies();
