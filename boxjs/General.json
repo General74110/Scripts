@@ -46,7 +46,7 @@
     {
       "id": "QQreader",
       "name": "QQ阅读",
-      "keys": ["ywguid", "ywkey", "ywtoken", "csigs"],
+      "keys": ["QQYD_COOKIE"],
       "desc": "自动完成QQ阅读任务",
       "settings": [
         {
