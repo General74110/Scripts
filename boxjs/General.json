@@ -50,32 +50,8 @@
       "desc": "自动完成QQ阅读任务",
       "settings": [
         {
-          "id": "ywguid",
-          "name": "ywguid",
-          "val": "",
-          "type": "text",
-          "placeholder": "",
-          "desc": ""
-        },
-        {
-          "id": "ywkey",
-          "name": "ywkey",
-          "val": "",
-          "type": "text",
-          "placeholder": "",
-          "desc": ""
-        },
-        {
-          "id": "ywtoken",
-          "name": "ywtoken",
-          "val": "",
-          "type": "text",
-          "placeholder": "",
-          "desc": ""
-        },
-        {
-          "id": "csigs",
-          "name": "csigs",
+          "id": "QQYD_COOKIE",
+          "name": "QQ阅读Cookie",
           "val": "",
           "type": "text",
           "placeholder": "",
