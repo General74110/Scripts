@@ -36,7 +36,7 @@ hostname = *.reader.qq.com
 */
 const $ = new Env('QQ阅读');
 const zh_name = 'QQ阅读';
-const logs = 1;  // 设置0关闭日志, 1开启日志
+const logs = 0;  // 设置0关闭日志, 1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
 const isNode = typeof process !== "undefined" && process.env;
 let t = ''
