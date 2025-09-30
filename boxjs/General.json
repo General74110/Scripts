@@ -84,6 +84,27 @@
         "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png",
         "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Himalaya.png"
       ]
+    },
+    {
+      "id": "NetworkPolicy",
+      "name": "Surge 网络策略组",
+      "keys": ["networkGroups"],
+      "desc": "动态配置 Surge 策略组 JSON",
+      "settings": [
+        {
+          "id": "networkGroups",
+          "name": "策略组配置",
+          "val": "{\"TikTok\":{\"proxy\":\"TikTok线路\"},\"Open AI\":{\"proxy\":\"Open AI线路\"},\"国外社交\":{\"proxy\":\"国外社交线路\"},\"国内媒体\":{\"proxy\":\"国内媒体线路\"},\"国外媒体\":{\"proxy\":\"国外媒体线路\"},\"游戏平台\":{\"proxy\":\"游戏平台线路\"},\"谷歌 FCM\":{\"proxy\":\"谷歌 FCM线路\"},\"漏网之鱼\":{\"proxy\":\"自动选择\"}}",
+          "type": "text",
+          "placeholder": "填写 JSON 格式策略组",
+          "desc": "格式示例: {\"TikTok\":{\"proxy\":\"TikTok线路\"},\"Open AI\":{\"proxy\":\"Open AI线路\"}}"
+        }
+      ],
+      "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Script/Enevt/SSID.js",
+      "icons": [
+        "https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/netgoldstar.png",
+        "https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/netgoldstar.png"
+      ]
     }
   ]
 }
