@@ -94,7 +94,7 @@
         {
           "id": "networkGroups",
           "name": "策略组配置",
-          "val": "TikTok=TikTok线路&Open AI=Open AI线路&国外社交=国外社交线路&国内媒体=国内媒体线路&国外媒体=国外媒体线路&游戏平台=游戏平台线路&谷歌 FCM=谷歌 FCM线路&漏网之鱼=自动选择",
+          "val": "",
           "type": "text",
           "placeholder": "每条 key=value 用 & 分隔，例如 TikTok=TikTok线路&Open AI=Open AI线路",
           "desc": "脚本会自动解析，每条 key=value，direct 默认为 DIRECT"
