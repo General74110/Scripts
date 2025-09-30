@@ -89,15 +89,15 @@
       "id": "NetworkPolicy",
       "name": "Surge 网络策略组",
       "keys": ["networkGroups"],
-      "desc": "动态配置 Surge 策略组（每行 key=value）",
+      "desc": "动态配置 Surge 策略组（单行 & 分隔 key=value）",
       "settings": [
         {
           "id": "networkGroups",
           "name": "策略组配置",
-          "val": "TikTok=TikTok线路\nOpen AI=Open AI线路\n国外社交=国外社交线路\n国内媒体=国内媒体线路\n国外媒体=国外媒体线路\n游戏平台=游戏平台线路\n谷歌 FCM=谷歌 FCM线路\n漏网之鱼=自动选择",
+          "val": "TikTok=TikTok线路&Open AI=Open AI线路&国外社交=国外社交线路&国内媒体=国内媒体线路&国外媒体=国外媒体线路&游戏平台=游戏平台线路&谷歌 FCM=谷歌 FCM线路&漏网之鱼=自动选择",
           "type": "text",
-          "placeholder": "每行填写策略组=代理节点名，例如 TikTok=TikTok线路",
-          "desc": "脚本会自动解析，每行 key=value，direct 默认为 DIRECT"
+          "placeholder": "每条 key=value 用 & 分隔，例如 TikTok=TikTok线路&Open AI=Open AI线路",
+          "desc": "脚本会自动解析，每条 key=value，direct 默认为 DIRECT"
         }
       ],
       "script": "https://raw.githubusercontent.com/General74110/Scripts/master/Script/Enevt/SSID.js",
