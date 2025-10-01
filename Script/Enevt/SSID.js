@@ -1,14 +1,15 @@
 /**
  * Surge 专用网络环境策略切换
- * 适用于有境外流量卡的情况
+ * 适用于有境外流量卡且Wi-Fi没有外网的情况
  * Author: General℡
  * GitHub: https://github.com/General74110/Scripts
  */
 
 const url = "https://app.netart.cn/network-panel/ip.ajax";
-const maxRetry = 2;        // 最大重试次数
-const retryInterval = 2000; // 重试间隔 2 秒
+const maxRetry = 3;        // 最大重试次数，防止无信号干扰
+const retryInterval = 5000; // 重试间隔 5 秒
 const operatorProxyList = ["移动", "联通", "电信", "广电"];
+const lastModeKey = "lastNetworkMode"; // 存储上一次模式（proxy / direct）
 
 /**
  * 获取策略组配置
@@ -48,7 +49,7 @@ function getGroups() {
 function fetchData(retry = 0) {
     const groups = getGroups();
     if (!groups || Object.keys(groups).length === 0) {
-        console.log("没有可用的策略组，脚本结束");
+        console.log("没有可用的策略组，请前往Boxjs填写，脚本结束");
         return $done();
     }
 
@@ -97,13 +98,23 @@ function fetchData(retry = 0) {
             const operatorDisplay = (countryName + asInfo).trim() || "未知";
             const countryCode = obj?.data?.country?.code || "未知";
 
-            // 判断是否走代理
-            let useProxy = false;
-            if (countryCode === "CN" && operatorProxyList.some(op => asInfo.includes(op))) {
-                useProxy = true;
-            }
+            // 判断是否走代理（只根据运营商判断，不看国家代码）
+            let useProxy = operatorProxyList.some(op => asInfo.includes(op));
+            const newMode = useProxy ? "proxy" : "direct";
+            const lastMode = $persistentStore.read(lastModeKey) || "";
 
-            console.log(`运营商: ${operatorDisplay}, 国家代码: ${countryCode}, 使用代理: ${useProxy}`);
+            console.log(`运营商: ${operatorDisplay}, 国家代码: ${countryCode}, 本次模式: ${newMode}, 上次模式: ${lastMode}`);
+
+            // 如果模式没变，则直接结束
+            if (newMode === lastMode) {
+                console.log("网络环境未变化，跳过策略切换");
+                $notification.post(
+                    "Surge 策略未切换",
+                    `运营商: ${operatorDisplay} | 国家: ${countryCode}`,
+                    `网络环境未变化，将继续使用：${newMode === "proxy" ? "代理" : "直连"}`
+                );
+                return $done();
+            }
 
             // 批量切换策略组
             for (let group in groups) {
@@ -111,6 +122,9 @@ function fetchData(retry = 0) {
                 console.log(`切换策略组: ${group} → ${target}`);
                 $surge.setSelectGroupPolicy(group, target);
             }
+
+            // 存储本次模式
+            $persistentStore.write(newMode, lastModeKey);
 
             $notification.post(
                 "Surge 策略切换成功",
