@@ -22,11 +22,14 @@ QQYD_COOKIE={"ywkey":"your_ywkey","ywguid":"your_ywguid","ywtoken":"your_ywtoken
         请勿贩卖！⚠️⚠️⚠️
 
 [Script]
-http-request ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\? script-path=https://raw.githubusercontent.com/General74110/Quantumult-X/master/Task/QQreader.js, timeout=10, enabled=true, tag=QQ阅读获取Cookies, images-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/QQ.png
+http-request ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\?
+ script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js, timeout=10,
+  enabled=true,
+  tag=QQ阅读获取Cookies, images-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/QQ.png
 
 
 [Task]
-cron "30 6 * * *" script-path=https://raw.githubusercontent.com/General74110/Quantumult-X/master/Task/QQreader.js, timeout=3600, tag=QQ阅读, images-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/QQ.png
+cron "30 6 * * *" script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js, timeout=3600, tag=QQ阅读, images-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/QQ.png
 
 
 [MITM]
