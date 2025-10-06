@@ -19,7 +19,7 @@ URL-REGEX,"^https:\/\/atoken\.m\.taobao\.com\/api\/updateZdata\/v4",REJECT
 URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/dec\/event\/app\/v1\/push\/sync\/loginEvent",REJECT
 URL-REGEX,"^http:\/\/sdk-log\.partner\.sm\.cn\/sdk_log\/?.*$",REJECT
 URL-REGEX,"^https:\/\/img-tailor\.11222\.cn\/cms\/upload\/img\/[^\/]+\.png$",REJECT
-URL-REGEX,"^https:\/\/mdn\.alipayobjects\.com\/member_ugoutsideop\/afts\/file\/A\*[A-Za-z0-9]+$",REJECT-TINYGIF
+URL-REGEX,"^https:\/\/mdn\.alipayobjects\.com\/member_ugoutsideop\/afts\/file\/A\*[A-Za-z0-9]+$",REJECT
 
 [Map local]
 # 安心记加班
