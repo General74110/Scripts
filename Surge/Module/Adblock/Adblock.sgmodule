@@ -9,16 +9,16 @@
 
 [Rule]
 # 爱思助手开屏广告
-URL-REGEX,https:\/\/list-app-m\.i4\.cn\/getopfstadinfo\.xhtml,REJECT
+URL-REGEX,"^https:\/\/list-app-m\.i4\.cn\/getopfstadinfo\.xhtml",REJECT
 
 # 书旗小说
-URL-REGEX,^https:\/\/p[24]-[a-z]+\.adukwai\.com\/.*$,REJECT
-URL-REGEX,^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.common\.getTimestamp\/*,REJECT
-URL-REGEX,^https:\/\/atoken\.m\.taobao\.com\/v2\/getcvalue,REJECT
-URL-REGEX,^https:\/\/atoken\.m\.taobao\.com\/api\/updateZdata\/v4,REJECT
-URL-REGEX,^https:\/\/ocean\.shuqireader\.com\/api\/dec\/event\/app\/v1\/push\/sync\/loginEvent,REJECT
-URL-REGEX,^http:\/\/sdk-log\.partner\.sm\.cn\/sdk_log\/.*$,REJECT
-URL-REGEX,^https:\/\/img-tailor\.11222\.cn\/cms\/upload\/img\/[^\/]+\.png$,REJECT
+URL-REGEX,"^https:\/\/p[24]-[a-z]+\.adukwai\.com\/.*$",REJECT
+URL-REGEX,"^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.common\.getTimestamp\/*",REJECT
+URL-REGEX,"^https:\/\/atoken\.m\.taobao\.com\/v2\/getcvalue",REJECT
+URL-REGEX,"^https:\/\/atoken\.m\.taobao\.com\/api\/updateZdata\/v4",REJECT
+URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/dec\/event\/app\/v1\/push\/sync\/loginEvent",REJECT
+URL-REGEX,"^http:\/\/sdk-log\.partner\.sm\.cn\/sdk_log\/.*$",REJECT
+URL-REGEX,"^https:\/\/img-tailor\.11222\.cn\/cms\/upload\/img\/[^\/]+\.png$",REJECT
 
 [Map local]
 # 安心记加班
