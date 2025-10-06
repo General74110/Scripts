@@ -20,12 +20,12 @@ URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/dec\/event\/app\/v1\/push\/s
 URL-REGEX,"^http:\/\/sdk-log\.partner\.sm\.cn\/sdk_log\/?.*$",REJECT
 URL-REGEX,"^https:\/\/img-tailor\.11222\.cn\/cms\/upload\/img\/[^\/]+\.png$",REJECT
 URL-REGEX,"^https:\/\/mdn\.alipayobjects\.com\/member_ugoutsideop\/afts\/file\/A\*[A-Za-z0-9]+$",REJECT-TINYGIF
-
 URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/render\/load\/resource",REJECT
 URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/ad\/adserver\/v1\/api\/getAdInfo\?/$",REJECT
 URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/ad\/adserver\/v1\/api\/ad\/userInfo\?/$",REJECT
 URL-REGEX,"^https:\/\/logrcv\.aiclk\.com\/tenew\?/$",REJECT
 URL-REGEX,"^https:\/\/dmsdk-api\.dmrtb\.com\/sdkconfig",REJECT
+URL-REGEX,"^http:\/\/feedback\.uc\.cn\/feedback\/api\/get_unread_status",REJECT
 
 [Map local]
 # 安心记加班
@@ -46,4 +46,4 @@ URL-REGEX,"^https:\/\/dmsdk-api\.dmrtb\.com\/sdkconfig",REJECT
 
 [MITM]
 
-hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com
+hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com, feedback.uc.cn
