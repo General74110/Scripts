@@ -76,12 +76,7 @@ console.log(obj);
         console.log(obj);
 
     }
-} else if (/https:\/\/jjbapi\.julanling\.com\/tool_module\/bottom_tab_config\?/.test(requestUrl)) {
-    if (obj.hasOwnProperty("results")) {
-        delete obj.results;
-        console.log(obj);
-    }
-} else if (/https:\/\/jjbapi\.julanling\.com\/market\/home_config/.test(requestUrl)) {
+} else if (/https:\/\/jjbapi\.julanling\.com\/(tool_module\/bottom_tab_config\?|market\/home_config)/.test(requestUrl)) {
     if (obj.hasOwnProperty("results")) {
         delete obj.results;
         console.log(obj);

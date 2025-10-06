@@ -39,7 +39,7 @@ URL-REGEX,"^http:\/\/feedback\.uc\.cn\/feedback\/api\/get_unread_status",REJECT
 
 [Script]
 # 安心记加班去除开屏
-安心记加班 = type=http-response, pattern=^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2|tool_module\/bottom_tab_config\?|market\/home_config)\?, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Adblock/AnxinjiAd.js, requires-body=true, timeout=60
+安心记加班 = type=http-response, pattern=^https?:\/\/jjbapi\.julanling\.com\/(advertConfig\/queryCutOverScreenConfig|splash_screen\/jjb_splash_screen_v3|switch_my\/vip_banner_info|invite_share_v2\/switch_my|switch\/init_config_v2|tool_module\/bottom_tab_config|market\/home_config)(\?.*)?$, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Adblock/AnxinjiAd.js, requires-body=true, timeout=60
 
 # 书旗小说去广告
 书旗小说 = type=http-response, pattern=^https:\/\/ocean\.shuqireader\.com\/sqios\/render\/render\/page\/bookstore,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Adblock/SqxsAd.js, requires-body=true,timeout=60
