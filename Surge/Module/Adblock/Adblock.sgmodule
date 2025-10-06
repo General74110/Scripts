@@ -36,4 +36,4 @@ URL-REGEX,"^https:\/\/mdn\.alipayobjects\.com\/member_ugoutsideop\/afts\/file\/A
 [MITM]
 
 hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao
-.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn,mdn.alipayobjects.com
+.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com
