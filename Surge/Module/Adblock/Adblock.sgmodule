@@ -47,6 +47,4 @@ script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script
 
 [MITM]
 
-hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao
-.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com,
-logrcv.aiclk.com, dmsdk-api.dmrtb.com
+hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com
