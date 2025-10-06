@@ -11,7 +11,7 @@ if (/^https:\/\/(ssp-sdk-config\.uc\.cn\/mediations|ocean\.shuqireader\.com\/api
 
     }
 
-    } else if (/^https:\/\/ocean\.shuqireader\.com\/sqios\/render\/render\/page\/bookstore$/.test(requestUrl)) {
+    } else if (/^https:\/\/ocean\.shuqireader\.com\/sqios\/render\/render\/page\/bookstore/.test(requestUrl)) {
 
     if (json.data && json.data.moduleInfos && Array.isArray(json.data.moduleInfos) && json.data.moduleInfos.length > 1) {
         delete json.data.moduleInfos[1];// 章末推荐书籍
