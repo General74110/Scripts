@@ -21,9 +21,18 @@ URL-REGEX,"^http:\/\/sdk-log\.partner\.sm\.cn\/sdk_log\/?.*$",REJECT
 URL-REGEX,"^https:\/\/img-tailor\.11222\.cn\/cms\/upload\/img\/[^\/]+\.png$",REJECT
 URL-REGEX,"^https:\/\/mdn\.alipayobjects\.com\/member_ugoutsideop\/afts\/file\/A\*[A-Za-z0-9]+$",REJECT-TINYGIF
 
+URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/render\/load\/resource",REJECT
+URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/ad\/adserver\/v1\/api\/getAdInfo$",REJECT
+URL-REGEX,"^https:\/\/ocean\.shuqireader\.com\/api\/ad\/adserver\/v1\/api\/ad\/userInfo$",REJECT
+
 [Map local]
 # 安心记加班
 ^https:\/\/jjbapi\.julanling\.com\/market\/home_config data-type=text data=" " status-code=200
+
+# 书旗小说
+^https:\/\/huichuan\.sm\.cn\/nativead data-type=text data="{}" status-code=200
+^https:\/\/ocean\.shuqireader\.com\/api\/route\/ios\/readPage$ data-type=text data="{}" status-code=200
+^https:\/\/ocean\.shuqireader\.com\/api\/route\/iosReadPage\/adV2 data-type=text data="{}" status-code=200
 
 
 [Script]
