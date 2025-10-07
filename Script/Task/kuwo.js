@@ -154,6 +154,7 @@ async function executeTasks(ID, displayName) {
 
     //查询积分
     await getAsset(ID, displayName);
+    await VipExtime(ID, displayName);
     //兑换会员
     const Property = $.asset.data.remainScore
 
@@ -270,6 +271,71 @@ async function getNickname(ID) {
         });
     });
 }
+
+
+// 获取会员到期时间
+// 获取会员到期时间（精确到年月日时分秒，自动处理毫秒/秒时间戳）
+async function VipExtime(ID) {
+    const [loginUid, loginSid] = ID.split('@');
+
+    return new Promise(async (resolve) => {
+        try {
+            const url = {
+                url: `http://vip1.kuwo.cn/vip/v2/user/vip?op=ui&uid=${loginUid}&sid=${loginSid}&signver=new`,
+                headers: {
+                    "Host": "vip1.kuwo.cn",
+                    "Range": "bytes=0-",
+                    "Accept": "*/*",
+                    "User-Agent": "%E9%85%B7%E6%88%91%E9%9F%B3%E4%B9%90/3830 CFNetwork/1498.700.2.1.1 Darwin/23.6.0",
+                    "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+                    "Accept-Encoding": "gzip, deflate",
+                    "Connection": "keep-alive",
+                },
+            };
+
+            $.get(url, (err, resp, data) => {
+                if (logs == 1) console.log('查询会员到期时间响应体：', data);
+                try {
+                    if (err) {
+                        $.logErr(`❌ 获取会员到期时间失败：${err}`);
+                        return resolve('');
+                    }
+
+                    const json = JSON.parse(data);
+                    if (json.meta?.code !== 200) {
+                        $.log(`⚠️ 查询失败，接口返回code=${json.meta?.code}`);
+                        return resolve('');
+                    }
+
+                    const vipData = json.data || {};
+                    let expireTimestamp = Number(vipData.vipLuxuryExpire || vipData.vipmExpire || vipData.vipExpire || 0);
+
+                    if (!expireTimestamp || expireTimestamp === 0) {
+                        $.log(`❌ 未检测到会员信息`);
+                        return resolve('未开通会员');
+                    }
+
+                    // 自动处理秒/毫秒时间戳
+                    if (expireTimestamp < 1e12) expireTimestamp *= 1000;
+
+                    // 转换为年月日时分秒
+                    const expireDate = new Date(expireTimestamp);
+                    const formatted = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')} ${String(expireDate.getHours()).padStart(2, '0')}:${String(expireDate.getMinutes()).padStart(2, '0')}:${String(expireDate.getSeconds()).padStart(2, '0')}`;
+
+                    $.log(`🎟️ 会员到期时间：${formatted}`);
+                    resolve(formatted);
+                } catch (e) {
+                    $.logErr(e);
+                    resolve('');
+                }
+            });
+        } catch (e) {
+            $.logErr(`❌ 获取会员到期时间失败: ${e}`);
+            resolve('');
+        }
+    });
+}
+
 
 
 async function getAsset(ID) {
