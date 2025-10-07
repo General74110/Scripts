@@ -278,63 +278,60 @@ async function getNickname(ID) {
 async function VipExtime(ID) {
     const [loginUid, loginSid] = ID.split('@');
 
-    return new Promise(async (resolve) => {
+    let options = {
+        url: `http://vip1.kuwo.cn/vip/v2/user/vip?op=ui&uid=${loginUid}&sid=${loginSid}&signver=new`,
+        headers: {
+            "Host": "vip1.kuwo.cn",
+            "Range": "bytes=0-",
+            "Accept": "*/*",
+            "User-Agent": "%E9%85%B7%E6%88%91%E9%9F%B3%E4%B9%90/3830 CFNetwork/1498.700.2.1.1 Darwin/23.6.0",
+            "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive",
+        },
+    };
+
+    return $.http.get(options).then((resp) => {
+        if (logs == 1) console.log('查询会员到期时间响应体：', resp.body);
+        let desc = '';
         try {
-            const url = {
-                url: `http://vip1.kuwo.cn/vip/v2/user/vip?op=ui&uid=${loginUid}&sid=${loginSid}&signver=new`,
-                headers: {
-                    "Host": "vip1.kuwo.cn",
-                    "Range": "bytes=0-",
-                    "Accept": "*/*",
-                    "User-Agent": "%E9%85%B7%E6%88%91%E9%9F%B3%E4%B9%90/3830 CFNetwork/1498.700.2.1.1 Darwin/23.6.0",
-                    "Accept-Language": "zh-CN,zh-Hans;q=0.9",
-                    "Accept-Encoding": "gzip, deflate",
-                    "Connection": "keep-alive",
-                },
-            };
+            const obj = JSON.parse(resp.body || resp);
+            if (obj.meta?.code !== 200) {
+                desc = `⚠️ 查询失败，接口返回code=${obj.meta?.code}`;
+                $.log(desc);
+                notifyMsg.push(desc);
+                return desc;
+            }
 
-            $.get(url, (err, resp, data) => {
-                if (logs == 1) console.log('查询会员到期时间响应体：', data);
-                try {
-                    if (err) {
-                        $.logErr(`❌ 获取会员到期时间失败：${err}`);
-                        return resolve('');
-                    }
+            const vipData = obj.data || {};
+            let expireTimestamp = Number(vipData.vipLuxuryExpire || vipData.vipmExpire || vipData.vipExpire || 0);
 
-                    const json = JSON.parse(data);
-                    if (json.meta?.code !== 200) {
-                        $.log(`⚠️ 查询失败，接口返回code=${json.meta?.code}`);
-                        return resolve('');
-                    }
+            if (!expireTimestamp || expireTimestamp === 0) {
+                desc = '🔴 未开通会员';
+                $.log(desc);
+                notifyMsg.push(desc);
+                return desc;
+            }
 
-                    const vipData = json.data || {};
-                    let expireTimestamp = Number(vipData.vipLuxuryExpire || vipData.vipmExpire || vipData.vipExpire || 0);
+            // 自动处理秒/毫秒时间戳
+            if (expireTimestamp < 1e12) expireTimestamp *= 1000;
 
-                    if (!expireTimestamp || expireTimestamp === 0) {
-                        $.log(`❌ 未检测到会员信息`);
-                        return resolve('未开通会员');
-                    }
+            // 转换为年月日时分秒
+            const expireDate = new Date(expireTimestamp);
+            desc = `🎟️ 会员到期时间：${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')} ${String(expireDate.getHours()).padStart(2, '0')}:${String(expireDate.getMinutes()).padStart(2, '0')}:${String(expireDate.getSeconds()).padStart(2, '0')}`;
 
-                    // 自动处理秒/毫秒时间戳
-                    if (expireTimestamp < 1e12) expireTimestamp *= 1000;
-
-                    // 转换为年月日时分秒
-                    const expireDate = new Date(expireTimestamp);
-                    const formatted = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')} ${String(expireDate.getHours()).padStart(2, '0')}:${String(expireDate.getMinutes()).padStart(2, '0')}:${String(expireDate.getSeconds()).padStart(2, '0')}`;
-
-                    $.log(`🎟️ 会员到期时间：${formatted}`);
-                    resolve(formatted);
-                } catch (e) {
-                    $.logErr(e);
-                    resolve('');
-                }
-            });
+            $.log(desc);
+            notifyMsg.push(desc);
+            return desc;
         } catch (e) {
-            $.logErr(`❌ 获取会员到期时间失败: ${e}`);
-            resolve('');
+            $.logErr(e);
+            desc = '❌ 查询会员到期时间失败';
+            notifyMsg.push(desc);
+            return desc;
         }
     });
 }
+
 
 
 
