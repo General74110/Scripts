@@ -11,12 +11,32 @@ let requestUrl = $request.url;
     if (json.data && json.data.props && json.data.props["x-preProcessor"] && Array.isArray(json.data.props["x-preProcessor"])) {
         delete json.data.props["x-preProcessor"][0]; // 书城横幅
     }
-} else if (/https:\/\/ocean\.shuqireader\.com\/sqios\/render\/render\/native\/page\/scene/.test(requestUrl)) {
+} else if (/^https:\/\/ocean\.shuqireader\.com\/sqios\/render\/render\/native\/page\/scene/.test(requestUrl)) {
     if (obj.hasOwnProperty("data")) {
         delete obj.data;
     }
 
-}
+} else if (/^https:\/\/ocean\.shuqireader\.com\/api\/route\/iosReadPage\/adV2\?/.test(requestUrl)) {
+     if (obj.hasOwnProperty("data")) {
+         delete obj.data;
+     }
+ } else if (/^https:\/\/ocean\.shuqireader\.com\/api\/route\/iosReadPage\/adTurnChapter\?/.test(requestUrl)) {
+     if (obj.hasOwnProperty("data")) {
+         delete obj.data;
+     }
+ } else if (/^https:\/\/ocean\.shuqireader\.com\/api\/route\/ios\/readPage/.test(requestUrl)) {
+     if (obj.hasOwnProperty("data")) {
+         delete obj.data;
+     }
+ } else if (/^https:\/\/partner\.uc\.cn\/realtime_config/.test(requestUrl)) {
+     if (obj.hasOwnProperty("data")) {
+         delete obj.data;
+     }
+ } else if (/^https:\/\/huichuan\.sm\.cn\/nativead/.test(requestUrl)) {
+     if (obj.hasOwnProperty("data")) {
+         delete obj.data;
+     }
+ }
 
 
 //重写数据
