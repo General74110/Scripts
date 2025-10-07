@@ -275,7 +275,6 @@ async function getNickname(ID) {
 
 
 // 获取会员到期时间
-// 获取会员到期时间（精确到年月日时分秒，自动处理毫秒/秒时间戳）
 async function VipExtime(ID) {
     const [loginUid, loginSid] = ID.split('@');
 
