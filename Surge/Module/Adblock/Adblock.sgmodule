@@ -9,7 +9,12 @@
 
 [Rule]
 # 爱思助手开屏广告
-URL-REGEX,"^https:\/\/list-app-m\.i4\.cn\/getopfstadinfo\.xhtml",REJECT
+URL-REGEX,"^https:\/\/list-app-m\.i4\.cn\/getopfstadinfo\.xhtml$",REJECT
+URL-REGEX,"^https:\/\/list-app-m\.i4\.cn\/adclickcb\.xhtml$",REJECT
+URL-REGEX,"^https?:\/\/d\.image\.i4\.cn\/(image\/icon|adInfo\/image\/original)\/.+\.jpg(?:\?.*)?$",REJECT
+
+# 京东开屏
+URL-REGEX,"^https:\/\/.*\.360buyimg\.com\/.*\.(?:png|jpg|jpeg|avif|webp|gif)(?:\?.*)?$",REJECT
 
 # 书旗小说
 DOMAIN,adashx.ut.shuqi.com,REJECT
@@ -44,4 +49,4 @@ URL-REGEX,"^https:\/\/ssp-api\.dmrtb\.com\/domobSDK",REJECT
 
 [MITM]
 
-hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com, feedback.uc.cn, partner.uc.cn, ssp-api.dmrtb.com
+hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com, feedback.uc.cn, partner.uc.cn, ssp-api.dmrtb.com, *.360buyimg.com
