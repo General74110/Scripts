@@ -14,7 +14,7 @@ URL-REGEX,"^https:\/\/list-app-m\.i4\.cn\/adclickcb\.xhtml$",REJECT
 URL-REGEX,"^https?:\/\/d\.image\.i4\.cn\/(image\/icon|adInfo\/image\/original)\/.+\.jpg(?:\?.*)?$",REJECT
 
 # 京东开屏
-URL-REGEX,"^https:\/\/.*\.360buyimg\.com\/.*(?:\?.*)?$",REJECT
+URL-REGEX,"^https:\/\/.*\.360buyimg\.com\/.*\.(?:png|jpg|jpeg|avif|webp|gif)(?:\?.*)?$",REJECT
 
 # 书旗小说
 DOMAIN,adashx.ut.shuqi.com,REJECT
