@@ -36,8 +36,8 @@ if (url.includes("usercenter.kugou.com/v3/get_my_info")) {
 // 🧩 接口2：绑定信息
 else if (url.includes("userinfo.user.kugou.com/get_bind")) {
     if (obj?.data) {
-        obj.data.vip_type = 2; // 2 = SVIP
-        obj.data.m_type = 2;
+        obj.data.vip_type = 1; // 2 = SVIP
+        obj.data.m_type = 1;
         obj.data.y_type = 1;
         obj.data.vip_end_time = "2099-12-31 23:59:59";
         obj.data.m_end_time = "2099-12-31 23:59:59";
