@@ -51,14 +51,18 @@ else if (url.includes("userinfo.user.kugou.com/get_bind")) {
 else if (url.includes("gateway.kugou.com/media.store/v1/get_res_privilege/lite")) {
     if (obj?.data?.length > 0) {
         obj.data.forEach(song => {
-            // 主体曲
-            song.privilege = 1;              // 解锁权限
+            song.privilege = 0;              // 解锁权限
             song.price = 0;                  // 去除价格
             song.fail_process = 0;           // 去除失败限制
             song.expire = 1;                 // 标记为有效
             song.buy_count_vip = 1;          // 标记VIP购买
             song.end_time = "2099-12-31";    // 有效期修改
-            if (song.trans_param) song.trans_param.musicpack_advance = 0;
+            if (song.trans_param) {
+                song.trans_param.musicpack_advance = 0;
+                if (song.trans_param.hash_offset) {
+                    song.trans_param.hash_offset.end_ms = 999999999; // 🔓 移除试听限制
+                }
+            }
 
             // 所有关联音质版本
             if (song.relate_goods?.length) {
@@ -69,13 +73,18 @@ else if (url.includes("gateway.kugou.com/media.store/v1/get_res_privilege/lite")
                     r.expire = 1;
                     r.buy_count_vip = 1;
                     r.end_time = "2099-12-31";
-                    if (r.trans_param) r.trans_param.musicpack_advance = 0;
+                    if (r.trans_param) {
+                        r.trans_param.musicpack_advance = 0;
+                        if (r.trans_param.hash_offset) {
+                            r.trans_param.hash_offset.end_ms = 999999999; // 🔓 移除试听限制
+                        }
+                    }
                 });
             }
         });
         obj.vip_user_type = 1; // SVIP
     }
-    console.log("✅ 解锁音质成功");
+    console.log("✅ 解锁音质与试听限制成功");
 }
 
 $done({ body: JSON.stringify(obj) });
