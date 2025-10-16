@@ -12,84 +12,71 @@ kugou_vip = type=http-response,pattern=^https:\/\/(usercenter\.kugou\.com\/v3\/g
 * hostname = *.kugou.com
  */
 
-let body = $response.body;
-let obj = JSON.parse(body);
-const url = $request.url;
+const DEBUG = false; // 开 true 查看日志
+const LONG_MS = 999999999; // 用于替换 end_ms
+const LONG_BYTE = 999999999; // 用于替换 end_byte
 
-// 🧩 1️⃣ 用户信息接口
-if (url.includes("usercenter.kugou.com/v3/get_my_info")) {
-    if (obj?.data) {
-        obj.data.vip_type = 1;
-        obj.data.svip_level = 3;
-        obj.data.su_vip_begin_time = "2025-01-01";
-        obj.data.su_vip_end_time = "2099-12-31";
-        obj.data.su_vip_y_endtime = "2099-12-31";
-        obj.data.su_vip_clearday = "9999";
-        obj.data.bookvip_valid = 1;
-        obj.data.singvip_valid = 1;
-        obj.data.user_type = 1;
-        obj.data.vip_text = "SVIP 永久会员";
-    }
-    console.log("✅ 修改用户VIP信息成功");
-}
+try {
+    const url = $request.url || "";
+    let body = $response && $response.body ? $response.body : "{}";
+    let obj = JSON.parse(body);
 
-// 🧩 2️⃣ 绑定信息接口
-else if (url.includes("userinfo.user.kugou.com/get_bind")) {
-    if (obj?.data) {
-        obj.data.vip_type = 2;
-        obj.data.m_type = 2;
-        obj.data.y_type = 1;
-        obj.data.vip_end_time = "2099-12-31 23:59:59";
-        obj.data.m_end_time = "2099-12-31 23:59:59";
-        obj.data.roam_type = 1;
-        obj.data.m_is_old = 1;
-    }
-    console.log("✅ 修改绑定信息成功");
-}
+    // 只处理资源权限 lite 接口
+    if (url.includes("/media.store/v1/get_res_privilege/lite") && Array.isArray(obj.data)) {
+        obj.data.forEach(item => {
+            // --- 1) 修改播放判定字段 ---
+            if (typeof item.privilege !== "undefined") item.privilege = 0;
+            if (typeof item.expire !== "undefined") item.expire = 1;
+            if (typeof item.buy_count_vip !== "undefined") item.buy_count_vip = 1;
 
-// 🧩 3️⃣ 音质资源权限接口
-else if (url.includes("gateway.kugou.com/media.store/v1/get_res_privilege/lite")) {
-    if (obj?.data?.length > 0) {
-        obj.data.forEach(song => {
-            // 主曲
-            song.privilege = 0;
-            song.price = 0;
-            song.fail_process = 0;
-            song.expire = 1;
-            song.buy_count_vip = 1;
-            song.end_time = "2099-12-31";
-            song.rebuy_pay_type = 1;
-            if (song.trans_param) {
-                song.trans_param.musicpack_advance = 0;
-                if (song.trans_param.hash_offset) {
-                    song.trans_param.hash_offset.end_ms = 999999999;
-                    song.trans_param.hash_offset.end_byte = 999999999;
-                }
+            // --- 2) 修改 trans_param.hash_offset（如果存在） ---
+            if (item.trans_param && item.trans_param.hash_offset) {
+                const ho = item.trans_param.hash_offset;
+                if (typeof ho.end_ms !== "undefined") ho.end_ms = LONG_MS;
+                if (typeof ho.end_byte !== "undefined") ho.end_byte = LONG_BYTE;
+
+                // 可选：确保 start_ms/start_byte 非负
+                if (typeof ho.start_ms === "undefined") ho.start_ms = 0;
+                if (typeof ho.start_byte === "undefined") ho.start_byte = 0;
             }
 
-            // 所有关联音质版本
-            if (song.relate_goods?.length) {
-                song.relate_goods.forEach(r => {
-                    r.privilege = 0;
-                    r.price = 0;
-                    r.fail_process = 0;
-                    r.expire = 1;
-                    r.buy_count_vip = 1;
-                    r.end_time = "2099-12-31";
-                    r.rebuy_pay_type = 1;
-                    if (r.trans_param) {
-                        r.trans_param.musicpack_advance = 0;
-                        if (r.trans_param.hash_offset) {
-                            r.trans_param.hash_offset.end_ms = 999999999;
-                            r.trans_param.hash_offset.end_byte = 999999999;
-                        }
+            // --- 3) 关联音质也处理 ---
+            if (Array.isArray(item.relate_goods)) {
+                item.relate_goods.forEach(r => {
+                    if (typeof r.privilege !== "undefined") r.privilege = 0;
+                    if (typeof r.expire !== "undefined") r.expire = 1;
+                    if (typeof r.buy_count_vip !== "undefined") r.buy_count_vip = 1;
+
+                    if (r.trans_param && r.trans_param.hash_offset) {
+                        const rho = r.trans_param.hash_offset;
+                        if (typeof rho.end_ms !== "undefined") rho.end_ms = LONG_MS;
+                        if (typeof rho.end_byte !== "undefined") rho.end_byte = LONG_BYTE;
+                        if (typeof rho.start_ms === "undefined") rho.start_ms = 0;
+                        if (typeof rho.start_byte === "undefined") rho.start_byte = 0;
                     }
                 });
             }
         });
-        obj.vip_user_type = 2;
-    }
-    console.log("✅ 解锁音质、试听与下载成功");
-}
 
-$done({ body: JSON.stringify(obj) });
+        // 可选：标记客户端参考的VIP类型（不必要，可注释）
+        // obj.vip_user_type = 2;
+
+        if (DEBUG) {
+            console.log("kugou_minimal_unlock: 已修改 data 项数 =", obj.data.length);
+            console.log(JSON.stringify(obj.data.map(d => ({
+                hash_offset: d.trans_param && d.trans_param.hash_offset ? {
+                    end_ms: d.trans_param.hash_offset.end_ms,
+                    end_byte: d.trans_param.hash_offset.end_byte
+                } : null,
+                privilege: d.privilege,
+                expire: d.expire,
+                buy_count_vip: d.buy_count_vip
+            })), null, 2));
+        }
+    }
+
+    $done({ body: JSON.stringify(obj) });
+} catch (e) {
+    if (DEBUG) console.log("kugou_minimal_unlock error:", e);
+    $done({});
+}
