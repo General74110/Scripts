@@ -21,9 +21,9 @@ if (url.includes("usercenter.kugou.com/v3/get_my_info")) {
     if (obj?.data) {
         obj.data.vip_type = 1; // 普通VIP
         obj.data.svip_level = 3; // SVIP等级
-        obj.data.su_vip_begin_time = "2025-01-01";
-        obj.data.su_vip_end_time = "2099-12-31";
-        obj.data.su_vip_y_endtime = "2099-12-31";
+        obj.data.su_vip_begin_time = "4102415999000";
+        obj.data.su_vip_end_time = "4102415999000";
+        obj.data.su_vip_y_endtime = "4102415999000";
         obj.data.su_vip_clearday = "9999";
         obj.data.bookvip_valid = 1;
         obj.data.singvip_valid = 1;
@@ -39,8 +39,8 @@ else if (url.includes("userinfo.user.kugou.com/get_bind")) {
         obj.data.vip_type = 2; // 2 = SVIP
         obj.data.m_type = 2;
         obj.data.y_type = 1;
-        obj.data.vip_end_time = "2099-12-31 23:59:59";
-        obj.data.m_end_time = "2099-12-31 23:59:59";
+        obj.data.vip_end_time = "4102415999000";
+        obj.data.m_end_time = "4102415999000";
         obj.data.roam_type = 1;
         obj.data.m_is_old = 1;
     }
