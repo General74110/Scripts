@@ -19,11 +19,11 @@ const url = $request.url;
 // 🧩 1️⃣ 用户信息接口
 if (url.includes("usercenter.kugou.com/v3/get_my_info")) {
     if (obj?.data) {
-        obj.data.vip_type = 1; // 普通VIP
-        obj.data.svip_level = 3; // SVIP等级
-        obj.data.su_vip_begin_time = "4102415999000";
-        obj.data.su_vip_end_time = "4102415999000";
-        obj.data.su_vip_y_endtime = "4102415999000";
+        obj.data.vip_type = 1;
+        obj.data.svip_level = 3;
+        obj.data.su_vip_begin_time = "2025-01-01";
+        obj.data.su_vip_end_time = "2099-12-31";
+        obj.data.su_vip_y_endtime = "2099-12-31";
         obj.data.su_vip_clearday = "9999";
         obj.data.bookvip_valid = 1;
         obj.data.singvip_valid = 1;
@@ -36,11 +36,11 @@ if (url.includes("usercenter.kugou.com/v3/get_my_info")) {
 // 🧩 2️⃣ 绑定信息接口
 else if (url.includes("userinfo.user.kugou.com/get_bind")) {
     if (obj?.data) {
-        obj.data.vip_type = 2; // 2 = SVIP
+        obj.data.vip_type = 2;
         obj.data.m_type = 2;
         obj.data.y_type = 1;
-        obj.data.vip_end_time = "4102415999000";
-        obj.data.m_end_time = "4102415999000";
+        obj.data.vip_end_time = "2099-12-31 23:59:59";
+        obj.data.m_end_time = "2099-12-31 23:59:59";
         obj.data.roam_type = 1;
         obj.data.m_is_old = 1;
     }
@@ -51,16 +51,19 @@ else if (url.includes("userinfo.user.kugou.com/get_bind")) {
 else if (url.includes("gateway.kugou.com/media.store/v1/get_res_privilege/lite")) {
     if (obj?.data?.length > 0) {
         obj.data.forEach(song => {
-            song.privilege = 10;              // 解锁权限
-            song.price = 0;                  // 去除价格
-            song.fail_process = 0;           // 去除失败限制
-            song.expire = 1;                 // 标记为有效
-            song.buy_count_vip = 1;          // 标记VIP购买
-            song.end_time = "2099-12-31";    // 有效期修改
+            // 主曲
+            song.privilege = 0;
+            song.price = 0;
+            song.fail_process = 0;
+            song.expire = 1;
+            song.buy_count_vip = 1;
+            song.end_time = "2099-12-31";
+            song.rebuy_pay_type = 1;
             if (song.trans_param) {
                 song.trans_param.musicpack_advance = 0;
                 if (song.trans_param.hash_offset) {
-                    song.trans_param.hash_offset.end_ms = 999999999; // 🔓 移除试听限制
+                    song.trans_param.hash_offset.end_ms = 999999999;
+                    song.trans_param.hash_offset.end_byte = 999999999;
                 }
             }
 
@@ -73,18 +76,20 @@ else if (url.includes("gateway.kugou.com/media.store/v1/get_res_privilege/lite")
                     r.expire = 1;
                     r.buy_count_vip = 1;
                     r.end_time = "2099-12-31";
+                    r.rebuy_pay_type = 1;
                     if (r.trans_param) {
                         r.trans_param.musicpack_advance = 0;
                         if (r.trans_param.hash_offset) {
-                            r.trans_param.hash_offset.end_ms = 999999999; // 🔓 移除试听限制
+                            r.trans_param.hash_offset.end_ms = 999999999;
+                            r.trans_param.hash_offset.end_byte = 999999999;
                         }
                     }
                 });
             }
         });
-        obj.vip_user_type = 1; // SVIP
+        obj.vip_user_type = 2;
     }
-    console.log("✅ 解锁音质与试听限制成功");
+    console.log("✅ 解锁音质、试听与下载成功");
 }
 
 $done({ body: JSON.stringify(obj) });
