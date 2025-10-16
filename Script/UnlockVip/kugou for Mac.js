@@ -51,7 +51,7 @@ else if (url.includes("userinfo.user.kugou.com/get_bind")) {
 else if (url.includes("gateway.kugou.com/media.store/v1/get_res_privilege/lite")) {
     if (obj?.data?.length > 0) {
         obj.data.forEach(song => {
-            song.privilege = 0;              // 解锁权限
+            song.privilege = 10;              // 解锁权限
             song.price = 0;                  // 去除价格
             song.fail_process = 0;           // 去除失败限制
             song.expire = 1;                 // 标记为有效
