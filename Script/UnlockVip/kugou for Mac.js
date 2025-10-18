@@ -19,7 +19,10 @@ if (url.includes("/get_bind")) {
     if (obj?.data) {
         obj.data.vip_end_time = "2099-12-31";
         obj.data.m_type = 1;
+        obj.data.vip_type = 1;
+        obj.data.y_type = 1;
         obj.data.roam_type = 1;
+
         obj.vip_type = 1;
         obj.roam_end_time = "2099-12-31";
         obj.m_end_time = "2099-12-31";
