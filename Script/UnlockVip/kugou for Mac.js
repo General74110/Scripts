@@ -28,9 +28,8 @@ if (url.includes("/get_bind")) {
         obj.m_end_time = "2099-12-31";
         obj.y_type = 1;
 
-
-        console.log("userinfo.user.kugou.com/get_bind响应体修改成功");
     }
+    console.log("userinfo.user.kugou.com/get_bind响应体修改成功");
 }
 
 $done({ body: JSON.stringify(obj) });
