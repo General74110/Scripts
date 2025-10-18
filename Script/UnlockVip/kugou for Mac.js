@@ -8,10 +8,10 @@
  * @UpdateTime: 2025-10-16
  *
  * http://userinfo.user.kugou.com/get_bind
+ * http://trackercdngz.kugou.com/v5/url?
  */
 
-let body = $response.body;
-let obj = JSON.parse(body);
+let obj = JSON.parse($response.body);
 const url = $request.url;
 
 // 🧩 1️⃣ 用户信息接口
@@ -30,6 +30,18 @@ if (url.includes("/get_bind")) {
 
     }
     console.log("userinfo.user.kugou.com/get_bind响应体修改成功");
+
+} else if (url.includes("/v5/url") && obj?.hash_offset) {
+    if (obj?.hash_offset) {
+        obj.hash_offset.end_ms = 9999999;
+        obj.hash_offset.end_byte = 999999999;
+
+        obj.volume = 0;
+        obj.volume_peak = 9999999;
+
+        obj.trans_param.display = 1;
+    }
+    console.log('解除60秒试听限制成功！')
 }
 
 $done({ body: JSON.stringify(obj) });
