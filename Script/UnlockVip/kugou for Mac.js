@@ -35,11 +35,15 @@ if (url.includes("/get_bind")) {
     if (obj?.hash_offset) {
         obj.hash_offset.end_ms = 9999999;
         obj.hash_offset.end_byte = 999999999;
+        obj.hash_offset.file_type = 1;
 
         obj.volume = 0;
         obj.volume_peak = 9999999;
+        obj.priv_status = 1;
 
         obj.trans_param.display = 1;
+
+
     }
     console.log('解除60秒试听限制成功！')
 }
