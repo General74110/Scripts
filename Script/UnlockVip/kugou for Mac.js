@@ -51,7 +51,7 @@ if (url.includes("/v5/url")) {
     obj.volume_peak = 999999999;
     obj.volume_gain = 1;
 
-    return $done({ body: JSON.stringify(obj) });
+
 }
 
 
@@ -73,7 +73,7 @@ if (url.includes("/get_res_privilege/lite")) {
     otj.vip = 1;
     otj.relate = 1;
 
-    return $done({ body: JSON.stringify(otj) });
+
 }
 
 
@@ -85,7 +85,7 @@ if (url.includes("/v1/sing/accompany")) {
         obj.data.duration = 9999999;
         obj.data.song_type = 1;
     }
-    return $done({ body: JSON.stringify(obj) });
+
 }
 
 
@@ -98,7 +98,7 @@ if (url.includes("/v3/get_my_info")) {
         obj.data.svip_level = 6;
         obj.data.su_vip_end_time = "2099-01-31";
     }
-    return $done({ body: JSON.stringify(obj) });
+
 }
 
 
@@ -111,7 +111,7 @@ if (url.includes("/get_bind")) {
         obj.data.vip_type = 3;
         obj.data.m_type = 3;
     }
-    return $done({ body: JSON.stringify(obj) });
+
 }
 
 
@@ -123,12 +123,16 @@ if (url.includes("/v2/everyday_song_recommend")) {
     otj.vip_type = 3;
     otj.m_type = 3;
 
-    return $done({ body: JSON.stringify(otj) });
+
 }
 
 
 // =======================
 // 默认输出响应体
 // =======================
-$done({ body: JSON.stringify(obj) });
-
+// 默认输出响应体，如果需要修改请求体则添加
+$done({
+    body: JSON.stringify(obj),
+    // 如果需要修改请求体则取消下面这行的注释
+     requestBody: JSON.stringify(otj)
+});
