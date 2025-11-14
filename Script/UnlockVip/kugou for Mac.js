@@ -2556,28 +2556,8 @@
 var body = $response.body;
 var url = $request.url;
 var obj = JSON.parse(body);
-
-// 修改用户信息接口返回SVIP状态
-if (url.includes('/api/v3/user/info')) {
-    obj.data.vip = 1;
-    obj.data.svip = 1;
-    obj.data.vip_expire_time = "2099-12-31 23:59:59";
-    obj.data.svip_expire_time = "2099-12-31 23:59:59";
-}
-
-// 修改资源权限接口解锁所有音质
-if (url.includes('/api/v3/privilege')) {
-    obj.data.privilege = 10;
-    obj.data.sqprivilege = 10;
-    obj.data["320privilege"] = 10;
-    obj.data.privilege_high = 10;
-    obj.data.pay_type = 0;
-    obj.data.pay_type_sq = 0;
-    obj.data.pay_type_320 = 0;
-}
-
 // 修改歌曲详情接口解锁所有音质
-if (url.includes('/api/v3/rank/newsong') || url.includes('/api/v3/song/detail')) {
+if (url.includes('/api/v3/rank/newsong')) {
     if (obj.data && obj.data.info) {
         for (var i = 0; i < obj.data.info.length; i++) {
             var song = obj.data.info[i];
@@ -2593,6 +2573,4 @@ if (url.includes('/api/v3/rank/newsong') || url.includes('/api/v3/song/detail'))
 }
 
 body = JSON.stringify(obj);
-$done(response);
-
-
+$done({body});
