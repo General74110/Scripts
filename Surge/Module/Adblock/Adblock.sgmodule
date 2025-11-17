@@ -47,4 +47,4 @@ URL-REGEX,"^https:\/\/ssp-api\.dmrtb\.com\/domobSDK",REJECT
 
 [MITM]
 
-hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com, feedback.uc.cn, partner.uc.cn, ssp-api.dmrtb.com, *.360buyimg.com
+hostname = %APPEND% *.julanling.com, list-app-m.i4.cn, d.image.i4.cn, *.shuqireader.com, *.adukwai.com,acs.m.taobao.com, atoken.m.taobao.com, sdk-log.partner.sm.cn, ssp-sdk-config.uc.cn, img-tailor.11222.cn, mdn.alipayobjects.com, logrcv.aiclk.com, dmsdk-api.dmrtb.com, feedback.uc.cn, partner.uc.cn, ssp-api.dmrtb.com
