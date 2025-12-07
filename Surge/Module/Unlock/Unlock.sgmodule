@@ -11,7 +11,7 @@
 9169 = type=http-response, pattern=^https:\/\/api\.9169av1\.app\/bibidd\/(Mediaonenine\/(panduan_huiyuan|jinbi_zhuanqu_list|watch_goldvideo_yn|dingtunjieshe_list_show|user_gold_coins_amount)|Advert\/get_index_Advert), script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/9169.js, requires-body=true, timeout=60
 
 #酷狗for Mac
-kugou_vip = type=http-response,pattern=^https?:\/\/(trackercdngz\.kugou\.com\/v5\/url\?.*|userinfo\.user\.kugou\.com\/get_bind)$,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/kugou for Mac.js
+kugou_vip = type=http-response,pattern=^https?:\/\/(u\.mobile\.kugou\.com\/v\/ck\?.*|vip\.kugou\.com\/mobile\/vipinfoV2.*|loginservice\.kugou\.com\/v5\/login_by_token\?.*)$,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/kugou for Mac.js
 
 
 [MITM]
