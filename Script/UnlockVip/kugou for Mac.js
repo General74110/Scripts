@@ -177,6 +177,51 @@ if (url.includes('get_res_privilege/lite')) {
     }
 }
 
+// 修改后的音质解锁接口处理（方案一）
+if (url.includes('trackercdngz.kugou.com/v5/url')) {
+    // 删除试听限制字段（客户端将默认播放完整歌曲）
+    delete obj.hash_offset;
+
+    // 保留其他必要修改
+    obj = {
+        "priv_status": 1,
+        "auth_through": obj.auth_through || [], // 保留原鉴权信息
+        "fail_process": [],  // 清空所有限制项
+        "trans_param": obj.trans_param,  // 保留原始音质参数
+        "status": 1,  // 强制成功状态
+        "tracker_through": {
+            ...obj.tracker_through,  // 保留原追踪参数
+            "all_quality_free": 1  // 解锁全音质
+        }
+    };
+}
+
+if (url.includes('/v1/get_business_res_privilege')) {
+    // 修改全局VIP状态
+    obj.vip_user_type = 3;  // SVIP
+
+    // 修改每首歌曲的权限
+    if (obj.data && Array.isArray(obj.data)) {
+        obj.data.forEach(song => {
+            // 基础权限解锁
+            song.privilege = 0;
+            song.fail_process = 0;
+            song.pay_type = 0;
+            song.price = 0;
+            song.pkg_price = 0;
+            song.status = 1;  // 0→1（启用状态）
+
+            // 解除试听限制
+            if (song.trans_param) {
+                song.trans_param.hash_offset = null;  // 关键！
+                song.trans_param.pay_block_tpl = 0;
+            }
+        });
+    }
+}
+
+
+
 
 body = JSON.stringify(obj);
 $done({body});
