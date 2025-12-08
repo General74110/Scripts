@@ -130,7 +130,7 @@ if (url.includes('switchState')) {
         obj.data.y_type = 1;      // 解锁高品音质
     }
 }
-
+/*
 if (url.includes('get_res_privilege/lite')) {
     function unlock(item) {
         if (!item) return;
@@ -181,7 +181,7 @@ if (url.includes('get_res_privilege/lite')) {
 if (url.includes('trackercdngz.kugou.com/v5/url')) {
     // 删除试听限制字段（客户端将默认播放完整歌曲）
     delete obj.hash_offset;
-/*
+
     // 保留其他必要修改
     obj = {
         "priv_status": 1,
@@ -193,7 +193,7 @@ if (url.includes('trackercdngz.kugou.com/v5/url')) {
             ...obj.tracker_through,  // 保留原追踪参数
             "all_quality_free": 1  // 解锁全音质
         }
-    };*/
+    };
 }
 
 if (url.includes('/v1/get_business_res_privilege')) {
@@ -218,7 +218,7 @@ if (url.includes('/v1/get_business_res_privilege')) {
             }
         });
     }
-}
+}*/
 
 
 
