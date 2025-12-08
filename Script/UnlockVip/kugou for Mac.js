@@ -1,3 +1,4 @@
+
 /*
  * @Author: General℡
  * @Github: https://github.com/General74110/Scripts
@@ -11,7 +12,6 @@
 var url = $request.url;
 var body = $response.body;
 var obj = JSON.parse(body);
-
 
 // 登录接口
 if (url.includes('v5/login_by_token?')) {
@@ -192,7 +192,7 @@ if (url.includes('get_res_privilege/lite')) {
 // trackercdngz 解锁试听 + 音质
 if (url.includes('trackercdngz.kugou.com/v5/url')) {
     if (obj.hash_offset) {
-        delete obj.hash_offset;  // 或 obj.hash_offset = null;
+        delete obj.hash_offset;
     }
     obj.priv_status = 1;
     obj.status = 1;
@@ -224,7 +224,7 @@ if (url.includes('/v1/get_business_res_privilege')) {
     }
 }
 
-// 添加全局标记
+// 添加标记字段
 obj._modified_by = "General Script v1.2.1";
 
 body = JSON.stringify(obj);
