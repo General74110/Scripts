@@ -3,15 +3,18 @@
  * @Author: General℡
  * @Github: https://github.com/General74110/Scripts
  * @AppName: 酷狗音乐
- * @ScriptName: 酷狗VIP显示与音质解锁
- * @Version: 1.2.1
- * @Description: 修改酷狗用户信息与资源权限接口，让账号显示为SVIP并解锁全部音质与试听（仅前端效果）
+ * @ScriptName: 酷狗VIP显示与音质解锁（含试听时长伪装）
+ * @Version: 1.2.2
+ * @Description: 显示SVIP + 解锁音质 + 修改试听限制为300秒（仅前端效果）
  * @UpdateTime: 2025-12-08
  */
 
 var url = $request.url;
 var body = $response.body;
+
+
 var obj = JSON.parse(body);
+
 
 // 登录接口
 if (url.includes('v5/login_by_token?')) {
@@ -189,10 +192,12 @@ if (url.includes('get_res_privilege/lite')) {
     }
 }
 
-// trackercdngz 解锁试听 + 音质
+// 解锁试听并设置试听时长：300秒
 if (url.includes('trackercdngz.kugou.com/v5/url')) {
     if (obj.hash_offset) {
-        delete obj.hash_offset;
+        obj.hash_offset.start_ms = 0;
+        obj.hash_offset.end_ms = 300000;
+        obj.hash_offset.end_byte = obj.hash_offset.end_byte || 9999999;
     }
     obj.priv_status = 1;
     obj.status = 1;
@@ -202,7 +207,7 @@ if (url.includes('trackercdngz.kugou.com/v5/url')) {
     });
 }
 
-// 有声书资源权限接口
+// 有声书资源权限接口 + 试听时长设置
 if (url.includes('/v1/get_business_res_privilege')) {
     obj.vip_user_type = 3;
     if (obj.data && Array.isArray(obj.data)) {
@@ -216,16 +221,19 @@ if (url.includes('/v1/get_business_res_privilege')) {
                 status: 1
             });
 
+            if (song.trans_param && song.trans_param.hash_offset) {
+                song.trans_param.hash_offset.start_ms = 0;
+                song.trans_param.hash_offset.end_ms = 300000;
+                song.trans_param.hash_offset.end_byte = song.trans_param.hash_offset.end_byte || 9999999;
+            }
+
             if (song.trans_param) {
-                song.trans_param.hash_offset = null;
                 song.trans_param.pay_block_tpl = 0;
             }
         });
     }
 }
 
-// 添加标记字段
-obj._modified_by = "General Script v1.2.1";
-
+obj._modified_by = "General Script v1.2.2 (试听时长设置)";
 body = JSON.stringify(obj);
 $done({ body });
