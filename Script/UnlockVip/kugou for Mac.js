@@ -204,12 +204,12 @@ if (url.includes('/v1/get_business_res_privilege')) {
     if (obj.data && Array.isArray(obj.data)) {
         obj.data.forEach(song => {
             // 基础权限解锁
-            song.privilege = 0;
-            song.fail_process = 0;
-            song.pay_type = 0;
-            song.price = 0;
-            song.pkg_price = 0;
-            song.status = 1;  // 0→1（启用状态）
+          //  song.privilege = 0;
+          //  song.fail_process = 0;
+          //  song.pay_type = 0;
+          //  song.price = 0;
+         //   song.pkg_price = 0;
+        //    song.status = 1;  // 0→1（启用状态）
 
             // 解除试听限制
             if (song.trans_param) {
