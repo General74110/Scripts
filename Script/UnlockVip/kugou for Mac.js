@@ -132,48 +132,48 @@ if (url.includes('switchState')) {
 }
 
 if (url.includes('get_res_privilege/lite')) {
-
     function unlock(item) {
         if (!item) return;
 
-        // 解锁主音质信息
-        item.privilege = 0;     // 核心：不需要会员/付费
-        item.fail_process = 0;  // 不触发失败流程
+        // 合并核心解锁逻辑
+        item.privilege = 0;     // 不需要会员/付费
+        item.fail_process = 0;  // 允许试听/播放
         item.pay_type = 0;      // 不需要付费
         item.price = 0;
         item.pkg_price = 0;
+        item.is_preview = 1;    // 新增：明确标记可试听
 
-        // 强制发布
+        // 合并发布相关字段
         item.publish = 1;
         item.is_publish = 1;
 
-        // 解锁所有音质（relate_goods）
-        if (item.relate_goods && Array.isArray(item.relate_goods)) {
-            item.relate_goods.forEach(goods => {
-                goods.privilege = 0;
-                goods.fail_process = 0;
-                goods.pay_type = 0;
-                goods.price = 0;
-                goods.pkg_price = 0;
-
-                goods.publish = 1;
-                goods.is_publish = 1;
-            });
-        }
-
-        // === 新增你这种“VIP 全开启”模式 ===
+        // 合并VIP相关字段
         item.status = 1;
         item.is_vip = 1;
-        item.vip_type = 3;  // SVIP
+        item.vip_type = 3;      // SVIP
         item.vip_end_time = "2099-12-31 23:59:59";
-        item.listen_type = 1; // 解锁试听
-        item.m_type = 1;      // 解锁无损
-        item.y_type = 1;      // 解锁高品
+        item.listen_type = 1;   // 解锁试听
+        item.m_type = 1;        // 解锁无损
+        item.y_type = 1;        // 解锁高品
+
+        // 合并relate_goods处理（优化后的版本）
+        if (item.relate_goods && Array.isArray(item.relate_goods)) {
+            item.relate_goods.forEach(g => {
+                g.privilege = 0;
+                g.fail_process = 0;
+                g.pay_type = 0;
+                g.price = 0;
+                g.pkg_price = 0;
+                g.is_preview = 1;  // 新增
+                g.publish = 1;     // 保留原字段
+                g.is_publish = 1;  // 保留原字段
+            });
+        }
     }
 
-    // 遍历 data（每首歌）
+    // 统一数据处理逻辑
     if (obj.data && Array.isArray(obj.data)) {
-        obj.data.forEach(song => unlock(song));
+        obj.data.forEach(unlock);
     }
 }
 
