@@ -693,9 +693,9 @@ if (url.includes('switchState')) {
         obj.data.is_vip = 1;
         obj.data.vip_type = 3;  // SVIP
         obj.data.vip_end_time = "2099-12-31 23:59:59";
-        obj.data.listen_type = 1;  // 解锁试听
-        obj.data.m_type = 1;      // 解锁无损音质
-        obj.data.y_type = 1;      // 解锁高品音质
+       // obj.data.listen_type = 1;  // 解锁试听
+       // obj.data.m_type = 1;      // 解锁无损音质
+       // obj.data.y_type = 1;      // 解锁高品音质
     }
 }
 
