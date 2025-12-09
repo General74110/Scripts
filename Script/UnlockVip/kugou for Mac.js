@@ -701,8 +701,16 @@ if (url.includes('switchState')) {
 
 if (url.includes('get_res_privilege/lite')) {
     obj.vip_user_type = 3;  // SVIP
-    data[0].relate_goods[0].trans_param.hash_offsetdata[0].trans_param.hash_offset;
-    data[0].relate_goods[0].trans_param.hash_offsetdata[0].relate_goods[0].trans_param.hash_offset;
+
+    // 主对象 hash_offset
+    if (obj.data?.[0]?.trans_param?.hash_offset) {
+        delete obj.data[0].trans_param.hash_offset;
+    }
+
+    // relate_goods[0] 的 hash_offset
+    if (obj.data?.[0]?.relate_goods?.[0]?.trans_param?.hash_offset) {
+        delete obj.data[0].relate_goods[0].trans_param.hash_offset;
+    }
 }
 
 body = JSON.stringify(obj);
