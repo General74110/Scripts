@@ -616,7 +616,8 @@ if (url.includes('vipinfoV2')) {
     }
 }
 
-// 修改音质检查接口
+/*
+/ 修改音质检查接口
 if (url.includes('v/ck?')) {
     obj.data = {
         "is_vip": 1,
@@ -627,7 +628,7 @@ if (url.includes('v/ck?')) {
         "h_type": 1,
         "vip_end_time": "2099-12-31 23:59:59"
     };
-}
+}*/
 
 // 修改用户信息接口
 if (url.includes('user.kugou.com/get_bind')) {
