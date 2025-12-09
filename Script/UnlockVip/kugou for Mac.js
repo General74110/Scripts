@@ -593,7 +593,7 @@ if (url.includes('v5/login_by_token?')) {
         obj.data.vip_end_time = "2099-12-31 23:59:59";
         obj.data.su_vip_begin_time = "2025-01-01 00:00:00";
         obj.data.su_vip_end_time = "2099-12-31 23:59:59";
-        obj.data.listen_type = 1;  // 解锁试听
+        //obj.data.listen_type = 1;  // 解锁试听
         obj.data.user_type = 3;    // 高级用户
     }
 }
@@ -608,7 +608,7 @@ if (url.includes('vipinfoV2')) {
         obj.data.vip_end_time = "2099-12-31 23:59:59";
         obj.data.su_vip_begin_time = "2025-01-01 00:00:00";
         obj.data.su_vip_end_time = "2099-12-31 23:59:59";
-        obj.data.listen_type = 1;
+       // obj.data.listen_type = 1;
         obj.data.user_type = 3;
         obj.data.m_type = 1;      // 解锁无损音质
         obj.data.y_type = 1;      // 解锁高品音质
@@ -621,7 +621,7 @@ if (url.includes('v/ck?')) {
     obj.data = {
         "is_vip": 1,
         "vip_type": 3,
-        "listen_type": 1,
+       // "listen_type": 1,
         "m_type": 1,
         "y_type": 1,
         "h_type": 1,
