@@ -700,7 +700,7 @@ if (url.includes('switchState')) {
 }
 
 if (url.includes('get_res_privilege/lite')) {
-    obj.vip_user_type = 3;  // SVIP
+    obj.vip_user_type = 1;  // SVIP
 
     // 主对象 hash_offset
     if (obj.data?.[0]?.trans_param?.hash_offset) {
