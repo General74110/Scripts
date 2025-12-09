@@ -699,5 +699,11 @@ if (url.includes('switchState')) {
     }
 }
 
+if (url.includes('get_res_privilege/lite')) {
+    if (obj.data) {
+        delete obj.data[0].trans_param.hash_offset;
+    }
+}
+
 body = JSON.stringify(obj);
 $done({body});
