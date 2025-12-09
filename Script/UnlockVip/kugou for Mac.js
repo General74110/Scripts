@@ -11,10 +11,7 @@
 
 var url = $request.url;
 var body = $response.body;
-
-
 var obj = JSON.parse(body);
-
 
 // 通用伪装字段合并器
 function applyVipFields(target) {
