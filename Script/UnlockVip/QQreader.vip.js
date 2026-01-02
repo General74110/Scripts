@@ -16,7 +16,7 @@
 
 [rewrite_local]
 
-^https?:\/\/(detailadr|commontgw|iostgw)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/dress\/usingDress|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource))(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
+^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/dress\/usingDress|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource)|v_7_8_2\/bookCity\/index)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
 ^https?:\/\/newminerva-tgw.reader.qq.com\/ChapBatAuthWithPD url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
@@ -376,6 +376,74 @@ if (isResponse && url.includes("/account/getUserPrefer")) {
     }
     done();
 }
+
+
+/*==================================================
+    十三
+    https://select.reader.qq.com/v_7_8_2/bookCity/index
+    刚加的
+==================================================*/
+if (isResponse && url.includes("/bookCity/index")) {
+    try {
+        const obj = JSON.parse($response.body);
+        obj.userLabel.VIP_FREE_REC = 1;
+        obj.userLabel.rcmd = 1;
+        obj.userLabel.freeStatus = 2;
+        obj.userLabel.userPrefer = 1;
+        obj.userLabel.channel = 1000;
+        obj.userLabel.payStatus = "200,307";
+        obj.userLabel.platform = 1;
+        obj.userLabel.firstInterest = 1;
+        obj.userLabel.userLable = 4;
+        obj.userLabel.qaType = 1;
+        obj.userLabel.VipPointSortUser = 0;
+
+
+        // 更清晰的构建方式
+        obj.userLabel.vipAdInfo = JSON.stringify({
+            openButtonAd: {},
+            bannerAd: {
+                dataList: [],
+                cid: 204684
+            }
+        });
+
+        obj.userLabel.vipInfo = JSON.stringify({
+            monthStatus: 1,
+            isFirst: 0,
+            endtimeYearVip: 1,
+            getGiftStatus: 1,
+            paidVipStatus: 1,
+            showText: "2099-01-11到期",
+            endtimeFree: 4071772800000,
+            endtimePrepay: 4071772800000,
+            vipType: 2,
+            endTime: 4071772800000
+        });
+
+
+        obj.isVip = "true";
+        obj.guideNegativeFeedback.pageCount = 4;
+        obj.guideNegativeFeedback.enableGuide = 0;
+        obj.prefer = 1;
+
+        obj.dataList[0].data.button = "2.99元升付费会员";
+        obj.dataList[0].data.vipTag = "会员";
+        obj.dataList[0].data.qurl = "uniteqqreader:\\/\\/nativepage\\/vip\\/open?paysource=by009";
+        obj.dataList[0].data.paidType = 1;
+        obj.dataList[0].data.content = "2099-01-11体验会员到期";
+        obj.dataList[0].data.status = 1;
+
+        done({body: JSON.stringify(obj)});
+
+    }   catch (e) {
+        console.log("viptxt error:", e);
+        done({});
+    }
+    done();
+}
+
+
 
 /* ==================================================
    兜底
