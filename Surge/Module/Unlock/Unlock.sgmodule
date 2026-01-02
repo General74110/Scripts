@@ -1,5 +1,5 @@
 #!name=APP解锁
-#!desc=解锁APP：【酷狗音乐(此资源搬运自baby佬)】
+#!desc=解锁APP：【酷狗音乐for Mac(此资源搬运自baby佬)】【QQ阅读】
 #!author=General℡[https://github.com/General74110/Scripts]
 #!category= General℡
 #!homepage=https://github.com/General74110/Scripts
@@ -8,11 +8,15 @@
 [Script]
 
 #酷狗
-酷狗用户信息SVIP = type=http-response,pattern=^https?:\/\/.*\.kugou\.com\/(v1|v2|v3|v5|mobile|media.store\/v1|adp\/ad\/v1|ads.gateway/v2|fxsing\/vip\/user|sing7\/homepage\/json\/v3\/vip)\/(login_by_token|get_my_info|get_login_extend_info|vipinfoV2|get_res_privilege\/lite|mine_top_banner|task_center_entrance|info|tip),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/kugou.svip.js
+酷狗音乐用户信息SVIP = type=http-response,pattern=^https?:\/\/.*\.kugou\.com\/(v1|v2|v3|v5|mobile|media.store\/v1|adp\/ad\/v1|ads.gateway/v2|fxsing\/vip\/user|sing7\/homepage\/json\/v3\/vip)\/(login_by_token|get_my_info|get_login_extend_info|vipinfoV2|get_res_privilege\/lite|mine_top_banner|task_center_entrance|info|tip),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/kugou.svip.js
 
 酷狗播放信息SVIP = type=http-response,pattern=^https?:\/\/.*\.kugou\.com\/(v5|tracker\/v5)\/,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/kugou.song.svip.js
 
+#QQ阅读
+QQ阅读用户信息VIP = type=http-response,pattern=^https?:\/\/(detailadr|commontgw).reader.qq.com\/(book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
+
+QQ阅读书籍信息VIP = type=http-request,pattern=^https?:\/\/newminerva-tgw.reader.qq.com\/ChapBatAuthWithPD,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
 
 [MITM]
-hostname = %APPEND% *.kugou.com
+hostname = %APPEND% *.kugou.com, *.reader.qq.com,newminerva-tgw.reader.qq.com,detailadr.reader.qq.com,commontgw.reader.qq.com
