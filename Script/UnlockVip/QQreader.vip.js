@@ -16,7 +16,7 @@
 
 [rewrite_local]
 
-^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/dress\/usingDress|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource)|v_7_8_2\/bookCity\/index)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
+^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/(dress\/usingDress|account)|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource)|v_7_8_2\/bookCity\/index)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
 ^https?:\/\/newminerva-tgw.reader.qq.com\/ChapBatAuthWithPD url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
@@ -439,13 +439,36 @@ if (isResponse && url.includes("/bookCity/index")) {
 
         done({body: JSON.stringify(obj)});
 
-    }   catch (e) {
+    }    catch (e) {
         console.log("viptxt error:", e);
         done({});
     }
     done();
 }
 
+/*==================================================
+    十四
+    https://commontgw.reader.qq.com/h5/account
+    刚加的
+====================================================*/
+    if (isResponse && url.includes("/h5/account")) {
+        try {
+            const obj = JSON.parse($response.body);
+            obj.vip_type = 2;
+            obj.vipEndTime = "2099-01-11";
+            obj.vipStatus = 1;
+            obj.balance = 88888888;
+            obj.bookTicket = 88888888;
+            obj.vipButton = 1;
+            obj.vipComment = "2099-01-11到期";
+
+            done({body: JSON.stringify(obj)});
+    }   catch (e) {
+        console.log("viptxt error:", e);
+        done({});
+    }
+    done();
+        }
 
 
 /* ==================================================

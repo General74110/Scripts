@@ -13,7 +13,7 @@
 酷狗播放信息SVIP = type=http-response,pattern=^https?:\/\/.*\.kugou\.com\/(v5|tracker\/v5)\/,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/kugou.song.svip.js
 
 #QQ阅读
-QQ阅读用户信息VIP = type=http-response,pattern=^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/dress\/usingDress|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource)|v_7_8_2\/bookCity\/index)(?:\?.*)?$,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
+QQ阅读用户信息VIP = type=http-response,pattern=^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/(dress\/usingDress|account)|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource)|v_7_8_2\/bookCity\/index)(?:\?.*)?$,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
 QQ阅读书籍信息VIP = type=http-request,pattern=^https?:\/\/newminerva-tgw.reader.qq.com\/ChapBatAuthWithPD,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
