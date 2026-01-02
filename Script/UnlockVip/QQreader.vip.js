@@ -267,6 +267,7 @@ if (isResponse && url.includes("/uservipstatus")) {
     try {
         const obj = JSON.parse($response.body);
         obj.isVip = "true";
+        obj.vipTag = "会员";
         obj.vipPrepayEndTime = 0;
         obj.isSmsVip = "false";
         obj.vipType = 1;
@@ -292,6 +293,7 @@ if (isResponse && url.includes("/uservipstatus")) {
          obj.prefer = 1;
          obj.vipComment = "2099-01-11到期";
          obj.vipLevel = 5;
+         obj.vipTag = "会员";
          obj.isMVip = "true";
          obj.channel = 1000;
          obj.vipEndTime = "2099-01-11";
@@ -319,6 +321,7 @@ if (isResponse && url.includes("/userinfo")) {
         obj.endTime = "4071772800";
         obj.prefer = 1;
         obj.codeX = 0;
+        obj.vipTag = "会员";
         obj.vipType = 2;
         obj.is_week = 0;
         obj.is_vip = 1;
