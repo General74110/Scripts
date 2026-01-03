@@ -42,51 +42,86 @@ function done(obj = {}) {
 
 if (url.includes("/ChapBatAuthWithPD")) {
     try {
+        // 获取URL查询参数
+        const getQueryParams = (url) => {
+            const query = url.split('?')[1] || '';
+            const params = {};
+            query.split('&').forEach(pair => {
+                const [key, value] = pair.split('=');
+                if (key) params[key] = decodeURIComponent(value || '');
+            });
+            return params;
+        };
+
+        const params = getQueryParams(url);
         const headers = { ...$request.headers };
 
-        Object.assign(headers, {
+        // 基础header配置
+        const baseHeaders = {
             uid: "855124767176",
-            qrtm: "1767369782",
-            trustedid: "9a29ef0f8ec32235bd4814a5b7348e611",
-            ua: "iPhone 16 Pro Max-iOS18.2",
-            qrem: "0",
-            net_type: "1",
-            platform: "ioswp",
-            rcmd: "1",
-            youngerMode: "0",
-            mldt: "e6adcbb59b681e6dfe2ad944f3a26860",
-            sid: "",
-            usid: "ywA2nR1SiPp1",
-            text_type: "1",
-           // csigs: "$2a$04$AdAXtFrrs0s8Dvsf1mpte.O9/Tg6NojRCkY9oLbLw0UsH0MFUz7Z6",
-            loginType: "50",
-            //ywtoken: "0477e315bd775d6ae1d8ca41b1c46207",
-            version: "qqreader_8.3.52.0692_iphone",
-            QVisible: "0",
-            qrsy: "cb377a265ff9a96957ab8c317df0f6cb",
-            //ttime: "1766862156907",
-            safkey: "3828820a16622f3f7b7a22c434354317",
-            ssign: "7b30f02f46dcf2c96713cb28358e65d4",
-            osvn: "97295bfa6b1cdfc4",
-            auditStatus: "1",
+            qrtm: headers.qrtm || Math.floor(Date.now()/1000).toString(),
+            trustedid: headers.trustedid || "9a29ef0f8ec32235bd4814a5b7348e611",
+            ua: headers.ua || "iPhone 16 Pro Max-iOS18.2",
+            qrem: headers.qrem || "0",
+            net_type: headers.net_type || "1",
+            platform: headers.platform || "ioswp",
+            rcmd: headers.rcmd || "1",
+            youngerMode: headers.youngerMode || "0",
+            mldt: headers.mldt || "e6adcbb59b681e6dfe2ad944f3a26860",
+            sid: headers.sid || "",
+            usid: headers.usid || "ywA2nR1SiPp1",
+            text_type: headers.text_type || "1",
+            loginType: headers.loginType || "50",
+            version: headers.version || "qqreader_8.3.52.0692_iphone",
+            QVisible: headers.QVisible || "0",
+            qrsy: headers.qrsy || "cb377a265ff9a96957ab8c317df0f6cb",
+            ttime: headers.ttime || Date.now().toString(),
+            safkey: headers.safkey || "3828820a16622f3f7b7a22c434354317",
+            ssign: headers.ssign || "7b30f02f46dcf2c96713cb28358e65d4",
+            osvn: headers.osvn || "97295bfa6b1cdfc4",
+            auditStatus: headers.auditStatus || "1",
             Host: "newminerva-tgw.reader.qq.com",
-            jailbreak: "0",
-            Connection: "keep-alive"
-        });
+            jailbreak: headers.jailbreak || "0",
+            Connection: "keep-alive",
+            ibex: headers.ibex || "ajjrhMjPt8d--BQUCHHLVCWl3MgCdJ0nUx6C1A8VpbfFMb7gKOqsoHsSPXqiw6-2E46xeOWhPFecU94kHFZvQ8zMtMPXDOH11OouI4VqW4IZoc9ETYTUck0MP7DTWVFcLsdcfxjQSw0EKrSr5AbVsKi5Tar69OEBMrZIefjQoSZeKHZOdODAdD6eqhrTyKV74SPp76Yx239xg2N5kXwwxhjqC2_XuZ7FNTY2ZGNkNmEzN2YxOWM3OTJkOTk5NmJlZjdmNzEzODM=",
+            dene: headers.dene || "7bb7b3e5516e8abc",
+            dete: headers.dete || "f370690d3d27ffaba0fe4cd2ecb3639e",
+            sift: headers.sift || "4bd5dc0dac2f3b56a250bd32482ff26afaaa74428bb256fd220c68d3bb6b4bdfd37e835e31bec80f5b4a906edd4938c3",
+            IFDA: headers.IFDA || "MDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAw",
+            qrsn: headers.qrsn || "96d35f54fcbfe338d658e480000010c19b18",
+            qrsn_new: headers.qrsn_new || "96d35f54fcbfe338d658e480000010c19b18",
+            server_sex: headers.server_sex || "1",
+            themeid: headers.themeid || "0",
+            nosid: headers.nosid || "1",
+            gselect: headers.gselect || "-1"
+        };
 
-        headers["Accept-Encoding"] = "gzip";
-        headers["Accept-Language"] = "zh-CN,zh-Hans;q=0.9";
-        headers["User-Agent"] =
-            "QQReaderUI/52047 CFNetwork/1568.300.101 Darwin/24.2.0";
-        headers.Range = "bytes=0-";
-
-        headers.stat_params = JSON.stringify({
-            bid: "51179257",
-            tabtype: "3",
+        // 合并请求参数到stat_params
+        const baseStatParams = {
+            bid: params.bookId || "51179257",
+            tabtype: params.tabtype || "3",
             islogin: "1",
-            freeStatus: "2",
-            payStatus: "300",
-            scene: "public_rec"
+            freeStatus: params.freeStatus || "2",
+            payStatus: params.payStatus || "300",
+            scene: params.scene || "public_rec",
+            type: params.type || "0",
+            autopay: params.autopay || "0",
+            usepreview: params.usepreview || "1",
+            scids: params.scids || "45",
+            adState: params.adState || "1",
+            origin: params.origin || "null",
+            tafauth: params.tafauth || "1",
+            fuid: params.fuid || "AA0C3A06-3092-406A-AE8A-C0B2E3C1044C",
+            noclick: params.noclick || "0"
+        };
+
+        // 合并headers
+        Object.assign(headers, baseHeaders, {
+            stat_params: JSON.stringify(baseStatParams),
+            "Accept-Encoding": headers["Accept-Encoding"] || "gzip",
+            "Accept-Language": headers["Accept-Language"] || "zh-CN,zh-Hans;q=0.9",
+            "User-Agent": headers["User-Agent"] || "QQReaderUI/52047 CFNetwork/1568.300.101 Darwin/24.2.0",
+            Range: headers.Range || "bytes=0-"
         });
 
         $done({ headers });
@@ -94,7 +129,6 @@ if (url.includes("/ChapBatAuthWithPD")) {
         console.log("ChapBatAuthWithPD header error:", e);
         $done({});
     }
-    done();
 }
 
 /* ==================================================
@@ -564,6 +598,59 @@ if (isResponse && url.includes("/chapterOver")) {
 }
 
 
+/*==================================================
+    十八
+  https://newminerva-tgw.reader.qq.com/ChapBatAuthWithPD?bookId=57004876&type=0&autopay=0&usepreview=1&scids=46&adState=1&origin=(null)&scene=0&tafauth=1&fuid=AA0C3A06-3092-406A-AE8A-C0B2E3C1044C&noclick=0
+    刚加的
+==================================================*/
+if (isResponse && url.includes("/ChapBatAuthWithPD")) {
+    try {
+        // 检查是否是二进制数据
+        if ($response.body instanceof ArrayBuffer || typeof $response.body === 'string') {
+            // 尝试解析二进制数据为文本
+            let bodyText = '';
+            if ($response.body instanceof ArrayBuffer) {
+                const decoder = new TextDecoder('utf-8');
+                bodyText = decoder.decode(new Uint8Array($response.body));
+            } else {
+                bodyText = $response.body;
+            }
+
+            // 尝试解析JSON部分（通常在二进制数据末尾）
+            const jsonStart = bodyText.lastIndexOf('{');
+            const jsonEnd = bodyText.lastIndexOf('}') + 1;
+            if (jsonStart !== -1 && jsonEnd !== -1) {
+                const jsonStr = bodyText.slice(jsonStart, jsonEnd);
+                const obj = JSON.parse(jsonStr);
+
+                // 修改VIP状态和相关字段
+                obj.isVip = 1;
+                obj.balance_free = 88888888;
+                obj.balance = 88888888;
+                obj.openvipdesc = "体验会员尊享特权";
+                obj.monthType = 3;
+                obj.free = 2;
+                obj.isSuperBag = 1;
+
+                // 重建响应体
+                const modifiedJson = JSON.stringify(obj);
+                const newBody = bodyText.slice(0, jsonStart) + modifiedJson + bodyText.slice(jsonEnd);
+
+                done({ body: newBody });
+            } else {
+                // 如果没有找到JSON部分，直接返回原始数据
+                console.log("未找到可修改的JSON数据");
+                done({});
+            }
+        } else {
+            console.log("响应体不是二进制数据");
+            done({});
+        }
+    } catch (e) {
+        console.log("ChapBatAuthWithPD response error:", e);
+        done({});
+    }
+}
 /* ==================================================
    兜底
 ================================================== */
