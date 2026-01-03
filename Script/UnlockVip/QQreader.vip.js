@@ -16,7 +16,7 @@
 
 [rewrite_local]
 
-^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/getUserPrefer|h5\/(dress\/usingDress|account)|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource)|v_7_8_2\/bookCity\/index)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
+^https?:\/\/(detailadr|commontgw|iostgw|select)\.reader\.qq\.com\/((book\/queryDetailPage|.+nativepage\/personal|.+vip\/viptxt)|account\/(getUserPrefer|remind\/vipRenewalReminderPop)|common\/monthpage|h5\/(dress\/usingDress|account)|v7_6_6\/(userinfo|nativepage\/getAcctInfo|uservipstatus|sign\/welfare\/bookShelf|listDispatch|helper\/staticResource|chapterOver)|v_7_8_2\/bookCity\/index)(?:\?.*)?$ url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
 ^https?:\/\/newminerva-tgw.reader.qq.com\/ChapBatAuthWithPD url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/UnlockVip/QQreader.vip.js
 
@@ -40,40 +40,46 @@ function done(obj = {}) {
    没抓到
 ================================================== */
 
-if (isRequest && url.includes("/ChapBatAuthWithPD")) {
+if (url.includes("/ChapBatAuthWithPD")) {
     try {
-        const headers = $request.headers;
+        const headers = { ...$request.headers };
 
-        /**
-         * 🧠 最小可用 Header 集说明
-         * -------------------------
-         * 以下字段是【真实请求里出现 + 实测有校验作用】
-         * 未写的字段 = 系统 / App 自动生成，绝对不要碰
-         */
+        Object.assign(headers, {
+            uid: "855124767176",
+            qrtm: "1767369782",
+            trustedid: "9a29ef0f8ec32235bd4814a5b7348e611",
+            ua: "iPhone 16 Pro Max-iOS18.2",
+            qrem: "0",
+            net_type: "1",
+            platform: "ioswp",
+            rcmd: "1",
+            youngerMode: "0",
+            mldt: "e6adcbb59b681e6dfe2ad944f3a26860",
+            sid: "",
+            usid: "ywA2nR1SiPp1",
+            text_type: "1",
+           // csigs: "$2a$04$AdAXtFrrs0s8Dvsf1mpte.O9/Tg6NojRCkY9oLbLw0UsH0MFUz7Z6",
+            loginType: "50",
+            //ywtoken: "0477e315bd775d6ae1d8ca41b1c46207",
+            version: "qqreader_8.3.52.0692_iphone",
+            QVisible: "0",
+            qrsy: "cb377a265ff9a96957ab8c317df0f6cb",
+            //ttime: "1766862156907",
+            safkey: "3828820a16622f3f7b7a22c434354317",
+            ssign: "7b30f02f46dcf2c96713cb28358e65d4",
+            osvn: "97295bfa6b1cdfc4",
+            auditStatus: "1",
+            Host: "newminerva-tgw.reader.qq.com",
+            jailbreak: "0",
+            Connection: "keep-alive"
+        });
 
-        headers.uid = headers.uid || "855124767176";         // 用户唯一标识
-        headers.usid = headers.usid || "ywA2nR1SiPp1";        // 会话标识
-        //headers.ywtoken = headers.ywtoken || "0477e315bd775d6ae1d8ca41b1c46207";
-        headers.loginType = "50";                             // 登录类型（QQ Reader 常量）
-        headers.platform = "ioswp";                           // iOS 平台
-        headers.version = headers.version || "qqreader_8.3.50.0690_iphone";
-        headers.jailbreak = "0";                              // 非越狱（重要，别乱写）
-
-        /**
-         * User-Agent
-         * - 没有就补
-         * - 有就尊重系统
-         */
+        headers["Accept-Encoding"] = "gzip";
+        headers["Accept-Language"] = "zh-CN,zh-Hans;q=0.9";
         headers["User-Agent"] =
-            headers["User-Agent"] ||
             "QQReaderUI/52047 CFNetwork/1568.300.101 Darwin/24.2.0";
+        headers.Range = "bytes=0-";
 
-        /**
-         * stat_params（弱校验）
-         * - 不写也能跑
-         * - 写了更像真实客户端
-         * - 删减到「不会触发风控」的最小集
-         */
         headers.stat_params = JSON.stringify({
             bid: "51179257",
             tabtype: "3",
@@ -83,10 +89,10 @@ if (isRequest && url.includes("/ChapBatAuthWithPD")) {
             scene: "public_rec"
         });
 
-        done({ headers });
+        $done({ headers });
     } catch (e) {
         console.log("ChapBatAuthWithPD header error:", e);
-        done({});
+        $done({});
     }
     done();
 }
@@ -469,6 +475,93 @@ if (isResponse && url.includes("/bookCity/index")) {
     }
     done();
         }
+
+/*==================================================
+    十五
+    https://commontgw.reader.qq.com/account/remind/vipRenewalReminderPop
+    刚加的
+==================================================*/
+if (isResponse && url.includes("/account/remind/vipRenewalReminderPop")) {
+    try {
+        const obj = JSON.parse($response.body);
+        obj.data.vipStatus = "ture";
+        obj.data.title = "你的会员还剩73年到期";
+        obj.data.buttonTxt = "续费";
+        obj.data.vipCountDown = 2302992000;
+        obj.data.showStatus = "false";
+        obj.data.showTab = "false";
+
+        done({body: JSON.stringify(obj)});
+
+    }   catch (e) {
+        console.log("viptxt error:", e);
+        done({});
+    }
+    done();
+}
+
+/*==================================================
+    十六
+    https://commontgw.reader.qq.com/common/monthpage?focus=&pf=by009
+    刚加的
+==================================================*/
+if (isResponse && url.includes("/common/monthpage")) {
+    try {
+        const obj = JSON.parse($response.body);
+        obj.prefer = 1;
+        obj.banExpiredTime = 0;
+        obj.ydMouthSwitch = 1;
+        obj.pf = "by009";
+        obj.bal = 88888888;
+        obj.jailbreak = 0;
+        obj.paidMonthStatus = 1;
+        obj.gearWelcomePop.gearIndex = 0;
+        obj.gearWelcomePop.interval = 3;
+
+
+        obj.userMonthInfo.endtimePrepay = 4071772800000;
+        obj.userMonthInfo.endtime = 4071772800000;
+        obj.userMonthInfo.endtimeYearVip = 4071772800000;
+        obj.userMonthInfo.endtimeFree = 4071772800000;
+        obj.userMonthInfo.cardNo = "NO.";
+        obj.userMonthInfo.gfrom = 101;
+        obj.userMonthInfo.status = 1;
+
+
+        obj.vipOpenCard.openCard = "null";
+        obj.vipOpenCard.showType = 3;
+        obj.vipOpenCard.freeVipCard.title = "体验会员，已帮你节省19999999999.81元";
+        obj.vipOpenCard.freeVipCard.endTimeTxt = "2099-01-11到期，体验会员为平台赠送福利，管理续费";
+        obj.vipOpenCard.paidVipCard = "null";
+
+
+        done({body: JSON.stringify(obj)});
+
+    }   catch (e) {
+        console.log("viptxt error:", e);
+        done({});
+    }
+    done();
+}
+
+/*==================================================
+    十七
+    https://iostgw.reader.qq.com/v7_6_6/chapterOver?bid=465030&cid=2&chapterUuid=-1
+    刚加的
+==================================================*/
+if (isResponse && url.includes("/chapterOver")) {
+    try {
+        const obj = JSON.parse($response.body);
+        obj.isVip = 1;
+
+        done({body: JSON.stringify(obj)});
+
+    }   catch (e) {
+        console.log("viptxt error:", e);
+        done({});
+    }
+    done();
+}
 
 
 /* ==================================================
