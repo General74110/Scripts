@@ -1,31 +1,24 @@
 /**
  * Surge 专用网络环境策略切换
- * 适用于有境外流量卡且Wi-Fi没有外网的情况
  * Author: General℡
  * GitHub: https://github.com/General74110/Scripts
  */
 
 const url = "https://app.netart.cn/network-panel/ip.ajax";
-const maxRetry = 3;        // 最大重试次数，防止无信号干扰
-const retryInterval = 5000; // 重试间隔 5 秒
+const maxRetry = 3;
+const retryInterval = 5000;
 const operatorProxyList = ["移动", "联通", "电信", "广电"];
-const lastModeKey = "lastNetworkMode"; // 存储上一次模式（proxy / direct）
+const lastModeKey = "lastNetworkMode";
+const enableNotification = true;
 
-/**
- * 获取策略组配置
- * 优先读取 BoxJS，如果没有配置则使用默认写死策略组
- */
+// 获取策略组配置
 function getGroups() {
     const raw = $persistentStore.read("networkGroups", "boxjs") || "";
-
     if (raw) {
         const groups = {};
-        // 使用 & 拆分每条 key=value
         raw.split("&").forEach(item => {
             const [key, proxy] = item.split("=").map(s => s.trim());
-            if (key && proxy) {
-                groups[key] = { proxy, direct: "DIRECT" };
-            }
+            if (key && proxy) groups[key] = { proxy, direct: "DIRECT" };
         });
         return groups;
     } else {
@@ -43,103 +36,81 @@ function getGroups() {
     }
 }
 
-/**
- * 发起请求
- */
+// 通知函数
+function notify(title, subtitle, message) {
+    if (enableNotification) $notification.post(title, subtitle, message);
+}
+
+// 批量切换策略组
+function switchGroups(groups, useProxy) {
+    const results = [];
+    for (let group in groups) {
+        const target = useProxy ? groups[group].proxy : groups[group].direct;
+        try {
+            $surge.setSelectGroupPolicy(group, target);
+            console.log(`切换策略组: ${group} → ${target} 🟢`);
+            results.push(`${group} → ${target} 🟢`);
+        } catch (e) {
+            console.log(`切换策略组失败: ${group} → ${target} 🔴`, e);
+            results.push(`${group} → ${target} 🔴`);
+        }
+    }
+    return results.join("\n");
+}
+
+// 发起请求
 function fetchData(retry = 0) {
     const groups = getGroups();
     if (!groups || Object.keys(groups).length === 0) {
-        console.log("没有可用的策略组，请前往Boxjs填写，脚本结束");
+        console.log("没有可用的策略组，脚本结束 🔴");
+        notify("Surge 策略切换失败 🔴", "无策略组", "");
         return $done();
     }
 
-    $httpClient.get({
-        url: url,
-        headers: {
-            ":authority": "app.netart.cn",
-            "sec-fetch-dest": "empty",
-            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1",
-            "accept": "*/*",
-            "sec-fetch-site": "same-site",
-            "origin": "https://net.netart.cn",
-            "sec-fetch-mode": "cors",
-            "accept-language": "zh-CN,zh-Hans;q=0.9",
-            "priority": "u=3, i",
-            "accept-encoding": "gzip, deflate, br"
-        }
-    }, (error, response, data) => {
-        if (error) {
-            console.log(`请求失败 (尝试 ${retry + 1}):`, error);
-            if (retry < maxRetry - 1) {
-                setTimeout(() => fetchData(retry + 1), retryInterval);
-            } else {
-                $notification.post("Surge 策略切换失败", "API 请求失败", String(error));
-                $done();
-            }
-            return;
-        }
-
-        const body = response?.body || data || "";
-        if (!body) {
-            console.log(`返回数据为空 (尝试 ${retry + 1})`);
-            if (retry < maxRetry - 1) {
-                setTimeout(() => fetchData(retry + 1), retryInterval);
-            } else {
-                $notification.post("Surge 策略切换失败", "返回数据为空", "");
-                $done();
-            }
-            return;
+    $httpClient.get({ url }, (error, response, data) => {
+        if (error || !data) {
+            console.log(`请求失败 (尝试 ${retry + 1}) 🔴`, error || "");
+            if (retry < maxRetry - 1) setTimeout(() => fetchData(retry + 1), retryInterval);
+            else notify("Surge 策略切换失败 🔴", "请求失败/返回为空", String(error || "无数据"));
+            return $done();
         }
 
         try {
-            const obj = JSON.parse(body);
+            const obj = JSON.parse(data);
             const countryName = obj?.data?.country?.name || "未知";
             const asInfo = obj?.data?.as?.info || "";
             const operatorDisplay = (countryName + asInfo).trim() || "未知";
             const countryCode = obj?.data?.country?.code || "未知";
 
-            // 判断是否走代理（只根据运营商判断，不看国家代码）
-            let useProxy = operatorProxyList.some(op => asInfo.includes(op));
+            const useProxy = operatorProxyList.some(op => asInfo.includes(op));
             const newMode = useProxy ? "proxy" : "direct";
             const lastMode = $persistentStore.read(lastModeKey) || "";
 
             console.log(`运营商: ${operatorDisplay}, 国家代码: ${countryCode}, 本次模式: ${newMode}, 上次模式: ${lastMode}`);
 
-            // 如果模式没变，则直接结束
             if (newMode === lastMode) {
-                console.log("网络环境未变化，跳过策略切换");
-                $notification.post(
-                    "Surge 策略未切换",
-                    `运营商: ${operatorDisplay} | 国家: ${countryCode}`,
-                    `网络环境未变化，将继续使用：${newMode === "proxy" ? "代理" : "直连"}`
-                );
+                console.log("网络环境未变化 🟡");
+                notify("Surge 策略未切换 🟡", `运营商: ${operatorDisplay}`, `继续使用：${newMode === "proxy" ? "代理" : "直连"}`);
                 return $done();
             }
 
-            // 批量切换策略组
-            for (let group in groups) {
-                const target = useProxy ? groups[group].proxy : groups[group].direct;
-                console.log(`切换策略组: ${group} → ${target}`);
-                $surge.setSelectGroupPolicy(group, target);
-            }
-
-            // 存储本次模式
+            const resultLog = switchGroups(groups, useProxy);
             $persistentStore.write(newMode, lastModeKey);
 
-            $notification.post(
-                "Surge 策略切换成功",
-                `运营商: ${operatorDisplay} | 国家: ${countryCode}`,
-                `已切换为: ${useProxy ? "代理" : "直连"}`
+            notify(
+                "Surge 策略切换成功 🟢",
+                `运营商: ${operatorDisplay} | 国家代码: ${countryCode}`,
+                `已切换为：${useProxy ? "代理" : "直连"}\n${resultLog}`
             );
 
         } catch (e) {
-            console.log("JSON解析异常:", e);
-            $notification.post("Surge 策略切换失败", "JSON解析异常", String(e));
+            console.log("JSON解析异常 🔴", e);
+            notify("Surge 策略切换失败 🔴", "JSON解析异常", String(e));
         }
 
         $done();
     });
 }
 
-// 执行请求
+// 执行脚本
 fetchData();
