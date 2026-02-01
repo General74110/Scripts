@@ -42,7 +42,8 @@ const zh_name = 'QQ阅读';
 const logs = 0;  // 设置0关闭日志, 1开启日志
 const notify = $.isNode() ? require('./sendNotify') : '';
 const isNode = typeof process !== "undefined" && process.env;
-let t = ''
+let t = '';
+let availableGifts = [];
 if (isNode) {
   const dotenv = require('dotenv');
   dotenv.config(); // 读取 .env 文件中的环境变量
@@ -677,78 +678,197 @@ async function GetAwardMonth(Cookie) {
 }
 
 
-// 添加 sleep 函数，用于延时操作
-async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
-let boxVideoTotalCoins = 0;  // 确保全局变量 boxVideoTotalCoins 被初始化
-// 宝箱视频任务，循环运行 3 次，但当任务已经领取时，跳过后续操作
-async function BoxVideo(Cookie) {
-  let totalCoins = 0;  // 用于累加每次宝箱视频获得的赠币
-  for (let i = 1; i <= 3; i++) {
-    let result = await runBoxVideo(Cookie, i);  // 修正：传递 Cookie 参数
-    if (result.code === -1) {
-      console.log("宝箱视频任务已经完成，跳过后续任务执行。\n");
-      break; // 如果已经领取，停止后续执行
-    }
-
-    totalCoins += result.data;  // 累加每次宝箱获得的赠币
-
-    if (i < 3) {  // 在第 1、2 次循环后，执行延时
-      let delay = i === 1 ? 5000 : 10000;  // 第一次延迟5秒，第二次延迟10秒
-      console.log(`宝箱视频第 ${i} 次任务执行完毕，等待 ${delay / 1000} 秒后执行下一次任务...\n`);
-      await sleep(delay); // 使用 sleep 函数进行延时
-    }
-  }
-
-  // 将总的赠币累加到全局变量
-  boxVideoTotalCoins += totalCoins;
-
-  console.log(`宝箱视频任务总共获得 ${totalCoins} 💰赠币\n`);
-}
-
-
-// 实际执行的宝箱视频任务
-async function runBoxVideo(Cookie, i) {
+async function GetVideoinit(Cookie) {
   return new Promise((resolve) => {
-    const Url = {
-      url: `https://eventv3.reader.qq.com/activity/new_welfare/receiveVideo?type=70526242`,
+    let Url = {
+      url: "https://eventv3.reader.qq.com/activity/new_welfare/init",
       headers: {
-
-        'User-Agent': 'QQReaderUI/51423 CFNetwork/3826.500.111.2.2 Darwin/24.4.0',
-        'ua': 'iPhone 14 Pro Max-iOS18.4.1',
         'Accept': 'application/json, text/plain, */*',
-        'cookie': Cookie,
-
-
+        'cookie': Cookie
       }
     };
 
     $.get(Url, async (err, resp, data) => {
-      if (logs == 1) {
-        console.log(`响应状态码: ${resp.status}`); // 打印状态码
-        console.log(`【宝箱】原始响应体: ${data}`); // 打印原始响应体
-      }
       try {
-        data = JSON.parse(data);  // 解析 JSON 数据
-        if (logs == 1) console.log(`⚠️【宝箱视频】任务执行结果 (第 ${i} 次): ${data.msg}`);
-        if (data.code === 0) {
-          $.boxVideo = data;  // 只有在成功时才保存
-        } else {
-          $.boxVideo = { code: data.code, msg: data.msg };  // 保存错误信息
-        }
+        data = JSON.parse(data);
+        if (data.code === 0 && data.data?.multiVideoRewardVo?.giftInfoList) {
+          // 动态解析奖品单位
+          const unitMap = extractUnitMap(data.data.multiVideoRewardVo.giftInfoList);
 
-        resolve(data); // 返回数据结果，用于停止循环
+          // 提取未领取的礼物信息（包含动态单位）
+          $.availableGifts = data.data.multiVideoRewardVo.giftInfoList
+            .filter(gift => !gift.received)
+            .map(gift => ({
+              giftId: gift.giftId,
+              packageCount: gift.packageCount,
+              giftName: gift.giftName,
+              awardType: gift.awardType,
+              unit: unitMap[gift.awardType] || '🎁' // 动态获取单位
+            }));
+
+          if (logs == 0) {
+            console.log('动态单位映射:', unitMap);
+            console.log('可领取礼物:', JSON.stringify($.availableGifts, null, 2));
+          }
+        }
+        $.awardWeek = data;
       } catch (e) {
-        console.log(`解析【宝箱】 JSON 出错: ${e}`);
-        console.log(`【宝箱】原始响应体: ${data}`); // 打印原始响应体
+        console.log(`解析 JSON 出错: ${e}`);
       } finally {
         resolve();
       }
     });
   });
+}
+
+// 从礼物列表中动态提取单位映射
+function extractUnitMap(giftList) {
+  const unitMap = {};
+
+  giftList.forEach(gift => {
+    if (gift.awardType && gift.giftName) {
+      // 从礼物名称中提取单位（如"赠币x5"中的"赠币"）
+      const unitMatch = gift.giftName.match(/(.+?)(?:x\d+)?$/);
+      if (unitMatch && unitMatch[1]) {
+        const unit = unitMatch[1].trim();
+
+        // 添加表情符号增强可读性
+        const decoratedUnit = decorateUnit(unit, gift.awardType);
+        unitMap[gift.awardType] = decoratedUnit;
+      }
+    }
+  });
+
+  return unitMap;
+}
+
+// 根据类型添加表情符号
+function decorateUnit(unit, awardType) {
+  const emojiMap = {
+    1: '💰', // 赠币
+    10: '📈', // 积分
+    11: '🃏', // 卡牌券
+    13: '🎫'  // 推荐票
+    // 可以继续添加其他类型的映射
+  };
+
+  return `${emojiMap[awardType] || '🎁'}${unit}`;
+}
+
+
+
+// 添加 sleep 函数，用于延时操作
+// 全局变量定义（放在文件顶部）
+let boxVideoTotalCoins = 0; // 累计获得的赠币
+
+// 修改后的 BoxVideo 函数
+async function BoxVideo(Cookie) {
+    await GetVideoinit(Cookie);
+
+    if (!$.availableGifts?.length) {
+        console.log("当前没有可领取的视频礼物\n");
+        return;
+    }
+
+    // 初始化奖励统计对象
+    const rewardsSummary = {};
+    let successCount = 0;
+
+    console.log(`\n📦 发现 ${$.availableGifts.length} 个可领取礼物`);
+
+    for (let i = 0; i < $.availableGifts.length; i++) {
+        const gift = $.availableGifts[i];
+        console.log(`\n🎁 正在领取 ${i+1}/${$.availableGifts.length}: ${gift.giftName} x${gift.packageCount}`);
+
+        const result = await runBoxVideo(Cookie, gift.giftId, i+1);
+
+        if (result.code === 0) {
+            successCount++;
+            // 动态初始化奖励类型
+            if (!rewardsSummary[gift.awardType]) {
+                rewardsSummary[gift.awardType] = {
+                    name: gift.giftName.replace(/x\d+$/, "").trim(),
+                    total: 0,
+                    unit: gift.unit || "🎁"
+                };
+            }
+            rewardsSummary[gift.awardType].total += gift.packageCount;
+            console.log(`✅ 领取成功 +${gift.packageCount}${gift.unit}`);
+        } else {
+            console.log(`❌ 领取失败: ${result.msg || '未知错误'}`);
+        }
+
+        // 延迟逻辑保持不变...
+    }
+
+    // 保存统计结果
+    $.videoRewards = rewardsSummary;
+    console.log(`\n📊 视频任务完成: 成功 ${successCount}/${$.availableGifts.length}`);
+    Object.values(rewardsSummary).forEach(reward => {
+        console.log(`- ${reward.name}: ${reward.total}${reward.unit}`);
+    });
+}
+
+
+// 添加在文件顶部常量定义区域
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+// 修改后的 runBoxVideo 函数
+async function runBoxVideo(Cookie, giftId, attempt) {
+    return new Promise((resolve) => {
+        const Url = {
+            url: `https://ih5.reader.qq.com/api/comAds/getGift?giftId=${giftId}&scene=1`,
+            headers: {
+                'User-Agent': 'QQReaderUI/51423 CFNetwork/3826.500.111.2.2 Darwin/24.4.0',
+                'ua': 'iPhone 14 Pro Max-iOS18.4.1',
+                'Accept': 'application/json, text/plain, */*',
+                'cookie': Cookie
+            }
+        };
+
+        $.get(Url, async (err, resp, data) => {
+            if (logs == 0) {
+                console.log(`第 ${attempt} 次请求响应状态码: ${resp.status}`);
+                console.log(`原始响应: ${data}`);
+            }
+
+            try {
+                data = JSON.parse(data);
+
+                // 调试信息
+                if (logs == 0) {
+                    console.log(`领取结果 (尝试 ${attempt}):`, {
+                        code: data.code,
+                        msg: data.msg,
+                        giftId: giftId
+                    });
+                }
+
+                // 处理不同返回状态
+                if (data.code === 0) {
+                    $.boxVideo = data;
+                } else {
+                    $.boxVideo = {
+                        code: data.code,
+                        msg: data.msg || '领取失败',
+                        giftId: giftId
+                    };
+                }
+
+                resolve(data);
+            } catch (e) {
+                console.log(`解析响应出错: ${e}`);
+                resolve({
+                    code: -1,
+                    msg: '解析响应失败',
+                    giftId: giftId
+                });
+            }
+        });
+    });
 }
 
 
@@ -812,11 +932,16 @@ async function Msg() {
   }
 
 
-  if (boxVideoTotalCoins > 0) {
-    t += `【宝箱视频】获得 ${boxVideoTotalCoins} 💰赠币\n`;  // 输出总赠币
-  } else if ($.boxVideo?.code === -1)
-  {
+  // 在 Msg() 函数中修改宝箱视频通知部分
+  if ($.videoRewards && Object.keys($.videoRewards).length > 0) {
+    t += `【宝箱视频】领取详情:\n`;
+    Object.values($.videoRewards).forEach(reward => {
+      t += `├─ ${reward.name} x${reward.total}${reward.unit}\n`;
+    });
+  } else if ($.boxVideo?.code === -1) {
     t += `【宝箱视频】${$.boxVideo.msg}\n`;
+  } else {
+    t += `【宝箱视频】今日无新礼物可领取\n`;
   }
 
   if ($.reward?.code === 0)
