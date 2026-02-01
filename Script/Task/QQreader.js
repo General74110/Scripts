@@ -830,7 +830,7 @@ async function runBoxVideo(Cookie, giftId, attempt) {
         };
 
         $.get(Url, async (err, resp, data) => {
-            if (logs == 0) {
+            if (logs == 1) {
                 console.log(`第 ${attempt} 次请求响应状态码: ${resp.status}`);
                 console.log(`原始响应: ${data}`);
             }
@@ -839,7 +839,7 @@ async function runBoxVideo(Cookie, giftId, attempt) {
                 data = JSON.parse(data);
 
                 // 调试信息
-                if (logs == 0) {
+                if (logs == 1) {
                     console.log(`领取结果 (尝试 ${attempt}):`, {
                         code: data.code,
                         msg: data.msg,
