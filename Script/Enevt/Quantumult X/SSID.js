@@ -52,7 +52,7 @@ const modeNameMap = {
         // 3️⃣ 防止重复切换
         const lastMode = $prefs.valueForKey(STORE_KEY);
         if (lastMode === runningMode) {
-            console.log("[INFO] running_mode 未变化，跳过切换");
+            console.log("[INFO] 网络未变化，跳过切换");
             $done();
             return;
         }
@@ -70,14 +70,14 @@ const modeNameMap = {
 
         if (NOTIFY_SWITCH) {
             $notify(
-                "QX 自动切换完成 🟢",
+                "自动切换完成 🟢",
                 `运行模式：${modeNameMap[runningMode]}\nIP：${ip}\n地区：${region}\n运营商：${isp}`
             );
         }
 
     } catch (e) {
         console.log(`[ERROR] ${e}`);
-        $notify("QX 网络检测失败 🔴", String(e), "");
+        $notify("网络检测失败 🔴", String(e), "");
     } finally {
         $done();
     }
