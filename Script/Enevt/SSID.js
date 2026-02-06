@@ -5,8 +5,8 @@
  * 支持：Surge iOS 4+ / Surge Mac 3.3+
  */
 
-const SURGE_LOG_ENABLE = true;       // 是否输出日志
-const SURGE_NOTIFY_ENABLE = true;    // 是否发送通知
+const SURGE_LOG_ENABLE = false;       // 是否输出日志
+const SURGE_NOTIFY_ENABLE = false;    // 是否发送通知
 const CIP_URL = 'https://www.cip.cc/';
 
 // 运营商对应出站模式
