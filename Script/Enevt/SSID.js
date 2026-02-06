@@ -1,116 +1,105 @@
 /**
- * Surge 专用网络环境策略切换
- * Author: General℡
- * GitHub: https://github.com/General74110/Scripts
+ * Surge 外网 & 运营商检测脚本（Event 类型）
+ * 自动切换出站模式
+ * 作者：General℡
+ * 支持：Surge iOS 4+ / Surge Mac 3.3+
  */
 
-const url = "https://app.netart.cn/network-panel/ip.ajax";
-const maxRetry = 3;
-const retryInterval = 5000;
-const operatorProxyList = ["移动", "联通", "电信", "广电"];
-const lastModeKey = "lastNetworkMode";
-const enableNotification = true;
+const SURGE_LOG_ENABLE = true;       // 是否输出日志
+const SURGE_NOTIFY_ENABLE = true;    // 是否发送通知
+const CIP_URL = 'https://www.cip.cc/';
 
-// 获取策略组配置
-function getGroups() {
-    const raw = $persistentStore.read("networkGroups", "boxjs") || "";
-    if (raw) {
-        const groups = {};
-        raw.split("&").forEach(item => {
-            const [key, proxy] = item.split("=").map(s => s.trim());
-            if (key && proxy) groups[key] = { proxy, direct: "DIRECT" };
-        });
-        return groups;
-    } else {
-        console.log("未读取到 BoxJS 自定义策略组，使用默认策略组");
-        return {
-            "TikTok": { proxy: "TikTok线路", direct: "DIRECT" },
-            "Open AI": { proxy: "Open AI线路", direct: "DIRECT" },
-            "国外社交": { proxy: "国外社交线路", direct: "DIRECT" },
-            "国内媒体": { proxy: "国内媒体线路", direct: "DIRECT" },
-            "国外媒体": { proxy: "国外媒体线路", direct: "DIRECT" },
-            "游戏平台": { proxy: "游戏平台线路", direct: "DIRECT" },
-            "谷歌 FCM": { proxy: "谷歌 FCM线路", direct: "DIRECT" },
-            "漏网之鱼": { proxy: "自动选择", direct: "DIRECT" }
-        };
-    }
-}
+// 运营商对应出站模式
+const ISP_MODE = {
+    '移动': 'rule',
+    '联通': 'rule',
+    '电信': 'rule',
+    '广电': 'rule'
+};
+const DEFAULT_MODE = 'direct'; // 其它运营商默认 DIRECT
 
-// 通知函数
-function notify(title, subtitle, message) {
-    if (enableNotification) $notification.post(title, subtitle, message);
-}
+(async function main() {
+    try {
+        const netType = $network ? ($network['cellular'] ? '蜂窝' : 'Wi-Fi') : '未知';
+        log(`网络类型检测：${netType}`);
 
-// 批量切换策略组
-function switchGroups(groups, useProxy) {
-    const results = [];
-    for (let group in groups) {
-        const target = useProxy ? groups[group].proxy : groups[group].direct;
-        try {
-            $surge.setSelectGroupPolicy(group, target);
-            console.log(`切换策略组: ${group} → ${target} 🟢`);
-            results.push(`${group} → ${target} 🟢`);
-        } catch (e) {
-            console.log(`切换策略组失败: ${group} → ${target} 🔴`, e);
-            results.push(`${group} → ${target} 🔴`);
-        }
-    }
-    return results.join("\n");
-}
-
-// 发起请求
-function fetchData(retry = 0) {
-    const groups = getGroups();
-    if (!groups || Object.keys(groups).length === 0) {
-        console.log("没有可用的策略组，脚本结束 🔴");
-        notify("Surge 策略切换失败 🔴", "无策略组", "");
-        return $done();
-    }
-
-    $httpClient.get({ url }, (error, response, data) => {
-        if (error || !data) {
-            console.log(`请求失败 (尝试 ${retry + 1}) 🔴`, error || "");
-            if (retry < maxRetry - 1) setTimeout(() => fetchData(retry + 1), retryInterval);
-            else notify("Surge 策略切换失败 🔴", "请求失败/返回为空", String(error || "无数据"));
-            return $done();
-        }
-
-        try {
-            const obj = JSON.parse(data);
-            const countryName = obj?.data?.country?.name || "未知";
-            const asInfo = obj?.data?.as?.info || "";
-            const operatorDisplay = (countryName + asInfo).trim() || "未知";
-            const countryCode = obj?.data?.country?.code || "未知";
-
-            const useProxy = operatorProxyList.some(op => asInfo.includes(op));
-            const newMode = useProxy ? "proxy" : "direct";
-            const lastMode = $persistentStore.read(lastModeKey) || "";
-
-            console.log(`运营商: ${operatorDisplay}, 国家代码: ${countryCode}, 本次模式: ${newMode}, 上次模式: ${lastMode}`);
-
-            if (newMode === lastMode) {
-                console.log("网络环境未变化 🟡");
-                notify("Surge 策略未切换 🟡", `运营商: ${operatorDisplay}`, `继续使用：${newMode === "proxy" ? "代理" : "直连"}`);
-                return $done();
+        // 获取 cip.cc 外网信息
+        $httpClient.get(CIP_URL, async (err, resp, body) => {
+            if (err) {
+                log(`外网检测失败: ${err}`);
+                notify('Surge 外网检测失败', err);
+                $done();
+                return;
             }
 
-            const resultLog = switchGroups(groups, useProxy);
-            $persistentStore.write(newMode, lastModeKey);
+            const { ip, location, isp } = parseCip(body);
+            log(`检测到外网 IP：${ip}`);
+            log(`归属地信息：${location}`);
+            log(`运营商：${isp}`);
 
-            notify(
-                "Surge 策略切换成功 🟢",
-                `运营商: ${operatorDisplay} | 国家代码: ${countryCode}`,
-                `已切换为：${useProxy ? "代理" : "直连"}\n${resultLog}`
-            );
+            // 根据运营商选择出站模式
+            let outboundMode = DEFAULT_MODE;
+            for (const key in ISP_MODE) {
+                if (isp.includes(key)) {
+                    outboundMode = ISP_MODE[key];
+                    break;
+                }
+            }
 
-        } catch (e) {
-            console.log("JSON解析异常 🔴", e);
-            notify("Surge 策略切换失败 🔴", "JSON解析异常", String(e));
-        }
 
+            // 获取上一次保存的模式
+            const lastDataStr = $persistentStore.read('SurgeIP_Last') || '';
+            let lastData = {};
+            try { lastData = JSON.parse(lastDataStr); } catch(e){}
+
+            // 检查是否变化
+            if (lastData.ip === ip && lastData.isp === isp && lastData.mode === outboundMode) {
+                log('Surge 网络环境未变化 🟡');
+                $done();
+                return;
+            }
+
+            // 切换出站模式
+            const success = $surge.setOutboundMode(outboundMode);
+            if (success) {
+                log(`出站模式已切换为：${outboundMode}`);
+                notify('Surge 网络切换成功 🟢',
+                    `已切换出站模式：${outboundMode}\n网络：${netType}\nIP：${ip}\n归属地：${location}\n运营商：${isp}`);
+                // 保存当前状态
+                $persistentStore.write(JSON.stringify({ip, isp, mode: outboundMode}), 'SurgeIP_Last');
+            } else {
+                log(`出站模式切换失败`);
+                notify('Surge 策略切换失败 🔴', `尝试模式：${outboundMode}`);
+            }
+
+            $done();
+        });
+
+    } catch (e) {
+        log(`脚本异常: ${e}`);
         $done();
-    });
+    }
+})();
+
+// ------------------------
+// 解析 cip.cc 返回内容
+function parseCip(html) {
+    const preMatch = html.match(/<pre>([\s\S]*?)<\/pre>/);
+    if (!preMatch) return { ip: '未知', location: '未知', isp: '未知' };
+    const text = preMatch[1];
+
+    const ip = text.match(/IP\s*:\s*([0-9.]+)/)?.[1] || '未知';
+    const location = text.match(/地址\s*:\s*([^\n\r]+)/)?.[1]?.trim() || '未知';
+    const isp = text.match(/运营商\s*:\s*([^\n\r]+)/)?.[1]?.trim() || '未知';
+
+    return { ip, location, isp };
 }
 
-// 执行脚本
-fetchData();
+// ------------------------
+function log(msg) {
+    if (SURGE_LOG_ENABLE) console.log(`[SurgeIP] ${msg}`);
+}
+
+function notify(title, subtitle) {
+    if (SURGE_NOTIFY_ENABLE) $notification.post(title, subtitle, '');
+}
