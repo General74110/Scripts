@@ -1,5 +1,6 @@
 /*
 【App】
+#> !!!!!!!!!!!!!还没成，别用!!!!!!!!!!!
 #> QQ阅读VIP
 【作者】
 #> 搬运自【伟人佬（https://t.me/GieGie444）】
@@ -33,105 +34,46 @@ function done(obj = {}) {
     if (typeof $done === "function") $done(obj);
 }
 
-/* ==================================================
-   一、请求阶段（Header 增量修改）
+/*==================================================
+   一、请求阶段（body 增量修改）
    接口：/ChapBatAuthWithPD
    作用：章节批量授权 / 阅读权限校验
    没抓到
 ==================================================
 
-if (url.includes("/ChapBatAuthWithPD")) {
+if ($response && url.includes("/ChapBatAuthWithPD")) {
     try {
-        // 获取URL查询参数
-        const getQueryParams = (url) => {
-            const query = url.split('?')[1] || '';
-            const params = {};
-            query.split('&').forEach(pair => {
-                const [key, value] = pair.split('=');
-                if (key) params[key] = decodeURIComponent(value || '');
-            });
-            return params;
-        };
+        let body = JSON.parse($response.body);
 
-        const params = getQueryParams(url);
-        const headers = { ...$request.headers };
+        const modifiedBody = body.map(item => {
+            // 修改账户状态为VIP
+            if (item.isVip !== undefined) {
+                item.isVip = "1";
+                item.free = 1;
+                item.message = "请求成功";
+            }
 
-        // 基础header配置
-        const baseHeaders = {
-            uid: "855124767176",
-            qrtm: headers.qrtm || Math.floor(Date.now()/1000).toString(),
-            trustedid: headers.trustedid || "9a29ef0f8ec32235bd4814a5b7348e611",
-            ua: headers.ua || "iPhone 16 Pro Max-iOS18.2",
-            qrem: headers.qrem || "0",
-            net_type: headers.net_type || "1",
-            platform: headers.platform || "ioswp",
-            rcmd: headers.rcmd || "1",
-            youngerMode: headers.youngerMode || "0",
-            mldt: headers.mldt || "e6adcbb59b681e6dfe2ad944f3a26860",
-            sid: headers.sid || "",
-            usid: headers.usid || "ywA2nR1SiPp1",
-            text_type: headers.text_type || "1",
-            loginType: headers.loginType || "50",
-            version: headers.version || "qqreader_8.3.52.0692_iphone",
-            QVisible: headers.QVisible || "0",
-            qrsy: headers.qrsy || "cb377a265ff9a96957ab8c317df0f6cb",
-            ttime: headers.ttime || Date.now().toString(),
-            safkey: headers.safkey || "3828820a16622f3f7b7a22c434354317",
-            ssign: headers.ssign || "7b30f02f46dcf2c96713cb28358e65d4",
-            osvn: headers.osvn || "97295bfa6b1cdfc4",
-            auditStatus: headers.auditStatus || "1",
-            Host: "newminerva-tgw.reader.qq.com",
-            jailbreak: headers.jailbreak || "0",
-            Connection: "keep-alive",
-            ibex: headers.ibex || "ajjrhMjPt8d--BQUCHHLVCWl3MgCdJ0nUx6C1A8VpbfFMb7gKOqsoHsSPXqiw6-2E46xeOWhPFecU94kHFZvQ8zMtMPXDOH11OouI4VqW4IZoc9ETYTUck0MP7DTWVFcLsdcfxjQSw0EKrSr5AbVsKi5Tar69OEBMrZIefjQoSZeKHZOdODAdD6eqhrTyKV74SPp76Yx239xg2N5kXwwxhjqC2_XuZ7FNTY2ZGNkNmEzN2YxOWM3OTJkOTk5NmJlZjdmNzEzODM=",
-            dene: headers.dene || "7bb7b3e5516e8abc",
-            dete: headers.dete || "f370690d3d27ffaba0fe4cd2ecb3639e",
-            sift: headers.sift || "4bd5dc0dac2f3b56a250bd32482ff26afaaa74428bb256fd220c68d3bb6b4bdfd37e835e31bec80f5b4a906edd4938c3",
-            IFDA: headers.IFDA || "MDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAw",
-            qrsn: headers.qrsn || "96d35f54fcbfe338d658e480000010c19b18",
-            qrsn_new: headers.qrsn_new || "96d35f54fcbfe338d658e480000010c19b18",
-            server_sex: headers.server_sex || "1",
-            themeid: headers.themeid || "0",
-            nosid: headers.nosid || "1",
-            gselect: headers.gselect || "-1"
-        };
-
-        // 合并请求参数到stat_params
-        const baseStatParams = {
-            bid: params.bookId || "51179257",
-            tabtype: params.tabtype || "3",
-            islogin: "1",
-            freeStatus: params.freeStatus || "2",
-            payStatus: params.payStatus || "300",
-            scene: params.scene || "public_rec",
-            type: params.type || "0",
-            autopay: params.autopay || "0",
-            usepreview: params.usepreview || "1",
-            scids: params.scids || "45",
-            adState: params.adState || "1",
-            origin: params.origin || "null",
-            tafauth: params.tafauth || "1",
-            fuid: params.fuid || "AA0C3A06-3092-406A-AE8A-C0B2E3C1044C",
-            noclick: params.noclick || "0"
-        };
-
-        // 合并headers
-        Object.assign(headers, baseHeaders, {
-            stat_params: JSON.stringify(baseStatParams),
-            "Accept-Encoding": headers["Accept-Encoding"] || "gzip",
-            "Accept-Language": headers["Accept-Language"] || "zh-CN,zh-Hans;q=0.9",
-            "User-Agent": headers["User-Agent"] || "QQReaderUI/52047 CFNetwork/1568.300.101 Darwin/24.2.0",
-            Range: headers.Range || "bytes=0-"
+            // 解锁付费章节
+            if (item.code === "-8") {
+                item.code = "0";
+                item.chapterprice = "0";
+                item.chaptermprice = "0";
+                item.autopaycode = "1";
+                item.paycheckmode = "1";
+                item.used = 1;
+                item.message = "请求成功";
+            }
+            return item;
         });
 
-        $done({ headers });
+        $done({ body: JSON.stringify(modifiedBody) });
     } catch (e) {
-        console.log("ChapBatAuthWithPD header error:", e);
+        console.log("解锁失败: " + e);
         $done({});
     }
 }
 
- */
+*/
 
 /* ==================================================
    二、响应阶段（个人中心）
@@ -145,18 +87,19 @@ if (isResponse && url.includes("/nativepage/personal")) {
 
         /* 月会员信息 */
         if (personal.monthUser) {
-            //personal.monthUser.paidVipStatus = 2; // 已开通
+            personal.monthUser.paidVipStatus = 2; // 已开通
             personal.monthUser.paidVipStatus = 1;
             personal.monthUser.monthStatus = 1;
-           // personal.monthUser.smsVip = 1;
+            personal.monthUser.smsVip = 1;
             personal.monthUser.smsVip = 0;
-            //personal.monthUser.mVipType = 1;
+            personal.monthUser.mVipType = 1;
             personal.monthUser.mVipType = 2;
             personal.monthUser.title = "体验会员";
             personal.monthUser.label = "付费会员享任务奖励翻倍";
             personal.monthUser.endTime = "2099-01-11到期";
             //personal.monthUser.buttonName = "续费";
             personal.monthUser.buttonName = "2.99元升付费会员";
+            personal.userInfo.vipTag = "会员";
 
         }
 
@@ -174,6 +117,7 @@ if (isResponse && url.includes("/nativepage/personal")) {
             personal.userInfo.sex = 0;
             personal.userInfo.background = "https:\/\/raw.githubusercontent.com\/General74110\/Scripts\/master\/images\/pg.jpg";//主页背景
             personal.userInfo.staticBackground = "https:\/\/raw.githubusercontent.com\/General74110\/Scripts\/master\/images\/pg.jpg";//主页背景
+            personal.userInfo.vipTag = "会员";
 
 
         }
@@ -309,9 +253,9 @@ if (isResponse && url.includes("/uservipstatus")) {
     try {
         const obj = JSON.parse($response.body);
         obj.isVip = "true";
-        obj.vipTag = "会员";
+       obj.vipTag = "会员";
         obj.vipPrepayEndTime = 0;
-        obj.isSmsVip = "false";
+       // obj.isSmsVip = "false";
         obj.vipType = 1;
         obj.monthUser = 1;
         obj.costMonthUser = 1;
@@ -388,6 +332,7 @@ if (isResponse && url.includes("/h5/dress/usingDress")) {
         const obj = JSON.parse($response.body);
         obj.vipEndTime = "2099-01-11";
         obj.isVip = "true";
+        obj.vipTag = "会员";
         obj.vipEndTimeStamp = 4071772800000;
         obj.isMonthVip = "false";
         obj.isPayVip = 1;
@@ -412,6 +357,7 @@ if (isResponse && url.includes("/account/getUserPrefer")) {
     try {
         const obj = JSON.parse($response.body);
         obj.data.prefer = 1;
+        obj.vipTag = "会员";
 
         done({body: JSON.stringify(obj)});
 
@@ -478,6 +424,7 @@ if (isResponse && url.includes("/bookCity/index")) {
         obj.dataList[0].data.paidType = 1;
         obj.dataList[0].data.content = "2099-01-11体验会员到期";
         obj.dataList[0].data.status = 1;
+        obj.vipTag = "会员";
 
         done({body: JSON.stringify(obj)});
 
@@ -503,6 +450,7 @@ if (isResponse && url.includes("/bookCity/index")) {
             obj.bookTicket = 88888888;
             obj.vipButton = 1;
             obj.vipComment = "2099-01-11到期";
+            obj.vipTag = "会员";
 
             done({body: JSON.stringify(obj)});
     }   catch (e) {
@@ -526,6 +474,7 @@ if (isResponse && url.includes("/account/remind/vipRenewalReminderPop")) {
         obj.data.vipCountDown = 2302992000;
         obj.data.showStatus = "false";
         obj.data.showTab = "false";
+        obj.vipTag = "会员";
 
         done({body: JSON.stringify(obj)});
 
@@ -569,6 +518,7 @@ if (isResponse && url.includes("/common/monthpage")) {
         obj.vipOpenCard.freeVipCard.title = "体验会员，已帮你节省19999999999.81元";
         obj.vipOpenCard.freeVipCard.endTimeTxt = "2099-01-11到期，体验会员为平台赠送福利，管理续费";
         obj.vipOpenCard.paidVipCard = "null";
+        obj.vipTag = "会员";
 
 
         done({body: JSON.stringify(obj)});
@@ -590,6 +540,7 @@ if (isResponse && url.includes("/chapterOver")) {
         const obj = JSON.parse($response.body);
         obj.isVip = 1;
 
+
         done({body: JSON.stringify(obj)});
 
     }   catch (e) {
@@ -605,52 +556,86 @@ if (isResponse && url.includes("/chapterOver")) {
   https://newminerva-tgw.reader.qq.com/ChapBatAuthWithPD?bookId=57004876&type=0&autopay=0&usepreview=1&scids=46&adState=1&origin=(null)&scene=0&tafauth=1&fuid=AA0C3A06-3092-406A-AE8A-C0B2E3C1044C&noclick=0
     刚加的
 ==================================================*/
-if (isResponse && url.includes("/ChapBatAuthWithPD")) {
+if ($response && url.includes("/ChapBatAuthWithPD")) {
     try {
-        // 检查是否是二进制数据
-        if ($response.body instanceof ArrayBuffer || typeof $response.body === 'string') {
-            // 尝试解析二进制数据为文本
-            let bodyText = '';
-            if ($response.body instanceof ArrayBuffer) {
-                const decoder = new TextDecoder('utf-8');
-                bodyText = decoder.decode(new Uint8Array($response.body));
-            } else {
-                bodyText = $response.body;
-            }
+        // 1. 安全解码
+        const rawBody = safeDecode($response.body);
 
-            // 尝试解析JSON部分（通常在二进制数据末尾）
-            const jsonStart = bodyText.lastIndexOf('{');
-            const jsonEnd = bodyText.lastIndexOf('}') + 1;
-            if (jsonStart !== -1 && jsonEnd !== -1) {
-                const jsonStr = bodyText.slice(jsonStart, jsonEnd);
-                const obj = JSON.parse(jsonStr);
+        // 2. 精准JSON处理
+        const jsonStart = rawBody.indexOf('[');
+        const jsonEnd = rawBody.lastIndexOf(']') + 1;
+        const jsonStr = rawBody.slice(jsonStart, jsonEnd);
 
-                // 修改VIP状态和相关字段
-                obj.isVip = 1;
-                obj.balance_free = 88888888;
-                obj.balance = 88888888;
-                obj.openvipdesc = "体验会员尊享特权";
-                obj.monthType = 3;
-                obj.free = 2;
-                obj.isSuperBag = 1;
-
-                // 重建响应体
-                const modifiedJson = JSON.stringify(obj);
-                const newBody = bodyText.slice(0, jsonStart) + modifiedJson + bodyText.slice(jsonEnd);
-
-                done({ body: newBody });
-            } else {
-                // 如果没有找到JSON部分，直接返回原始数据
-                console.log("未找到可修改的JSON数据");
-                done({});
-            }
-        } else {
-            console.log("响应体不是二进制数据");
-            done({});
+        let data;
+        try {
+            data = JSON.parse(jsonStr);
+        } catch (e) {
+            throw new Error("JSON解析失败: " + e.message);
         }
+
+        // 3. 修改VIP状态
+        const modifiedData = data.map(item => {
+            // 账户状态部分
+            if (item.isVip !== undefined) {
+                return {
+                    ...item,
+                    isVip: "1",
+                    discount: "0",
+                    adInfo: { monthType: 3 }
+                };
+            }
+            // 章节部分
+            if (item.code === "-8") {
+                return {
+                    ...item,
+                    code: "0",
+                    chapterprice: "0",
+                    chaptermprice: "0",
+                    paycheckmode: "1",
+                    message: "请求成功"
+                };
+            }
+            return item;
+        });
+
+        // 4. 重建响应体
+        const newBody = rawBody.slice(0, jsonStart) +
+                       JSON.stringify(modifiedData) +
+                       rawBody.slice(jsonEnd);
+
+        // 5. 返回修改后响应
+        $done({
+            headers: {
+                ...$response.headers,
+                "Content-Type": "application/json",
+                "Content-Length": String(newBody.length)
+            },
+            body: newBody
+        });
+
     } catch (e) {
-        console.log("ChapBatAuthWithPD response error:", e);
-        done({});
+        console.log("处理失败:", e);
+        $done({});
+    }
+}
+
+// 辅助函数：安全解码
+function safeDecode(body) {
+    if (typeof body === 'string') return body;
+    try {
+        return new TextDecoder('utf-8').decode(body);
+    } catch {
+        return String.fromCharCode.apply(null, new Uint8Array(body));
+    }
+}
+
+// 辅助函数：安全解码
+function safeDecode(body) {
+    if (typeof body === 'string') return body;
+    try {
+        return new TextDecoder('utf-8').decode(body);
+    } catch {
+        return String.fromCharCode.apply(null, new Uint8Array(body));
     }
 }
 /* ==================================================
