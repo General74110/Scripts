@@ -1,16 +1,16 @@
 /**
- * Quantumult X 自动检测公网 IP
- * 适用于在大陆使用带非大陆运营商
- * 本脚本不适用于软路由
- * 根据地区切换 运行模式
+ * Quantumult X 自动检测公网 IP（最终增强版）
+ * 适用于：大陆使用 + 非大陆运营商
+ * ❌ 不适用于软路由环境
  *
  * 规则：
- * - 地址包含「中国」 → 规则分流
- * - 其他地区 → 全局直连
+ * - 大陆（不含港澳台） → 规则模式
+ * - 其他地区           → 全局直连
  *
- * IP显示
- * 地理位置显示
- * 运营商显示
+ * 显示：
+ * - IP
+ * - 地理位置
+ * - 运营商
  *
  * 作者：General℡
  */
@@ -18,13 +18,22 @@
 // ======================
 // 🔧 配置区
 // ======================
-const NOTIFY_SWITCH = true;   // 是否通知模式切换
-const QUERY_DELAY   = 2000;   // 延迟查询公网信息（毫秒）
+const NOTIFY_SWITCH = true;   // 是否通知
+const QUERY_DELAY   = 2000;   // 启动延迟（毫秒）
+const CONFIRM_TIMES = 1;      // 连续一致次数才切换（防抖）
 
-const STORE_KEY = "QXIP_LastMode";
-const CIP_URL = "https://www.cip.cc/";
+const STORE_MODE   = "QXIP_LastMode";
+const STORE_REGION = "QXIP_LastRegion";
+const STORE_COUNT  = "QXIP_ConfirmCount";
 
-// running_mode 中文映射
+// 多 IP 源（按顺序 fallback）
+const IP_SOURCES = [
+    { name: "cip.cc", url: "https://www.cip.cc/", parser: parseCip },
+   // { name: "ip.sb",  url: "https://ip.sb/",     parser: parseIpSb },
+    //{ name: "ifconfig", url: "https://ifconfig.me/all", parser: parseIfconfig }
+];
+
+// running_mode 映射
 const modeNameMap = {
     filter: "规则模式",
     all_direct: "直连模式",
@@ -33,84 +42,147 @@ const modeNameMap = {
 
 (async () => {
     try {
+        await sleep(QUERY_DELAY);
+
         // ------------------------
-        // 1️⃣ 延迟查询公网信息（等待网络稳定）
-        await new Promise(r => setTimeout(r, QUERY_DELAY));
+        // 1️⃣ 获取公网信息（多源 fallback）
+        const info = await queryPublicIP();
+        const { ip, region, isp, source } = info;
 
-        const resp = await $task.fetch({ url: CIP_URL });
-        const { ip, region, isp } = parseCipInfo(resp.body);
-
+        console.log(`[INFO] 来源: ${source}`);
         console.log(`[INFO] IP: ${ip}`);
         console.log(`[INFO] 地区: ${region}`);
         console.log(`[INFO] 运营商: ${isp}`);
 
         // ------------------------
-        // 2️⃣ 根据地区判断 running_mode
-        const runningMode = /中国/.test(region) ? "filter" : "all_direct";
+        // 2️⃣ 判断是否大陆（不含港澳台）
+        const isMainlandChina =
+            /中国/.test(region) &&
+            !/中国香港|中国澳门|中国台湾/.test(region);
+
+        const runningMode = isMainlandChina ? "filter" : "all_direct";
 
         // ------------------------
-        // 3️⃣ 防止重复切换
-        const lastMode = $prefs.valueForKey(STORE_KEY);
-        if (lastMode === runningMode) {
-            console.log("[INFO] 网络未变化，跳过切换");
+        // 3️⃣ 防抖：连续一致才切换
+        const lastRegion = $prefs.valueForKey(STORE_REGION);
+        let confirmCount = Number($prefs.valueForKey(STORE_COUNT) || 0);
+
+        if (region === lastRegion) {
+            confirmCount++;
+        } else {
+            confirmCount = 1;
+            $prefs.setValueForKey(region, STORE_REGION);
+        }
+        $prefs.setValueForKey(String(confirmCount), STORE_COUNT);
+
+        if (confirmCount < CONFIRM_TIMES) {
+            console.log(`[INFO] 地区确认中 (${confirmCount}/${CONFIRM_TIMES})，暂不切换`);
             $done();
             return;
         }
 
         // ------------------------
-        // 4️⃣ 切换 running_mode
-        await $configuration.sendMessage({
+        // 4️⃣ 防止重复切换
+        const lastMode = $prefs.valueForKey(STORE_MODE);
+        if (lastMode === runningMode) {
+            console.log("[INFO] 运行模式未变化，跳过切换");
+            $done();
+            return;
+        }
+
+        // ------------------------
+        // 5️⃣ 切换 running_mode（带兜底）
+        const result = await $configuration.sendMessage({
             action: "set_running_mode",
             content: { running_mode: runningMode }
         });
 
-        $prefs.setValueForKey(runningMode, STORE_KEY);
+        if (!result) {
+            throw new Error("running_mode 切换失败");
+        }
 
-        console.log(`[INFO] 切换到 ${modeNameMap[runningMode]} 模式`);
+        $prefs.setValueForKey(runningMode, STORE_MODE);
+
+        console.log(`[INFO] 已切换至 ${modeNameMap[runningMode]}`);
 
         if (NOTIFY_SWITCH) {
             $notify(
-                "自动切换完成 🟢",
-                `运行模式：${modeNameMap[runningMode]}\nIP：${ip}\n地区：${region}\n运营商：${isp}`
+                "网络环境已变化 🟢",
+                `${modeNameMap[lastMode] || "未知"} → ${modeNameMap[runningMode]}`,
+                `IP：${ip}\n地区：${region}\n运营商：${isp}`
             );
         }
 
     } catch (e) {
         console.log(`[ERROR] ${e}`);
-        $notify("网络检测失败 🔴", String(e), "");
+        $notify("公网 IP 检测失败 🔴", String(e), "");
     } finally {
         $done();
     }
 })();
 
 // ======================
-// 解析 cip.cc HTML
+// 🧠 公共方法
 // ======================
-function parseCipInfo(html) {
-    const preMatch = html.match(/<pre>([\s\S]*?)<\/pre>/);
-    if (!preMatch) {
-        return { ip: "未知", region: "未知", isp: "未知" };
+async function queryPublicIP() {
+    for (const src of IP_SOURCES) {
+        try {
+            const resp = await $task.fetch({ url: src.url });
+            const info = src.parser(resp.body);
+            if (info && info.ip && info.ip !== "未知") {
+                info.source = src.name;
+                return info;
+            }
+        } catch (_) {}
     }
+    throw new Error("所有 IP 源均解析失败");
+}
 
-    const text = preMatch[1];
+function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
+// ======================
+// 📦 解析器
+// ======================
+function parseCip(html) {
+    const pre = html.match(/<pre>([\s\S]*?)<\/pre>/)?.[1] || html;
 
     const ip =
-        text.match(/IP\s*:\s*([0-9.]+)/)?.[1] || "未知";
+        pre.match(/IP\s*:\s*([0-9.]+)/)?.[1] ||
+        pre.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/)?.[0] ||
+        "未知";
 
     const region =
-        text.match(/地址\s*:\s*([^\n]+)/)?.[1]?.trim() || "未知";
+        pre.match(/地址\s*:\s*([^\n]+)/)?.[1]?.trim() || "未知";
 
     let isp =
-        text.match(/运营商\s*:\s*([^\n]+)/)?.[1]?.trim() || "";
+        pre.match(/运营商\s*:\s*([^\n]+)/)?.[1]?.trim() || "";
 
     if (!isp) {
-        const data3 = text.match(/数据三\s*:\s*([^\n]+)/)?.[1];
-        if (data3 && data3.includes("|")) {
+        const data3 = pre.match(/数据三\s*:\s*([^\n]+)/)?.[1];
+        if (data3?.includes("|")) {
             isp = data3.split("|").pop().trim();
         }
     }
 
-    if (!isp) isp = "未知";
+    return { ip, region, isp: isp || "未知" };
+}
 
-    return { ip, region, isp };
+function parseIpSb(text) {
+    const ip = text.trim();
+    return {
+        ip,
+        region: "未知",
+        isp: "未知"
+    };
+}
+
+function parseIfconfig(text) {
+    const ip = text.match(/ip_addr:\s*([0-9.]+)/)?.[1] || "未知";
+    return {
+        ip,
+        region: "未知",
+        isp: "未知"
+    };
 }
