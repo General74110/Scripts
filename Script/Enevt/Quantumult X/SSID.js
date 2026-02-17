@@ -33,7 +33,8 @@ function setMode(mode) {
 
 // 👉 国家判断只用「地址」
 function isChina(address) {
-    return address.startsWith("中国");
+    if (!address.startsWith("中国")) return false;
+    return !/中国香港|中国澳门|中国台湾/.test(address);
 }
 
 // 👉 解析 cip.cc
