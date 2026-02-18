@@ -68,7 +68,7 @@ function parseCip(body) {
         console.log("打断请求完成，当前模式：规则模式");
 
         /** 2️⃣ 延迟 3 秒 **/
-        await sleep(3000);
+        await sleep(5000);
 
         /** 3️⃣ 使用 $task.fetch 请求 cip.cc **/
         const resp = await $task.fetch({
