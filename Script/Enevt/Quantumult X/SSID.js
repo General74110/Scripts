@@ -15,7 +15,7 @@
  * 作者：General℡
  */
 
-const ENABLE_NOTIFY = true;
+const ENABLE_NOTIFY = false;
 
 const MODE_NAME = {
     filter: "规则模式",
