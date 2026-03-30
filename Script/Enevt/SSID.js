@@ -13,7 +13,7 @@
 // ======================
 const NOTIFY = true;
 const DELAY = 5000;
-const CONFIRM = 1;
+const CONFIRM = 3;
 
 const API = "http://127.0.0.1:3932/v1/outbound";
 const KEY = "password";
