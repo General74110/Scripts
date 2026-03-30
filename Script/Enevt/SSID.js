@@ -1,163 +1,203 @@
 /**
- * Surge 外网检测脚本（Event）
- * 根据地区自动切换出站模式
+ * Surge 自动检测公网 IP + 智能切换模式（精简增强版）
  *
  * 规则：
- * - 地址包含「中国」 → 规则模式
- * - 其他地区 → 直接连接
- *
- * IP显示
- * 地理位置显示
- * 运营商显示
+ * - 中国大陆 → 规则模式
+ * - 非大陆   → 直接连接
  *
  * 作者：General℡
- * 支持：Surge iOS 4+ / Surge Mac 3.3+
  */
 
 // ======================
 // 🔧 配置区
 // ======================
-const SURGE_LOG_ENABLE = false;     // 是否输出日志
-const SURGE_NOTIFY_ENABLE = true;  // 是否发送通知
-const CIP_URL = 'https://www.cip.cc/';
-const STORE_KEY = 'SurgeIP_Last';
+const NOTIFY = true;
+const DELAY = 2000;
+const CONFIRM = 2;
 
-// Surge 内部出站模式值（⚠️不可改为中文）
-const MODE_CHINA = 'rule';
-const MODE_OTHER = 'direct';
+const API = "http://127.0.0.1:3932/v1/outbound";
+const KEY = "password";
 
-// 出站模式中文显示
-const MODE_NAME_MAP = {
-    rule: '规则模式',
-    direct: '直接连接'
-};
+const STORE_REGION = "Surge_LastRegion";
+const STORE_COUNT  = "Surge_ConfirmCount";
 
-(async function main() {
+// ======================
+// 🚀 主流程
+// ======================
+(async () => {
     try {
-        const netType = $network
-            ? ($network.cellular ? '蜂窝' : 'Wi-Fi')
-            : '未知';
+        await sleep(DELAY);
 
-        log(`网络类型：${netType}`);
+        // 1️⃣ 获取公网信息（仅 cip.cc）
+        const info = await getIP();
+        const { ip, region, isp } = info;
 
-        $httpClient.get(CIP_URL, (err, resp, body) => {
-            if (err) {
-                log(`外网检测失败: ${err}`);
-                notify('Surge 外网检测失败', String(err));
-                $done();
-                return;
-            }
+        console.log(`IP: ${ip}`);
+        console.log(`地区: ${region}`);
+        console.log(`运营商: ${isp}`);
 
-            const { ip, region, isp } = parseCipInfo(body);
+        // ❗ 地区未知 → 不切换
+        if (region === "未知") {
+            console.log("地区未知，跳过切换");
+            done();
+            return;
+        }
 
-            log(`IP：${ip}`);
-            log(`地区：${region}`);
-            log(`运营商：${isp}`);
+        // 2️⃣ 判断是否大陆（排除港澳台）
+        const isCN =
+            /中国/.test(region) &&
+            !/香港|澳门|台湾/.test(region);
 
-            // ------------------------
-            // 根据地区判断出站模式
-            const outboundMode = /中国/.test(region)
-                ? MODE_CHINA
-                : MODE_OTHER;
+        const targetMode = isCN ? "rule" : "direct";
 
-            // ------------------------
-            // 读取上一次状态
-            let lastData = {};
-            try {
-                lastData = JSON.parse(
-                    $persistentStore.read(STORE_KEY) || '{}'
-                );
-            } catch (_) {}
+        // 中文模式名（用于通知）
+        const modeText = {
+            rule: "规则模式",
+            direct: "直接连接"
+        };
 
-            // 无变化则退出
-            if (
-                lastData.ip === ip &&
-                lastData.region === region &&
-                lastData.mode === outboundMode
-            ) {
-                log('网络环境未变化，跳过切换 🟡');
-                $done();
-                return;
-            }
+        // 3️⃣ 防抖
+        const lastRegion = $persistentStore.read(STORE_REGION);
+        let count = Number($persistentStore.read(STORE_COUNT) || 0);
 
-            // ------------------------
-            // 切换出站模式
-            const success = $surge.setOutboundMode(outboundMode);
-            if (success) {
-                const modeName = MODE_NAME_MAP[outboundMode];
+        if (region === lastRegion) {
+            count++;
+        } else {
+            count = 1;
+            $persistentStore.write(region, STORE_REGION);
+        }
+        $persistentStore.write(String(count), STORE_COUNT);
 
-                log(`切换到 ${modeName}`);
+        if (count < CONFIRM) {
+            console.log(`确认中 ${count}/${CONFIRM}`);
+            done();
+            return;
+        }
 
-                notify(
-                    'Surge 出站模式已切换 🟢',
-                    `模式：${modeName}\n网络：${netType}\nIP：${ip}\n地区：${region}\n运营商：${isp}`
-                );
+        // 4️⃣ 获取当前模式
+        const current = await getMode();
 
-                // 保存状态
-                $persistentStore.write(
-                    JSON.stringify({ ip, region, mode: outboundMode }),
-                    STORE_KEY
-                );
-            } else {
-                log('出站模式切换失败');
-                notify(
-                    'Surge 策略切换失败 🔴',
-                    `尝试模式：${MODE_NAME_MAP[outboundMode]}`
-                );
-            }
+        if (current === targetMode) {
+            console.log("模式未变化");
+            done();
+            return;
+        }
 
-            $done();
-        });
+        // 5️⃣ 切换模式
+        await setMode(targetMode);
+
+        // 6️⃣ 校验
+        const newMode = await getMode();
+        if (newMode !== targetMode) {
+            throw new Error("切换失败");
+        }
+
+        console.log(`已切换 ${current} → ${newMode}`);
+
+        // 7️⃣ 通知
+        if (NOTIFY) {
+            $notification.post(
+                "网络环境变化 🟢",
+                `${modeText[current] || "未知"} → ${modeText[newMode]}`,
+                `IP: ${ip}\n地区: ${region}\n运营商: ${isp}`
+            );
+        }
 
     } catch (e) {
-        log(`脚本异常: ${e}`);
-        $done();
+        console.log("错误:", e);
+        if (NOTIFY) {
+            $notification.post("IP 检测失败 🔴", String(e), "保持当前模式");
+        }
+    } finally {
+        done();
     }
 })();
 
 // ======================
-// 解析 cip.cc HTML
+// 🌐 获取 cip.cc
 // ======================
-function parseCipInfo(html) {
-    const preMatch = html.match(/<pre>([\s\S]*?)<\/pre>/);
-    if (!preMatch) {
-        return { ip: '未知', region: '未知', isp: '未知' };
-    }
+function getIP() {
+    return new Promise((resolve, reject) => {
+        $httpClient.get({
+            url: "https://www.cip.cc/",
+            timeout: 5000
+        }, (err, resp, data) => {
+            if (err) return reject(err);
+            const info = parseCIP(data);
+            if (!info.ip || info.ip === "未知") {
+                return reject("解析失败");
+            }
+            resolve(info);
+        });
+    });
+}
 
-    const text = preMatch[1];
+// ======================
+// 📦 cip.cc 解析
+// ======================
+function parseCIP(html) {
+    const pre = html.match(/<pre>([\s\S]*?)<\/pre>/)?.[1] || html;
 
     const ip =
-        text.match(/IP\s*:\s*([0-9.]+)/)?.[1] || '未知';
+        pre.match(/IP\s*:\s*([0-9.]+)/)?.[1] ||
+        pre.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/)?.[0] ||
+        "未知";
 
     const region =
-        text.match(/地址\s*:\s*([^\n\r]+)/)?.[1]?.trim() || '未知';
+        pre.match(/地址\s*:\s*([^\n]+)/)?.[1]?.trim() || "未知";
 
     let isp =
-        text.match(/运营商\s*:\s*([^\n\r]+)/)?.[1]?.trim() || '';
+        pre.match(/运营商\s*:\s*([^\n]+)/)?.[1]?.trim() || "";
 
-    // 无“运营商”字段 → 从 数据三 提取
     if (!isp) {
-        const data3 =
-            text.match(/数据三\s*:\s*([^\n\r]+)/)?.[1];
-        if (data3 && data3.includes('|')) {
-            isp = data3.split('|').pop().trim();
-        }
+        const d = pre.match(/数据三\s*:\s*([^\n]+)/)?.[1];
+        if (d?.includes("|")) isp = d.split("|").pop().trim();
     }
 
-    if (!isp) isp = '未知';
-
-    return { ip, region, isp };
+    return { ip, region, isp: isp || "未知" };
 }
 
 // ======================
-function log(msg) {
-    if (SURGE_LOG_ENABLE) {
-        console.log(`[SurgeIP] ${msg}`);
-    }
+// 🌍 Surge API
+// ======================
+function getMode() {
+    return new Promise((resolve, reject) => {
+        $httpClient.get({
+            url: API,
+            headers: { "X-Key": KEY }
+        }, (e, r, d) => {
+            if (e) return reject(e);
+            try {
+                resolve(JSON.parse(d).mode);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    });
 }
 
-function notify(title, subtitle) {
-    if (SURGE_NOTIFY_ENABLE) {
-        $notification.post(title, subtitle, '');
-    }
+function setMode(mode) {
+    return new Promise((resolve, reject) => {
+        $httpClient.post({
+            url: API,
+            headers: {
+                "X-Key": KEY,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ mode })
+        }, (e) => {
+            e ? reject(e) : resolve();
+        });
+    });
+}
+
+// ======================
+// 🧩 工具
+// ======================
+function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
+function done() {
+    $done();
 }
