@@ -13,7 +13,7 @@
 // ======================
 const NOTIFY = true;
 const DEBUG = true;   // 🆕 调试开关
-const DELAY = 30000;
+const DELAY = 3000;
 const CONFIRM = 1;
 
 const API = "http://127.0.0.1:3932/v1/outbound";
@@ -144,7 +144,7 @@ function getIP() {
 
         $httpClient.get({
             url: "https://www.cip.cc/",
-            timeout: 5000
+            timeout: 60000
         }, (err, resp, data) => {
             if (err) {
                 debug("请求失败:", err);
