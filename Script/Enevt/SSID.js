@@ -12,7 +12,7 @@
 // 🔧 配置区
 // ======================
 const NOTIFY = true;
-const DELAY = 3000;
+const DELAY = 30000;
 const CONFIRM = 1;
 
 const API = "http://127.0.0.1:3932/v1/outbound";
