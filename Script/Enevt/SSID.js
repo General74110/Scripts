@@ -12,12 +12,12 @@
 // 🔧 配置区
 // ======================
 const NOTIFY = true;
-const DEBUG = true;   // 🆕 调试开关
+const DEBUG = false;   // 🆕 调试开关
 const DELAY = 3000;
 const CONFIRM = 1;
 
-const API = "http://127.0.0.1:3932/v1/outbound";
-const KEY = "password";
+const API = "http://127.0.0.1:52993/v1/outbound";
+const KEY = "5A0B2BDB-8C6D-46F0-9A2F-2A9709C6FA40-3668-00000982F59D629D";
 
 const STORE_REGION = "Surge_LastRegion";
 const STORE_COUNT  = "Surge_ConfirmCount";
@@ -207,7 +207,14 @@ function getMode() {
 
         $httpClient.get({
             url: API,
-            headers: { "X-Key": KEY }
+            headers: { "X-Key": KEY,
+							"Accept": "*/*",
+							"Accept-Encoding": "gzip, deflate, br",
+"Connection": "Keep-Alive",
+
+"Host": "127.0.0.1:52993",
+"User-Agent": "CFNetwork/3860.500.112 Darwin/25.4.0"
+						}
         }, (e, r, d) => {
             if (e) {
                 debug("获取模式失败:", e);
