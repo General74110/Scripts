@@ -14,7 +14,7 @@
 const NOTIFY = true;      //通知
 const DEBUG = false;   // 调试开关
 const DELAY = 3000;     //延时运行
-const CONFIRM = 1;      //校验次数
+const CONFIRM = 1;      //防抖校验次数
 
 const API = "http://127.0.0.1:52993/v1/outbound";
 const KEY = "5A0B2BDB-8C6D-46F0-9A2F-2A9709C6FA40-3668-00000982F59D629D"; //你的面板密码
