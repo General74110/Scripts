@@ -1,0 +1,72 @@
+# ===== iQIYI =====
+DOMAIN-SUFFIX,cupid.iqiyi.com,REJECT
+DOMAIN-SUFFIX,cupid.ptqy.gitv.tv,REJECT
+
+# ===== 抖音 / 字节 =====
+DOMAIN-KEYWORD,ad-aweme.byteimg.com,REJECT
+DOMAIN-KEYWORD,webcast-sign.douyinpic.com,REJECT
+DOMAIN-SUFFIX,pglstatp-toutiao.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao-b.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao1.com,REJECT
+DOMAIN-KEYWORD,ad-sign.byteimg.com,REJECT
+DOMAIN-KEYWORD,local-ads.byteimg.com,REJECT
+
+# ===== 快手 =====
+DOMAIN-KEYWORD,ad.video.yximgs.com,REJECT
+DOMAIN-SUFFIX,adbkwai.com,REJECT
+DOMAIN-SUFFIX,gskwai.com,REJECT
+DOMAIN-SUFFIX,adukwai.com,REJECT
+
+# ===== 腾讯 =====
+DOMAIN-KEYWORD,ad.tengine,REJECT
+DOMAIN-SUFFIX,gdt.qq.com,REJECT
+DOMAIN-KEYWORD,adcdn.tencentmusic.com,REJECT
+
+# ===== 阿里 =====
+DOMAIN-SUFFIX,aliapp.org,REJECT
+DOMAIN-SUFFIX,mmstat.com,REJECT
+DOMAIN-SUFFIX,tanx.com,REJECT
+DOMAIN-KEYWORD,adashx.ut,REJECT
+
+# ===== 小米 =====
+DOMAIN-SUFFIX,xiaomi.com,REJECT
+
+# ===== Amazon =====
+DOMAIN-SUFFIX,amazon-adsystem.com,REJECT
+
+# ===== Google / Yahoo =====
+DOMAIN-SUFFIX,ads.yahoo.com,REJECT
+DOMAIN-KEYWORD,adservice.google,REJECT
+
+# ===== 通用广告关键词 =====
+DOMAIN-KEYWORD,adserv,REJECT
+DOMAIN-KEYWORD,adsrv,REJECT
+DOMAIN-KEYWORD,adservice,REJECT
+DOMAIN-KEYWORD,analytics-ad,REJECT
+DOMAIN-KEYWORD,display-ad,REJECT
+
+# ===== SDK / 统计 =====
+DOMAIN-SUFFIX,appsflyer.com,REJECT
+DOMAIN-SUFFIX,appsflyersdk.com,REJECT
+DOMAIN-SUFFIX,applovin.com,REJECT
+DOMAIN-SUFFIX,openx.net,REJECT
+DOMAIN-SUFFIX,domob.cn,REJECT
+DOMAIN-SUFFIX,duomeng.cn,REJECT
+
+# ===== 乱七八糟广告域 =====
+DOMAIN-SUFFIX,guangtuikeji.com,REJECT
+DOMAIN-SUFFIX,uyunad.com,REJECT
+DOMAIN-SUFFIX,tuia.cn,REJECT
+DOMAIN-SUFFIX,mergex.cn,REJECT
+DOMAIN-SUFFIX,mosspf.net,REJECT
+DOMAIN-SUFFIX,richmob.cn,REJECT
+
+# ===== 芒果TV =====
+DOMAIN-SUFFIX,mgtv.com,REJECT
+
+# ===== URL 规则 =====
+URL-REGEX,^https:\/\/ynuf\.aliapp\.org\/savewb\.json,REJECT
+
+# ===== 兜底 =====
+DOMAIN-KEYWORD,ad,REJECT
