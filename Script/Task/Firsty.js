@@ -18,7 +18,6 @@
  *    - googleapisKey: Google API 的 Web Key
  *
  * 3. 自动抓取配置 (Quantumult X):
- *    [rewrite_local]
  *    ## 抓取 Google Token & 看广告参数 & 设备信息
  *  [rewrite_local]
  *
@@ -27,7 +26,6 @@
  *
  * # 2. 点击免费30分钟看广告获取 Token
  * ^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free) url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js
- *
  * [mitm]
  * hostname = securetoken.googleapis.com, 35.186.203.117
  *
@@ -35,9 +33,10 @@
  * 4. 特别说明:
  *    - 本脚本基于 chavyleung 的 Env.js 构建，支持跨平台运行。
  *    - 在 Node.js 环境下，脚本会自动忽略 HTTPS 证书校验以适配直接访问 IP。
- *    - 每次运行可获取30分钟的256kbps免费流量，每次运行最多10次，每隔3小时50分钟运行一次
+ *    - 每次运行可获取30分钟的256kbps免费流量，每次运行最多10次，每隔3小时50分钟运行一次,cron时间请自行查询谷歌
  * -------------------------------------------
- */
+
+*/
 
 
 // ====================
@@ -90,7 +89,7 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
             appcheck: appchecks[i] || appchecks[0],
             sessionid: sessionids[i] || sessionids[0],
             devicedid: devicedids[i] || devicedids[0],
-            gKey: gKeys[i] || gKeys[0] || 'AIzaSyAw4dSOEuZNgBWLAiwSAqPJ9qArvSOaZDM'
+            gKey: gKeys[i] || gKeys[0]
         };
 
         $.log(`\n【账号 ${i + 1}】${config.iccid.slice(-4)} 正在初始化...`);
