@@ -22,10 +22,10 @@
  *    ## 抓取 Google Token & 看广告参数 & 设备信息
  *  [rewrite_local]
  * # 1. 获取 Token, ICCID, Session, AppCheck
- * ^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free) url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/firsty.js
+ * ^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free) url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js
  *
  * # 2. 独立的获取设备信息规则
- * ^https:\/\/35\.186\.203\.117\/api\/mobile\/users\/v2\/.*\/info url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/firsty.js
+ * ^https:\/\/35\.186\.203\.117\/api\/mobile\/users\/v2\/.*\/info url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js
  *
  * [mitm]
  * hostname = securetoken.googleapis.com, 35.186.203.117
