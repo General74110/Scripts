@@ -21,11 +21,12 @@
  *    [rewrite_local]
  *    ## 抓取 Google Token & 看广告参数 & 设备信息
  *  [rewrite_local]
- * # 1. 获取 Token, ICCID, Session, AppCheck
- * ^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free) url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js
  *
- * # 2. 独立的获取设备信息规则
+ * # 1. 打开app获取设备信息
  * ^https:\/\/35\.186\.203\.117\/api\/mobile\/users\/v2\/.*\/info url script-response-body https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js
+ *
+ * # 2. 点击免费30分钟看广告获取 Token
+ * ^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free) url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js
  *
  * [mitm]
  * hostname = securetoken.googleapis.com, 35.186.203.117
@@ -50,7 +51,7 @@ if (isNode) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
-const $ = new Env('Firsty全自动增强版');
+const $ = new Env('Firsty');
 
 // ====================
 // 1. 变量提取
