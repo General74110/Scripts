@@ -46,7 +46,7 @@ const isNode = typeof process !== 'undefined' && !!process.versions && !!process
 
 if (isNode) {
     require('dotenv').config();
-    // Node环境忽略HTTPS证书校验（针对IP请求）
+
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
@@ -72,7 +72,6 @@ const sessionids = sessionidStr.split('&').filter(x => !!x);
 const devicedids = devicedidStr.split('&').filter(x => !!x);
 const gKeys = gKeyStr.split('&').filter(x => !!x);
 
-// ... 前面变量提取部分保持不变 ...
 
 !(async () => {
     // 抓取逻辑判定
@@ -95,7 +94,7 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
 
         $.log(`\n【账号 ${i + 1}】${config.iccid.slice(-4)} 正在初始化...`);
 
-        // --- [优化点] 在循环外刷新一次 Token ---
+        // --- 在循环外刷新一次 Token ---
         const newAuth = await fetchNewAuth(config.rToken, config.gKey);
 
         if (newAuth) {
