@@ -1,5 +1,5 @@
 #!name=Get Cookies
-#!desc=酷我音乐、QQ阅读、喜马拉雅、万达智慧商业。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
+#!desc=酷我音乐、QQ阅读、喜马拉雅、万达智慧商业、Firsty。用于获取相关Cookie，成功后关闭模块以避免无意义的MitM。（具体获取Cookie方法自行查看脚本内容）
 #!author=General℡[https://github.com/General74110/Scripts]
 #!category= General℡
 #!homepage=https://github.com/General74110/Scripts
