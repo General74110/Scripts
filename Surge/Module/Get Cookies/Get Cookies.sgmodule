@@ -19,10 +19,9 @@ QQ阅读获取Cookie = type=http-request, pattern=^https?:\/\/iostgw\.reader\.qq
 # 喜马拉雅 - *.ximalaya.com
 喜马拉雅获取Cookie = type=http-request, pattern=^https?:\/\/m\.ximalaya\.com\/mobile-anchor-web\/api\/v1\/userPage\/getUserPageShow, script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/xmly.js, timeout=60
 
+# firsty - 35.186.203.117
+firsty = type=http-response,pattern=^https:\/\/35\.186\.203\.117\/api\/mobile\/users\/v2\/.*\/info,requires-body=1,max-size=0,binary-body-mode=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js, timeout=60
 # Firsty - *.googleapis.com
-Firsty获取Cookie = type=http-request, pattern=^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free),script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js, timeout=60
-
-# # Firsty - 35.186.203.117
-Firsty获取Cookie = type=http-response, pattern=^https:\/\/35\.186\.203\.117\/api\/mobile\/users\/v2\/.*\/info ,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js, timeout=60
+Firsty = type=http-request,pattern=^https:\/\/(securetoken\.googleapis\.com\/v1\/token|35\.186\.203\.117\/api\/mobile\/bundles\/v3\/.*\/free),requires-body=1,max-size=0,binary-body-mode=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js, timeout=60
 [MITM]
 hostname = %APPEND% *.reader.qq.com, *.wandawic.com, *.kuwo.cn, *.ximalaya.com, securetoken.googleapis.com, 35.186.203.117
