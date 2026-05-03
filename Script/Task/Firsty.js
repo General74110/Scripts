@@ -30,8 +30,6 @@
  * [mitm]
  * hostname = securetoken.googleapis.com, 35.186.203.117
  *
- *    [mitm]
- *    hostname = securetoken.googleapis.com, 35.186.203.117
  *
  * 4. 特别说明:
  *    - 本脚本基于 chavyleung 的 Env.js 构建，支持跨平台运行。
