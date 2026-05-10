@@ -65,7 +65,7 @@ function getRuntimeArgument(name) {
 }
 
 const getVal = (key) => (isNode ? process.env[key] : $.getdata(key)) || '';
-const isDebug = String(getRuntimeArgument('QDREADER_DEBUG')).toLowerCase() === 'true';
+const isDebug = String(getRuntimeArgument('_DEBUG')).toLowerCase() === 'true';
 
 const iccidStr = getVal('iccid');
 const rTokenStr = getVal('refreshToken');
@@ -115,7 +115,7 @@ function debugLog(title, data) {
     $.log(`\n==== Firsty 任务开始 [${isNode ? 'Node.js' : 'App'}] ====\n`);
     debugLog('调试模式', {
         enabled: isDebug,
-        runtimeArgument: getRuntimeArgument('QDREADER_DEBUG') || '(empty)'
+        runtimeArgument: getRuntimeArgument('_DEBUG') || '(empty)'
     });
     debugLog('环境变量', {
         iccid: iccids.map(x => maskValue(x)),
