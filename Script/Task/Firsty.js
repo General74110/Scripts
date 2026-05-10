@@ -55,7 +55,17 @@ const $ = new Env('Firsty');
 // ====================
 // 1. 变量提取
 // ====================
+function getRuntimeArgument(name) {
+    if (isNode) return process.env[name] || '';
+    if (typeof $argument === 'string' && $argument) {
+        const match = $argument.match(new RegExp(`${name}="?([^",]+)"?`));
+        return match ? match[1] : '';
+    }
+    return '';
+}
+
 const getVal = (key) => (isNode ? process.env[key] : $.getdata(key)) || '';
+const isDebug = String(getRuntimeArgument('QDREADER_DEBUG')).toLowerCase() === 'true';
 
 const iccidStr = getVal('iccid');
 const rTokenStr = getVal('refreshToken');
@@ -72,6 +82,28 @@ const sessionids = sessionidStr.split('&').filter(x => !!x);
 const devicedids = devicedidStr.split('&').filter(x => !!x);
 const gKeys = gKeyStr.split('&').filter(x => !!x);
 
+function formatDuration(totalMinutes) {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) return `${hours}小时${minutes}分钟`;
+    if (hours > 0) return `${hours}小时`;
+    return `${minutes}分钟`;
+}
+
+function maskValue(value, keepStart = 4, keepEnd = 4) {
+    if (!value) return '(empty)';
+    const str = String(value);
+    if (str.length <= keepStart + keepEnd) return str;
+    return `${str.slice(0, keepStart)}***${str.slice(-keepEnd)}`;
+}
+
+function debugLog(title, data) {
+    if (!isDebug) return;
+    const content = typeof data === 'string' ? data : $.toStr(data, '');
+    $.log(`\n[DEBUG] ${title}\n${content}`);
+}
+
 
 !(async () => {
     // 抓取逻辑判定
@@ -81,6 +113,19 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
     }
 
     $.log(`\n==== Firsty 任务开始 [${isNode ? 'Node.js' : 'App'}] ====\n`);
+    debugLog('调试模式', {
+        enabled: isDebug,
+        runtimeArgument: getRuntimeArgument('QDREADER_DEBUG') || '(empty)'
+    });
+    debugLog('环境变量', {
+        iccid: iccids.map(x => maskValue(x)),
+        refreshToken: refreshTokens.map(x => maskValue(x)),
+        appcheck: appchecks.map(x => maskValue(x)),
+        sessionid: sessionids.map(x => maskValue(x)),
+        devicedid: devicedids.map(x => maskValue(x)),
+        googleapisKey: gKeys.map(x => maskValue(x))
+    });
+    const accountSummaries = [];
 
     for (let i = 0; i < iccids.length; i++) {
         const config = {
@@ -91,6 +136,14 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
             devicedid: devicedids[i] || devicedids[0],
             gKey: gKeys[i] || gKeys[0]
         };
+        debugLog(`账号 ${i + 1} 配置`, {
+            iccid: maskValue(config.iccid),
+            rToken: maskValue(config.rToken),
+            appcheck: maskValue(config.appcheck),
+            sessionid: maskValue(config.sessionid),
+            devicedid: maskValue(config.devicedid),
+            gKey: maskValue(config.gKey)
+        });
 
         $.log(`\n【账号 ${i + 1}】${config.iccid.slice(-4)} 正在初始化...`);
 
@@ -100,6 +153,13 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
         if (newAuth) {
             const authHeader = `Bearer ${newAuth}`;
             $.log(`✅ Token 刷新成功，开始执行 10 次流量领取任务...`);
+            const result = {
+                account: i + 1,
+                iccid: config.iccid,
+                success: 0,
+                fail: 0,
+                totalMinutes: 0
+            };
 
             // --- 进入循环执行看广告 ---
             for (let c = 0; c < 10; c++) {
@@ -107,7 +167,13 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
                 $.log(`\n[进度 ${$.index}/10] 正在请求流量...`);
 
                 // 使用同一个 authHeader 执行任务
-                await Ad(config, authHeader);
+                const ok = await Ad(config, authHeader);
+                if (ok) {
+                    result.success += 1;
+                    result.totalMinutes += 30;
+                } else {
+                    result.fail += 1;
+                }
 
                 // 随机延迟 4-8 秒（最后一次不等待）
                 if (c < 9) {
@@ -116,11 +182,42 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
                     await $.wait(randomWait);
                 }
             }
+
+            accountSummaries.push(result);
+            $.msg(
+                `${$.name} 账号 ${result.account}`,
+                `成功 ${result.success}/10 次，累计 ${formatDuration(result.totalMinutes)}`,
+                `ICCID 后四位 ${result.iccid.slice(-4)}｜失败 ${result.fail} 次`
+            );
         } else {
             $.log(`❌ 刷新 Token 失败，跳过该账号`);
+            accountSummaries.push({
+                account: i + 1,
+                iccid: config.iccid,
+                success: 0,
+                fail: 10,
+                totalMinutes: 0,
+                tokenFailed: true
+            });
+            $.msg(
+                `${$.name} 账号 ${i + 1}`,
+                `Token 刷新失败`,
+                `ICCID 后四位 ${config.iccid.slice(-4)}｜本次未领取流量`
+            );
         }
 
         await $.wait(2000); // 账号间切换的固定延迟
+    }
+
+    if (accountSummaries.length > 1) {
+        const totalSuccess = accountSummaries.reduce((sum, item) => sum + item.success, 0);
+        const totalFail = accountSummaries.reduce((sum, item) => sum + item.fail, 0);
+        const totalMinutes = accountSummaries.reduce((sum, item) => sum + item.totalMinutes, 0);
+        $.msg(
+            `${$.name} 汇总`,
+            `成功 ${totalSuccess} 次，累计 ${formatDuration(totalMinutes)}`,
+            `失败 ${totalFail} 次｜共 ${accountSummaries.length} 个账号`
+        );
     }
 })().catch(e => $.logErr(e)).finally(() => $.done());
 
@@ -129,6 +226,12 @@ const gKeys = gKeyStr.split('&').filter(x => !!x);
 // ====================
 function GetCookie() {
     const url = $request.url;
+    debugLog('抓取请求', {
+        url,
+        method: $request.method,
+        headers: $request.headers,
+        body: $request.body || ''
+    });
 
     // A. 抓取 Google Token 参数
     if (url.includes("securetoken.googleapis.com/v1/token")) {
@@ -140,6 +243,7 @@ function GetCookie() {
         try {
             const body = JSON.parse($request.body);
             if (body.refreshToken) $.setdata(body.refreshToken, "refreshToken");
+            debugLog('Google Token 抓取请求体', body);
         } catch (e) {}
         $.msg($.name, "Google参数", "googleapisKey & refreshToken 获取成功");
     }
@@ -164,6 +268,7 @@ function GetCookie() {
         try {
             const res = JSON.parse($response.body);
             if (res.deviceId) $.setdata(res.deviceId, "devicedid");
+            debugLog('Info 响应数据', res);
             $.msg($.name, "设备参数", "deviceId 获取成功");
         } catch (e) {}
     }
@@ -190,10 +295,19 @@ function fetchNewAuth(refreshToken, gKey) {
         $.post(options, (err, resp, data) => {
             try {
                 if (err) throw new Error(err);
+                debugLog('刷新 Token 响应', {
+                    status: resp && resp.status,
+                    headers: resp && resp.headers,
+                    body: data
+                });
                 const res = JSON.parse(data);
                 resolve(res.id_token || null);
             } catch (e) {
                 $.log(`刷新 Auth 报错: ${e.message}`);
+                debugLog('刷新 Token 异常', {
+                    error: e.message,
+                    response: data || ''
+                });
                 resolve(null);
             }
         });
@@ -231,23 +345,33 @@ function Ad(acc, authHeader) {
         $.post(options, (err, resp, data) => {
             if (err) {
                 $.log(`❌ 接口连接异常: ${JSON.stringify(err)}`);
+                debugLog('流量接口异常', err);
+                resolve(false);
             } else {
+                debugLog(`流量接口响应 [${acc.iccid.slice(-4)}]`, {
+                    status: resp && resp.status,
+                    headers: resp && resp.headers,
+                    body: data
+                });
                 try {
                     const json = JSON.parse(data);
                     if (json.code === true || (json.data && json.data.freeSubscriptionTransactionId)) {
                         $.log(`🎯 流量领取成功! ID: ${json.data.freeSubscriptionTransactionId}`);
+                        resolve(true);
                     } else {
                         $.log(`⚠️ 任务反馈: ${data}`);
+                        resolve(false);
                     }
                 } catch (e) {
                     if (data.includes("freeSubscriptionTransactionId")) {
                         $.log(`🎯 流量领取成功(字符串匹配)`);
+                        resolve(true);
                     } else {
                         $.log(`❌ 响应解析失败: ${data}`);
+                        resolve(false);
                     }
                 }
             }
-            resolve();
         });
     });
 }
