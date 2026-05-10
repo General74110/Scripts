@@ -1,6 +1,6 @@
 #!name=Firsty流量时长
 #!desc=支持多账号对于"Firsty App"的刷流量时间功能，更多说明请参考脚本内容。
-#!arguments=是否开启抓取重写:"Firsty", CRONEXP:"150 */3 * * *",是否开启调试模式:false,TIMEOUT:3000
+#!arguments=是否开启抓取重写:"Firsty", CRONEXP:"50 */4 * * *",是否开启调试模式:false,TIMEOUT:3000
 #!arguments-desc=- 是否开启抓取重写: ["Firsty","#"] \n\n- CRONEXP: 默认每3小时50分钟执行一次。\n\n- 是否开启调试模式: ["true","false"]\n\n - TIMEOUT: 脚本执行超时时间, 默认3000秒。
 [Script]
 {{{是否开启抓取重写}}}获取Cookie = type=http-response,pattern=^https:\/\/35\.186\.203\.117\/api\/mobile\/users\/v2\/.*\/info,requires-body=1,max-size=0,binary-body-mode=0,script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/Firsty.js,argument=_DEBUG="{{{是否开启调试模式}}}"
