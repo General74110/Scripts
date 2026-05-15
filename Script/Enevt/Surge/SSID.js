@@ -140,10 +140,10 @@ function debug(...args) {
 // ======================
 function getIP() {
     return new Promise((resolve, reject) => {
-        debug("请求 cip.cc");
+        debug("请求 myip.ipip.net/json");
 
         $httpClient.get({
-            url: "https://www.cip.cc/",
+            url: "https://myip.ipip.net/json",
             timeout: 60000
         }, (err, resp, data) => {
             if (err) {
@@ -153,7 +153,7 @@ function getIP() {
 
             debug("原始返回长度:", data?.length);
 
-            const info = parseCIP(data);
+            const info = parseIPIP(data);
 
             if (!info.ip || info.ip === "未知") {
                 debug("解析失败:", data);
@@ -168,30 +168,35 @@ function getIP() {
 // ======================
 // 📦 解析
 // ======================
-function parseCIP(html) {
-    debug("开始解析 HTML");
+function parseIPIP(raw) {
+    debug("开始解析 JSON");
 
-    const pre = html.match(/<pre>([\s\S]*?)<\/pre>/)?.[1] || html;
-
-    debug("提取 pre:", pre);
-
-    const ip =
-        pre.match(/IP\s*:\s*([0-9.]+)/)?.[1] ||
-        pre.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/)?.[0] ||
-        "未知";
-
-    const region =
-        pre.match(/地址\s*:\s*([^\n]+)/)?.[1]?.trim() || "未知";
-
-    let isp =
-        pre.match(/运营商\s*:\s*([^\n]+)/)?.[1]?.trim() || "";
-
-    if (!isp) {
-        const d = pre.match(/数据三\s*:\s*([^\n]+)/)?.[1];
-        if (d?.includes("|")) isp = d.split("|").pop().trim();
+    let json;
+    try {
+        json = JSON.parse(raw);
+    } catch (e) {
+        debug("JSON 解析失败:", raw);
+        return { ip: "未知", region: "未知", isp: "未知" };
     }
 
-    const result = { ip, region, isp: isp || "未知" };
+    debug("JSON 对象:", json);
+
+    if (json?.ret !== "ok" || !json?.data) {
+        debug("返回状态异常:", json);
+        return { ip: "未知", region: "未知", isp: "未知" };
+    }
+
+    const ip = json.data.ip || "未知";
+    const location = Array.isArray(json.data.location) ? json.data.location : [];
+
+    const regionParts = location
+        .slice(0, 4)
+        .filter(part => typeof part === "string" && part.trim());
+
+    const region = regionParts.length ? regionParts.join(" ") : "未知";
+    const isp = location[4]?.trim() || "未知";
+
+    const result = { ip, region, isp };
 
     debug("解析结果:", result);
 
