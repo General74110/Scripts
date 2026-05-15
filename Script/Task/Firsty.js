@@ -10,12 +10,11 @@
  *    - 配置文件: 在同级目录创建 .env 文件，填入抓取的参数。
  *
  * 2. 环境变量配置 (.env / 脚本管理器持久化数据):
- *    - iccid: 流量卡 ID，多账号用 & 分隔
- *    - refreshToken: Google 刷新令牌，用于自动续期 Authorization
- *    - appcheck: Firebase AppCheck 令牌 (有时效性)
- *    - sessionid: App 运行时的会话 ID
- *    - devicedid: 设备 ID
- *    - googleapisKey: Google API 的 Web Key
+ *    - Firsty_Cookies: 推荐使用，JSON 格式
+ *      单账号示例:
+ *      {"googleapisKey":"xxx","iccid":"xxx","refreshToken":"xxx","appcheck":"xxx","sessionid":"xxx","devicedid":"xxx"}
+ *      多账号示例:
+ *      {"accounts":[{"googleapisKey":"xxx","iccid":"xxx","refreshToken":"xxx","appcheck":"xxx","sessionid":"xxx","devicedid":"xxx"}]}
  *
  * 3. 自动抓取配置 (Quantumult X):
  *    ## 抓取 Google Token & 看广告参数 & 设备信息
@@ -51,6 +50,7 @@ if (isNode) {
 }
 
 const $ = new Env('Firsty');
+const COOKIE_KEY = 'Firsty_Cookies';
 
 // ====================
 // 1. 变量提取
@@ -67,20 +67,33 @@ function getRuntimeArgument(name) {
 const getVal = (key) => (isNode ? process.env[key] : $.getdata(key)) || '';
 const isDebug = String(getRuntimeArgument('_DEBUG')).toLowerCase() === 'true';
 
-const iccidStr = getVal('iccid');
-const rTokenStr = getVal('refreshToken');
-const appcheckStr = getVal('appcheck');
-const sessionidStr = getVal('sessionid');
-const devicedidStr = getVal('devicedid');
-const gKeyStr = getVal('googleapisKey');
+function getStoredCookieConfig() {
+    const raw = getVal(COOKIE_KEY);
+    if (!raw) return [];
 
-// 转为数组处理多账号
-const iccids = iccidStr.split('&').filter(x => !!x);
-const refreshTokens = rTokenStr.split('&').filter(x => !!x);
-const appchecks = appcheckStr.split('&').filter(x => !!x);
-const sessionids = sessionidStr.split('&').filter(x => !!x);
-const devicedids = devicedidStr.split('&').filter(x => !!x);
-const gKeys = gKeyStr.split('&').filter(x => !!x);
+    try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed.filter(Boolean);
+        if (Array.isArray(parsed.accounts)) return parsed.accounts.filter(Boolean);
+        if (parsed && typeof parsed === 'object') return [parsed];
+    } catch (e) {
+        console.log(`Firsty_Cookies 解析失败: ${e.message}`);
+    }
+    return [];
+}
+
+function normalizeAccount(account) {
+    return {
+        iccid: account.iccid || '',
+        rToken: account.refreshToken || '',
+        appcheck: account.appcheck || '',
+        sessionid: account.sessionid || '',
+        devicedid: account.devicedid || '',
+        gKey: account.googleapisKey || ''
+    };
+}
+
+const accounts = getStoredCookieConfig().map(normalizeAccount).filter(item => item.iccid);
 
 function formatDuration(totalMinutes) {
     const hours = Math.floor(totalMinutes / 60);
@@ -117,25 +130,18 @@ function debugLog(title, data) {
         enabled: isDebug,
         runtimeArgument: getRuntimeArgument('_DEBUG') || '(empty)'
     });
-    debugLog('环境变量', {
-        iccid: iccids.map(x => maskValue(x)),
-        refreshToken: refreshTokens.map(x => maskValue(x)),
-        appcheck: appchecks.map(x => maskValue(x)),
-        sessionid: sessionids.map(x => maskValue(x)),
-        devicedid: devicedids.map(x => maskValue(x)),
-        googleapisKey: gKeys.map(x => maskValue(x))
-    });
+    debugLog('环境变量', accounts.map(item => ({
+        iccid: maskValue(item.iccid),
+        refreshToken: maskValue(item.rToken),
+        appcheck: maskValue(item.appcheck),
+        sessionid: maskValue(item.sessionid),
+        devicedid: maskValue(item.devicedid),
+        googleapisKey: maskValue(item.gKey)
+    })));
     const accountSummaries = [];
 
-    for (let i = 0; i < iccids.length; i++) {
-        const config = {
-            iccid: iccids[i],
-            rToken: refreshTokens[i] || refreshTokens[0],
-            appcheck: appchecks[i] || appchecks[0],
-            sessionid: sessionids[i] || sessionids[0],
-            devicedid: devicedids[i] || devicedids[0],
-            gKey: gKeys[i] || gKeys[0]
-        };
+    for (let i = 0; i < accounts.length; i++) {
+        const config = accounts[i];
         debugLog(`账号 ${i + 1} 配置`, {
             iccid: maskValue(config.iccid),
             rToken: maskValue(config.rToken),
@@ -237,14 +243,16 @@ function GetCookie() {
     if (url.includes("securetoken.googleapis.com/v1/token")) {
         // 1. 提取 URL 中的 googleapisKey
         const keyMatch = url.match(/key=([^&]+)/);
-        if (keyMatch) $.setdata(keyMatch[1], "googleapisKey");
 
         // 2. 提取 Body 中的 refreshToken
         try {
             const body = JSON.parse($request.body);
-            if (body.refreshToken) $.setdata(body.refreshToken, "refreshToken");
             debugLog('Google Token 抓取请求体', body);
         } catch (e) {}
+        updateCookieStore({
+            googleapisKey: keyMatch ? keyMatch[1] : '',
+            refreshToken: safeJsonParse($request.body).refreshToken || ''
+        });
         $.msg($.name, "Google参数", "googleapisKey & refreshToken 获取成功");
     }
 
@@ -252,13 +260,15 @@ function GetCookie() {
     if (url.includes("/free")) {
         // 1. 提取 URL 中的 iccid
         const iccidMatch = url.match(/iccid\/([^/]+)/);
-        if (iccidMatch) $.setdata(iccidMatch[1], "iccid");
 
         // 2. 提取 Headers 中的 session-id 和 appcheck
         const sid = $request.headers["session-id"] || $request.headers["Session-Id"];
         const ack = $request.headers["x-firebase-appcheck"] || $request.headers["X-Firebase-Appcheck"];
-        if (sid) $.setdata(sid, "sessionid");
-        if (ack) $.setdata(ack, "appcheck");
+        updateCookieStore({
+            iccid: iccidMatch ? iccidMatch[1] : '',
+            sessionid: sid || '',
+            appcheck: ack || ''
+        });
 
         $.msg($.name, "核心参数", "iccid & session & appcheck 获取成功");
     }
@@ -267,11 +277,43 @@ function GetCookie() {
     if (url.includes("/info") && typeof $response !== "undefined") {
         try {
             const res = JSON.parse($response.body);
-            if (res.deviceId) $.setdata(res.deviceId, "devicedid");
             debugLog('Info 响应数据', res);
+            updateCookieStore({
+                devicedid: res.deviceId || ''
+            });
             $.msg($.name, "设备参数", "deviceId 获取成功");
         } catch (e) {}
     }
+}
+
+function safeJsonParse(text) {
+    try {
+        return JSON.parse(text || '{}');
+    } catch (e) {
+        return {};
+    }
+}
+
+function updateCookieStore(patch) {
+    const current = getStoredCookieConfig();
+    const base = current[0] || {};
+    const merged = {
+        googleapisKey: patch.googleapisKey || patch.googleApiKey || base.googleapisKey || base.googleApiKey || '',
+        iccid: patch.iccid || base.iccid || '',
+        refreshToken: patch.refreshToken || base.refreshToken || '',
+        appcheck: patch.appcheck || base.appcheck || '',
+        sessionid: patch.sessionid || base.sessionid || '',
+        devicedid: patch.devicedid || base.devicedid || ''
+    };
+    $.setdata(JSON.stringify(merged), COOKIE_KEY);
+    debugLog('Firsty_Cookies 更新', {
+        googleapisKey: maskValue(merged['googleapisKey']),
+        iccid: maskValue(merged.iccid),
+        refreshToken: maskValue(merged.refreshToken),
+        appcheck: maskValue(merged.appcheck),
+        sessionid: maskValue(merged.sessionid),
+        devicedid: maskValue(merged.devicedid)
+    });
 }
 
 // ====================
