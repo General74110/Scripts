@@ -51,6 +51,7 @@ if (isNode) {
 
 const $ = new Env('Firsty');
 const COOKIE_KEY = 'Firsty_Cookies';
+const notify = $.isNode() ? require('./sendNotify') : '';
 
 // ====================
 // 1. 变量提取
@@ -138,7 +139,10 @@ function debugLog(title, data) {
         devicedid: maskValue(item.devicedid),
         googleapisKey: maskValue(item.gKey)
     })));
+
     const accountSummaries = [];
+    // 用来汇总所有账号的文本，方便 Node.js 一次性推送到通知渠道
+    let notifyMessage = '';
 
     for (let i = 0; i < accounts.length; i++) {
         const config = accounts[i];
@@ -190,11 +194,15 @@ function debugLog(title, data) {
             }
 
             accountSummaries.push(result);
-            $.msg(
-                `${$.name} 账号 ${result.account}`,
-                `成功 ${result.success}/10 次，累计 ${formatDuration(result.totalMinutes)}`,
-                `ICCID 后四位 ${result.iccid.slice(-4)}｜失败 ${result.fail} 次`
-            );
+
+            const msgSub = `成功 ${result.success}/10 次，累计 ${formatDuration(result.totalMinutes)}`;
+            const msgDesc = `ICCID 后四位 ${result.iccid.slice(-4)}｜失败 ${result.fail} 次`;
+
+            // App 环境单账号弹窗
+            $.msg(`${$.name} 账号 ${result.account}`, msgSub, msgDesc);
+            // 拼接文本供 Node 使用
+            notifyMessage += `【账号 ${result.account}】${msgSub}\n${msgDesc}\n\n`;
+
         } else {
             $.log(`❌ 刷新 Token 失败，跳过该账号`);
             accountSummaries.push({
@@ -205,27 +213,51 @@ function debugLog(title, data) {
                 totalMinutes: 0,
                 tokenFailed: true
             });
-            $.msg(
-                `${$.name} 账号 ${i + 1}`,
-                `Token 刷新失败`,
-                `ICCID 后四位 ${config.iccid.slice(-4)}｜本次未领取流量`
-            );
+
+            const msgSub = `Token 刷新失败`;
+            const msgDesc = `ICCID 后四位 ${config.iccid.slice(-4)}｜本次未领取流量`;
+
+            $.msg(`${$.name} 账号 ${i + 1}`, msgSub, msgDesc);
+            notifyMessage += `【账号 ${i + 1}】❌ ${msgSub}\n${msgDesc}\n\n`;
         }
 
         await $.wait(2000); // 账号间切换的固定延迟
     }
 
+    // 汇总通知
     if (accountSummaries.length > 1) {
         const totalSuccess = accountSummaries.reduce((sum, item) => sum + item.success, 0);
         const totalFail = accountSummaries.reduce((sum, item) => sum + item.fail, 0);
         const totalMinutes = accountSummaries.reduce((sum, item) => sum + item.totalMinutes, 0);
-        $.msg(
-            `${$.name} 汇总`,
-            `成功 ${totalSuccess} 次，累计 ${formatDuration(totalMinutes)}`,
-            `失败 ${totalFail} 次｜共 ${accountSummaries.length} 个账号`
-        );
+
+        const sumSub = `成功 ${totalSuccess} 次，累计 ${formatDuration(totalMinutes)}`;
+        const sumDesc = `失败 ${totalFail} 次｜共 ${accountSummaries.length} 个账号`;
+
+        $.msg(`${$.name} 汇总`, sumSub, sumDesc);
+        notifyMessage += `【总体汇总】\n${sumSub}\n${sumDesc}`;
     }
-})().catch(e => $.logErr(e)).finally(() => $.done());
+
+    // ======= 核心修复：如果是 Node 环境，在这里接管并发送真实通知 =======
+    if (isNode && notify && notifyMessage) {
+        $.log(`\n⏳ Node.js 环境正在通过 sendNotify 发送系统通知...`);
+        // 这里的 notify.sendNotify 或者是 notify(取决于你 sendNotify.js 导出的方式)
+        // 通常青龙的 sendNotify 导出的方法名就是 sendNotify
+        try {
+            if (typeof notify.sendNotify === 'function') {
+                await notify.sendNotify($.name, notifyMessage);
+            } else if (typeof notify === 'function') {
+                await notify($.name, notifyMessage);
+            }
+            $.log(`✅ 系统通知发送成功`);
+        } catch (err) {
+            $.log(`❌ 系统通知发送失败: ${err.message}`);
+        }
+    }
+
+})().catch(e => $.logErr(e)).finally(() => {
+    // 确保所有异步逻辑（包括上面的通知）彻底完成后，再安全地退出进程
+    $.done();
+});
 
 // ====================
 // 2. 核心函数: 获取 Cookie (重写逻辑)
