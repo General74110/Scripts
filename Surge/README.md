@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/cc63/Surge/main/Module/Surge.png" width="200" alt="Surge Logo">
+  <img src="https://github.com/General74110/Scripts/blob/master/Surge/Module/Surge.png" width="200" alt="Surge Logo">
   <p><em>Surge的配置与模块</em></p>
   
   ![GitHub Stars](https://img.shields.io/github/stars/cc63/Surge?style=flat-square&color=gold)
@@ -7,7 +7,7 @@
 </div>
 
 ## ⚙️ 基础配置
--  📦 [**配置文件** ](https://github.com/cc63/Surge/tree/main/Conf)
+-  📦 [**配置文件** ](https://raw.githubusercontent.com/General74110/Scripts/refs/heads/master/Surge/ProFile/General.conf)
 -  🎨 [**自定义图标集** ](https://github.com/cc63/Surge/tree/main/Module/icon)
 -  💾 [**bm7规则集**](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Surge)
 -  💾 [**Sukka规则集**](https://ruleset.skk.moe)
@@ -87,10 +87,3 @@
      </tr> 
   </table>
 </div>
-
-
-
-## 🛒 自用推荐
-
-- **MESL** ：[节点140+全球覆盖，拥有线路优质，有家宽节点、低倍率节点，部分节假日85折优惠](https://in.mesl.cloud/#/register?code=mN84D0Xt)
-- **DMIT** ：[采用AMD高性能处理器，线路有CN2GIA/CMIN2可供选择，提供免费的快照，不定时有活动款](https://www.dmit.io/aff.php?aff=10943)
