@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="https://github.com/General74110/Scripts/blob/master/Surge/Module/Surge.png" width="200" alt="Surge Logo">
+  <img src="https://raw.githubusercontent.com/General74110/Scripts/master/Surge/Module/Surge.png" width="200" alt="Surge Logo">
   <p><em>Surge的配置与模块</em></p>
   
-  ![GitHub Stars](https://img.shields.io/github/stars/cc63/Surge?style=flat-square&color=gold)
-  ![GitHub Forks](https://img.shields.io/github/forks/cc63/Surge?style=flat-square&color=green)
+  ![GitHub Stars](https://img.shields.io/github/stars/General74110/Scripts?style=flat-square&color=gold)
+  ![GitHub Forks](https://img.shields.io/github/forks/General74110/Scripts?style=flat-square&color=green)
 </div>
 
 ## ⚙️ 基础配置

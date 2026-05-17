@@ -1,5 +1,5 @@
 <div align="center">
- <img src="https://github.com/General74110/Scripts/blob/master/Surge/ProFile/Conf.png" width="200">
+ <img src="https://raw.githubusercontent.com/General74110/Scripts/master/Surge/ProFile/Conf.png" width="200">
 </div>
 
 ## 📦 配置示例
