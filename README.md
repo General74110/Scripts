@@ -34,5 +34,3 @@ height="160" align="right">
 
 ![GitHub stars](https://img.shields.io/github/stars/General74110/Scripts)
 ![GitHub forks](https://img.shields.io/github/forks/General74110/Scripts)  
-
-![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=w37fhy&show_icons=true&theme=merko)
