@@ -38,7 +38,7 @@
 
 | 脚本 | 说明 | 状态 | 平台 |
 |------|------|:----:|------|
-| [QQreader.js](Script/Task/QQreader.js) | QQ阅读签到、阅读/听书奖励、宝箱视频、等级福利、周/月抽奖 | 🟡 | Loon / QX / Surge / Node |
+| [QQreader.js](Script/Task/QQreader.js) | QQ阅读签到、阅读/听书奖励、宝箱视频、等级福利、周/月抽奖 | 🟢 | Loon / QX / Surge / Node |
 | [kuwo.js](Script/Task/kuwo.js) | 酷我音乐签到、听歌、收藏、抽奖、宝箱等（原大圣，改） | 🟢 | Loon / QX / Surge / Node |
 | [Kuwomusic.js](Script/Task/Kuwomusic.js) | 酷我音乐看广告获取免费听歌时长 | 🟢 | Loon / QX / Surge / Node |
 | [kuwo_Cookies.js](Script/Task/kuwo_Cookies.js) | 酷我音乐 Cookie 获取 | 🟢 | Loon / QX / Surge |
@@ -50,11 +50,11 @@
 
 | 脚本 | 说明 | 状态 |
 |------|------|:----:|
-| [QQreader.vip.js](Script/UnlockVip/QQreader.vip.js) | QQ阅读 VIP 解锁 | 🟡 |
-| [kuwo.svip.js](Script/UnlockVip/kuwo.svip.js) | 酷我音乐 SVIP 解锁 | 🟢 |
-| [Kuwo_NobyDa.js](Script/UnlockVip/Kuwo_NobyDa.js) | 酷我音乐 VIP（NobyDa 版） | 🟢 |
-| [kugou.svip.js](Script/UnlockVip/kugou.svip.js) | 酷狗音乐 VIP 解锁 | 🟢 |
-| [kugou.song.svip.js](Script/UnlockVip/kugou.song.svip.js) | 酷狗音乐歌曲 VIP | 🟢 |
+| [QQreader.vip.js](Script/UnlockVip/QQreader.vip.js) | QQ阅读 VIP 解锁 | 🔴 |
+| [kuwo.svip.js](Script/UnlockVip/kuwo.svip.js) | 酷我音乐 SVIP 解锁 | 🟡 |
+| [Kuwo_NobyDa.js](Script/UnlockVip/Kuwo_NobyDa.js) | 酷我音乐 VIP（NobyDa 版） | 🟡 |
+| [kugou.svip.js](Script/UnlockVip/kugou.svip.js) | 酷狗音乐 VIP 解锁 | 🟡 |
+| [kugou.song.svip.js](Script/UnlockVip/kugou.song.svip.js) | 酷狗音乐歌曲 VIP | 🟡 |
 | [xunlei.js](Script/UnlockVip/xunlei.js) | 迅雷 VIP 解锁 | — |
 | [xl.js](Script/UnlockVip/xl.js) | 迅雷相关 | — |
 | [9169.js](Script/UnlockVip/9169.js) | 9169 解锁 | — |
@@ -64,7 +64,7 @@
 | 脚本 | 说明 | 状态 |
 |------|------|:----:|
 | [AnxinjiAd.js](Script/Adblock/AnxinjiAd.js) | 安心记广告过滤 | 🟢 |
-| [SqxsAd.js](Script/Adblock/SqxsAd.js) | 什么小说广告过滤 | 🟢 |
+| [SqxsAd.js](Script/Adblock/SqxsAd.js) | 书旗小说广告过滤 | 🟡 |
 
 ---
 
