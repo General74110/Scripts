@@ -13,7 +13,7 @@
 
 ---
 
-自己用的脚本合集，包括定时任务、解锁VIP、广告过滤等。  
+自己用的脚本合集，包括定时任务、VIP解锁、广告过滤等。  
 支持 **Loon** · **Quantumult X** · **Surge** 三大代理客户端。
 
 ---
@@ -22,48 +22,66 @@
 
 | 目录 | 说明 |
 |------|------|
-| `Script/Task` | 定时任务脚本，如 QQ阅读签到/任务/抽奖 |
-| `Script/Adblock` | 广告过滤规则 |
-| `Script/Enevt` | 事件相关脚本 |
-| `Script/UnlockVip` | 解锁VIP功能脚本 |
+| `Script/Task` | 定时任务脚本 |
+| `Script/UnlockVip` | 应用解锁VIP脚本 |
+| `Script/Adblock` | 广告过滤脚本 |
+| `Script/Enevt` | 各平台事件配置 |
 | `index/` | 通用脚本模板 |
-| `images/` | 资源图片 |
 
 ---
 
 ## 📜 脚本列表
 
-### Task（定时任务）
+> **状态说明：** 🟢 有效　🔴 失效　🟡 待修复　— 未测试
 
-| 脚本 | 说明 | 平台 |
-|------|------|------|
-| [QQreader.js](Script/Task/QQreader.js) | QQ阅读每日签到、阅读/听书奖励、宝箱视频、等级福利、周/月抽奖 | Loon / QX / Surge / Node.js |
+### ⏰ Task（定时任务）
 
-### UnlockVip（解锁VIP）
+| 脚本 | 说明 | 状态 | 平台 |
+|------|------|:----:|------|
+| [QQreader.js](Script/Task/QQreader.js) | QQ阅读签到、阅读/听书奖励、宝箱视频、等级福利、周/月抽奖 | 🟡 | Loon / QX / Surge / Node |
+| [kuwo.js](Script/Task/kuwo.js) | 酷我音乐签到、听歌、收藏、抽奖、宝箱等（原大圣，改） | 🟢 | Loon / QX / Surge / Node |
+| [Kuwomusic.js](Script/Task/Kuwomusic.js) | 酷我音乐看广告获取免费听歌时长 | 🟢 | Loon / QX / Surge / Node |
+| [kuwo_Cookies.js](Script/Task/kuwo_Cookies.js) | 酷我音乐 Cookie 获取 | 🟢 | Loon / QX / Surge |
+| [xmly.js](Script/Task/xmly.js) | 喜马拉雅签到、点赞、收藏、评论等（原 MartinsKing） | 🟡 | Loon / QX / Surge / Node |
+| [Firsty.js](Script/Task/Firsty.js) | Firsty 看广告获取免费流量 | 🟢 | Node.js |
+| [sendNotify.js](Script/Task/sendNotify.js) | Node.js 环境通知发送（依赖） | 🟢 | Node.js |
 
-> 待补充
+### 🔓 UnlockVip（VIP解锁）
 
-### Adblock（广告过滤）
+| 脚本 | 说明 | 状态 |
+|------|------|:----:|
+| [QQreader.vip.js](Script/UnlockVip/QQreader.vip.js) | QQ阅读 VIP 解锁 | 🟡 |
+| [kuwo.svip.js](Script/UnlockVip/kuwo.svip.js) | 酷我音乐 SVIP 解锁 | 🟢 |
+| [Kuwo_NobyDa.js](Script/UnlockVip/Kuwo_NobyDa.js) | 酷我音乐 VIP（NobyDa 版） | 🟢 |
+| [kugou.svip.js](Script/UnlockVip/kugou.svip.js) | 酷狗音乐 VIP 解锁 | 🟢 |
+| [kugou.song.svip.js](Script/UnlockVip/kugou.song.svip.js) | 酷狗音乐歌曲 VIP | 🟢 |
+| [xunlei.js](Script/UnlockVip/xunlei.js) | 迅雷 VIP 解锁 | — |
+| [xl.js](Script/UnlockVip/xl.js) | 迅雷相关 | — |
+| [9169.js](Script/UnlockVip/9169.js) | 9169 解锁 | — |
 
-> 待补充
+### 🚫 Adblock（广告过滤）
+
+| 脚本 | 说明 | 状态 |
+|------|------|:----:|
+| [AnxinjiAd.js](Script/Adblock/AnxinjiAd.js) | 安心记广告过滤 | 🟢 |
+| [SqxsAd.js](Script/Adblock/SqxsAd.js) | 什么小说广告过滤 | 🟢 |
 
 ---
 
-## 🚀 快速开始
+## 🚀 使用方式
 
-### 1. 获取脚本
+以 **QQ阅读** 为例：
 
-**Loon** — 在配置文件中添加：
+### 1. 添加配置
 
+**Loon：**
 ```
 [Script]
 http-request ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\? script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js, timeout=10, enabled=true, tag=QQ阅读获取Cookies
-
 cron "30 6 * * *" script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js, timeout=3600, tag=QQ阅读
 ```
 
-**Quantumult X** — 在配置文件中添加：
-
+**Quantumult X：**
 ```
 [task_local]
 30 6 * * * https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js, tag=QQ阅读, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/QQ.png, enabled=true
@@ -72,24 +90,25 @@ cron "30 6 * * *" script-path=https://raw.githubusercontent.com/General74110/Scr
 ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\? url script-request-header https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js, tag=QQ阅读获取Cookies, enabled=true
 ```
 
-**Surge** — 在配置文件中添加：
-
+**Surge：**
 ```
 [Script]
 http-request ^https:\/\/iostgw\.reader\.qq\.com\/v7_6_6\/userinfo\? script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js
-
 cron "30 6 * * *" script-path=https://raw.githubusercontent.com/General74110/Scripts/master/Script/Task/QQreader.js
 ```
 
 ### 2. 获取 Cookie
 
-在 APP 中点击 **「我的」** → 脚本会自动抓取 Cookie 并保存。
+在 APP 中点击 **「我的」** → 脚本自动抓取 Cookie 并保存。  
+获取完建议关掉重写，避免不必要的 MITM。
 
-### 3. 需要 MITM
+### 3. MITM
 
 ```
 hostname = *.reader.qq.com
 ```
+
+> 其他脚本的使用方法，参照各脚本头部的注释说明。
 
 ---
 
